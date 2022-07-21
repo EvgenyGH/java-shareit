@@ -21,23 +21,23 @@ public class UserController {
 
     //Обновить данные пользователя
     @ResponseStatus(HttpStatus.OK)
-    @PatchMapping
-    public User updateUser(@Valid @RequestParam long userId, User user) {
+    @PatchMapping("/{userId}")
+    public User updateUser(@PathVariable long userId, @RequestBody User user) {
         user.setId(userId);
         return userService.updateUser(user);
     }
 
     //Получить пользователя по id
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public User getUserById(@RequestParam long userId) {
+    @GetMapping("/{userId}")
+    public User getUserById(@PathVariable long userId) {
         return userService.getUserById(userId);
     }
 
     //Удалить пользователя по id
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping
-    User deleteUserById(@RequestParam long userId) {
+    @DeleteMapping("/{userId}")
+    User deleteUserById(@PathVariable long userId) {
         return userService.deleteUserById(userId);
     }
 }
