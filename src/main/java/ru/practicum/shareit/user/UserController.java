@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -37,7 +38,14 @@ public class UserController {
     //Удалить пользователя по id
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{userId}")
-    User deleteUserById(@PathVariable long userId) {
+    public User deleteUserById(@PathVariable long userId) {
         return userService.deleteUserById(userId);
+    }
+
+    //Получить всех пользователей
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public Collection<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 }

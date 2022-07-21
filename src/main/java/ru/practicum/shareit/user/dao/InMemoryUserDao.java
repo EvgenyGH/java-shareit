@@ -7,10 +7,7 @@ import ru.practicum.shareit.user.exception.EmailExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 
 import javax.validation.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 @Slf4j
@@ -74,15 +71,13 @@ public class InMemoryUserDao implements UserDao {
         users.put(user.getId(), user);
         emails.add(user.getEmail());
 
+        log.trace("Данные пользователя id={} обновлены: {}", user.getId(), user);
+
         return user;
     }
 
-    private void validateUser(User user) {
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        if (!violations.isEmpty()) {
-            emails.add(user.getEmail());
-            throw new ConstraintViolationException(violations);
-        }
+    private void validateUser(@Valid User user) {
+
     }
 
     //Получить пользователя по id
@@ -97,6 +92,8 @@ public class InMemoryUserDao implements UserDao {
                     , "Description", "Not found"));
         }
 
+        log.trace("Пользователь id={} отправлен: {}", id, tempUser);
+
         return tempUser;
     }
 
@@ -106,6 +103,8 @@ public class InMemoryUserDao implements UserDao {
         if (users.containsKey(id)) {
             User tempUser = users.get(id);
             emails.remove(tempUser.getEmail());
+            users.remove(id);
+            log.trace("Пользователь id={} удален: {}", id, tempUser);
             return tempUser;
         } else {
             throw new UserNotFoundException("Пользователь не найден id=" + id
@@ -113,5 +112,11 @@ public class InMemoryUserDao implements UserDao {
                     , "Id", String.valueOf(id)
                     , "Description", "Not found"));
         }
+    }
+
+    //Получить всех пользователей
+    public Collection<User> getAllUsers() {
+        log.trace("Все пользователи отправлены. Всего {}.", users.size());
+        return users.values();
     }
 }

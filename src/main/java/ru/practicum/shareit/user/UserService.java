@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dao.UserDao;
 
+import java.util.Collection;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -27,5 +30,10 @@ public class UserService {
     //Удалить пользователя по id
     public User deleteUserById(long id){
         return userDao.deleteUserById(id);
+    }
+
+    //Получить всех пользователей
+    public Collection<User> getAllUsers(){
+        return userDao.getAllUsers();
     }
 }

@@ -2,6 +2,8 @@ package ru.practicum.shareit.user.dao;
 
 import ru.practicum.shareit.user.User;
 
+import java.util.Collection;
+
 public interface UserDao {
     //Добавить пользователя
     User addUser(User user);
@@ -14,4 +16,7 @@ public interface UserDao {
 
     //Удалить пользователя по id
     User deleteUserById(long id);
+
+    //Получить всех пользователей
+    Collection<User> getAllUsers();
 }
