@@ -6,7 +6,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.exception.EmailExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 
-import javax.validation.*;
+import javax.validation.Valid;
 import java.util.*;
 
 @Repository
@@ -15,8 +15,6 @@ public class InMemoryUserDao implements UserDao {
     private final Map<Long, User> users = new HashMap<>();
     private final Set<String> emails = new HashSet<>();
     private long id = 0;
-    private static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-    private static final Validator validator = factory.getValidator();
 
     //Добавить пользователя
     @Override
@@ -54,20 +52,21 @@ public class InMemoryUserDao implements UserDao {
 
         if (user.getEmail() == null) {
             user.setEmail(tempUser.getEmail());
-        } else {
-            emails.remove(tempUser.getEmail());
-
-            if (emails.contains(user.getEmail())) {
-                emails.add(tempUser.getEmail());
-                throw new EmailExistsException("Пользователь с таким email уже существует"
-                        , Map.of("Object", "User"
-                        , "Field", "Email"
-                        , "Value", user.getEmail()
-                        , "Description", "Duplicates"));
-            }
         }
 
         validateUser(user);
+
+        emails.remove(tempUser.getEmail());
+
+        if (emails.contains(user.getEmail())) {
+            emails.add(tempUser.getEmail());
+            throw new EmailExistsException("Пользователь с таким email уже существует"
+                    , Map.of("Object", "User"
+                    , "Field", "Email"
+                    , "Value", user.getEmail()
+                    , "Description", "Duplicates"));
+        }
+
         users.put(user.getId(), user);
         emails.add(user.getEmail());
 

@@ -3,6 +3,8 @@ package ru.practicum.shareit.item.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @AllArgsConstructor
 public class ItemDto {
@@ -10,9 +12,11 @@ public class ItemDto {
     private long id;
 
     //краткое название
+    @NotBlank
     private String name;
 
     //развёрнутое описание
+    @NotBlank
     private String description;
 
     //статус о том, доступна или нет вещь для аренды
