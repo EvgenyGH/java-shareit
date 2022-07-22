@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId
-            , @Valid @RequestBody ItemDto itemDto) {
+            , @RequestBody ItemDto itemDto) {
         return ItemDtoMapper.ItemToDto(itemService.updateItem(itemDto, userId, itemId));
     }
 
@@ -41,7 +42,7 @@ public class ItemController {
     //Просмотр владельцем списка всех его вещей.
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<ItemDto> getAllUserItems(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public Collection<ItemDto> getAllUserItems(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.getAllUserItems(userId).stream().map(ItemDtoMapper::ItemToDto)
                 .collect(Collectors.toList());
     }

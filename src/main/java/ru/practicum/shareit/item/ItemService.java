@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dao.ItemDao;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -28,7 +29,7 @@ public class ItemService {
     }
 
     //Просмотр владельцем списка всех его вещей.
-    public List<Item> getAllUserItems(long userId) {
+    public Collection<Item> getAllUserItems(long userId) {
         return itemDao.getAllUserItems(userId);
     }
 
