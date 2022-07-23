@@ -1,11 +1,13 @@
 package ru.practicum.shareit.item.dao;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
+import ru.practicum.shareit.user.UserService;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -13,15 +15,17 @@ import java.util.stream.Collectors;
 
 @Repository
 @Slf4j
+@RequiredArgsConstructor
 public class InMemoryItemDao implements ItemDao {
     private final Map<Long, Map<Long, Item>> items = new HashMap<>();
     private long id = 0;
-
-    // TODO: 23.07.2022 check users
+    private final UserService userService;
 
     //Добавление новой вещи
     @Override
     public Item addItem(ItemDto itemDto, long userId) {
+        userService.getUserById(userId);
+
         itemDto.setId(++id);
         Item item = ItemDtoMapper.dtoToItem(itemDto, userId);
 
@@ -42,6 +46,8 @@ public class InMemoryItemDao implements ItemDao {
     //Редактирование вещи. Редактировать вещь может только её владелец.
     @Override
     public Item updateItem(ItemDto itemDto, long userId, long itemId) {
+        userService.getUserById(userId);
+
         if (!items.containsKey(userId) || !items.get(userId).containsKey(itemId)) {
             throw new ItemNotFoundException(String.format("Вещь id=%d у пользователя id=%d не найдена"
                     , itemId, userId)
@@ -135,5 +141,11 @@ public class InMemoryItemDao implements ItemDao {
         log.trace("Найдено {} Items содержащих <{}>.", itemsFound.size(), text);
 
         return itemsFound;
+    }
+
+    //Удалить вещи пользователя (при удалении пользователя)
+    public void deleteUserItems (long userId){
+        items.remove(userId);
+        log.trace("Вещи пользователя {} удалены.", userId);
     }
 }

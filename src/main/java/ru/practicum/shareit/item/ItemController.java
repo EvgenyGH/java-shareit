@@ -20,7 +20,7 @@ public class ItemController {
     //Добавление новой вещи
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId, @Valid ItemDto itemDto) {
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
         return ItemDtoMapper.ItemToDto(itemService.addItem(itemDto, userId));
     }
 

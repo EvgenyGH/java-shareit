@@ -1,7 +1,9 @@
 package ru.practicum.shareit.user.dao;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.exception.EmailExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
@@ -15,6 +17,11 @@ public class InMemoryUserDao implements UserDao {
     private final Map<Long, User> users = new HashMap<>();
     private final Set<String> emails = new HashSet<>();
     private long id = 0;
+    private final ItemService itemService;
+
+    public InMemoryUserDao(@Lazy ItemService itemService) {
+        this.itemService = itemService;
+    }
 
     //Добавить пользователя
     @Override
@@ -103,6 +110,7 @@ public class InMemoryUserDao implements UserDao {
             User tempUser = users.get(id);
             emails.remove(tempUser.getEmail());
             users.remove(id);
+            itemService.deleteUserItems(id);
             log.trace("Пользователь id={} удален: {}", id, tempUser);
             return tempUser;
         } else {

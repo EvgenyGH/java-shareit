@@ -39,4 +39,9 @@ public class ItemService {
     public List<Item> findItems(String text) {
         return itemDao.findItems(text);
     }
+
+    //Удалить вещи пользователя (при удалении пользователя)
+    public void deleteUserItems (long userId){
+        itemDao.deleteUserItems(userId);
+    }
 }

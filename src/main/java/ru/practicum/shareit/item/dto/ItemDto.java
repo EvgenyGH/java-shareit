@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class ItemDto {
     //уникальный̆ идентификатор вещи
-    @NotNull
     private Long id;
 
     //краткое название
