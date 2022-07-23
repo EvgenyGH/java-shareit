@@ -57,6 +57,7 @@ public class InMemoryItemDao implements ItemDao {
                     , "Description", "Item not found"));
         }
 
+        itemDto.setId(itemId);
         Item item = ItemDtoMapper.dtoToItem(itemDto, userId);
         Map<Long, Item> userItems = items.get(userId);
         Item tempItem = userItems.get(itemId);
@@ -100,7 +101,7 @@ public class InMemoryItemDao implements ItemDao {
             throw new ItemNotFoundException(String.format("Вещь id=%d не найдена"
                     , itemId)
                     , Map.of("Object", "Item"
-                    , "ItemId", String.valueOf(itemId)
+                    , "Id", String.valueOf(itemId)
                     , "Description", "Item not found"));
         }
 

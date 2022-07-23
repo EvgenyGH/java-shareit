@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import ru.practicum.shareit.item.exception.ItemException;
+import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.user.exception.EmailExistsException;
 import ru.practicum.shareit.user.exception.UserException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
@@ -16,9 +18,9 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import java.util.Map;
 
-@RestControllerAdvice({"ru.practicum.shareit.user"})
+@RestControllerAdvice({"ru.practicum.shareit.item"})
 @Slf4j
-public class UserExceptionHandler {
+public class ItemExceptionHandler {
     @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class
             , MethodArgumentTypeMismatchException.class, ConstraintViolationException.class
             , HttpMessageNotReadableException.class})
@@ -35,10 +37,10 @@ public class UserExceptionHandler {
         return exception.getProperties();
     }
 
-    @ExceptionHandler({EmailExistsException.class})
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> emailExistsExceptionHandler(UserException exception) {
-        log.warn("Пользователь с почтой {} уже существует.", exception.getProperties().get("Value"));
+    @ExceptionHandler({ItemNotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> itemNotFoundExceptionHandler(ItemException exception) {
+        log.warn("Вещь id={} не найдена.", exception.getProperties().get("Id"));
         return exception.getProperties();
     }
 
