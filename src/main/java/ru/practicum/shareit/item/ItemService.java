@@ -37,11 +37,11 @@ public class ItemService {
     //и система ищет вещи, содержащие этот текст в названии или описании.
     //Поиск возвращает только доступные для аренды вещи.
     public List<Item> findItems(String text) {
-        return itemDao.findItems(text);
+        return itemDao.findItems(text.toLowerCase());
     }
 
     //Удалить вещи пользователя (при удалении пользователя)
-    public void deleteUserItems (long userId){
+    public void deleteUserItems(long userId) {
         itemDao.deleteUserItems(userId);
     }
 }

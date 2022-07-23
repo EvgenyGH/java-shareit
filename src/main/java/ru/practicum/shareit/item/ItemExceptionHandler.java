@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.shareit.item.exception.ItemException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.user.exception.EmailExistsException;
 import ru.practicum.shareit.user.exception.UserException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 

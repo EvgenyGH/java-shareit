@@ -62,19 +62,19 @@ public class InMemoryItemDao implements ItemDao {
         Map<Long, Item> userItems = items.get(userId);
         Item tempItem = userItems.get(itemId);
 
-        if (itemDto.getDescription() == null){
+        if (itemDto.getDescription() == null) {
             item.setDescription(tempItem.getDescription());
         }
 
-        if (itemDto.getName() == null){
+        if (itemDto.getName() == null) {
             item.setName(tempItem.getName());
         }
 
-        if (itemDto.getAvailable() == null){
+        if (itemDto.getAvailable() == null) {
             item.setAvailable(tempItem.isAvailable());
         }
 
-        if (itemDto.getRequest_id() == null){
+        if (itemDto.getRequest_id() == null) {
             item.setRequest_id(tempItem.getRequest_id());
         }
 
@@ -87,15 +87,15 @@ public class InMemoryItemDao implements ItemDao {
         return item;
     }
 
-    private void validateItem(@Valid Item item){
+    private void validateItem(@Valid Item item) {
 
     }
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
     @Override
     public Item getItemById(long itemId) {
-        Optional<Map<Long,Item>> itemsFoundOpt = items.values().stream()
-                .filter(userItems-> userItems.containsKey(itemId)).findFirst();
+        Optional<Map<Long, Item>> itemsFoundOpt = items.values().stream()
+                .filter(userItems -> userItems.containsKey(itemId)).findFirst();
 
         if (itemsFoundOpt.isEmpty()) {
             throw new ItemNotFoundException(String.format("Вещь id=%d не найдена"
@@ -135,17 +135,23 @@ public class InMemoryItemDao implements ItemDao {
     //Поиск возвращает только доступные для аренды вещи.
     @Override
     public List<Item> findItems(String text) {
-        List<Item> itemsFound = items.values().stream().flatMap(userItems->userItems.values().stream())
-                .filter((item->item.getName().contains(text) || item.getDescription().contains(text)
-                && item.isAvailable())).collect(Collectors.toList());
+        if (text == null || text.isBlank()) {
+            return Collections.emptyList();
+        }
 
-        log.trace("Найдено {} Items содержащих <{}>.", itemsFound.size(), text);
+        List<Item> itemsFound = items.values().stream().flatMap(userItems -> userItems.values().stream())
+                .filter((item -> item.getName().toLowerCase().contains(text)
+                        || item.getDescription().toLowerCase().contains(text)
+                        && item.isAvailable())).collect(Collectors.toList());
+
+        //log.trace("Найдено {} Items содержащих <{}>.", itemsFound.size(), text);
+        log.trace("Найдено {} Items содержащих <{}>.", itemsFound, text);
 
         return itemsFound;
     }
 
     //Удалить вещи пользователя (при удалении пользователя)
-    public void deleteUserItems (long userId){
+    public void deleteUserItems(long userId) {
         items.remove(userId);
         log.trace("Вещи пользователя {} удалены.", userId);
     }

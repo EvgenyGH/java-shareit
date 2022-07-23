@@ -25,5 +25,5 @@ public interface ItemDao {
     List<Item> findItems(String text);
 
     //Удалить вещи пользователя (при удалении пользователя)
-    void deleteUserItems (long userId);
+    void deleteUserItems(long userId);
 }
