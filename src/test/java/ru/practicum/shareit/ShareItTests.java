@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -22,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 class ShareItTests {
-    // TODO: 21.07.2022 добавить тесты
     // TODO: 23.07.2022 readme
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
@@ -132,7 +132,87 @@ class ShareItTests {
 
         mockMvc.perform(get("/items")
                         .header("X-Sharer-User-Id", 1))
+                .andExpectAll(status().isNotFound());
+    }
+
+    @Test
+    @DirtiesContext
+    void addUpdateDeleteGetUserGetAllUsers() throws Exception {
+        User user1 = new User(1, "User1 name", "User1@mail.ru");
+        User user2 = new User(2, "User2 name", "User2@mail.ru");
+
+        //Добавить пользователя
+        mockMvc.perform(post("/users")
+                        .content(objectMapper.writeValueAsString(user1))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(status().isCreated()
+                        , content().json(objectMapper.writeValueAsString(user1)));
+
+        user2.setName("  ");
+        mockMvc.perform(post("/users")
+                        .content(objectMapper.writeValueAsString(user2))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(status().isBadRequest());
+        user2.setName("User2 name");
+
+        user2.setEmail("invalidEmail");
+        mockMvc.perform(post("/users")
+                        .content(objectMapper.writeValueAsString(user2))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(status().isBadRequest());
+
+        user2.setEmail("User1@mail.ru");
+        mockMvc.perform(post("/users")
+                        .content(objectMapper.writeValueAsString(user2))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(status().isConflict());
+
+        user2.setEmail("User2@mail.ru");
+        mockMvc.perform(post("/users")
+                        .content(objectMapper.writeValueAsString(user2))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(status().isCreated()
+                        , content().json(objectMapper.writeValueAsString(user2)));
+
+        //Обновить данные пользователя
+        user2.setName("updated name");
+        user2.setEmail("UpdatedUser2@mail.ru");
+        mockMvc.perform(patch("/users/{userId}", 2)
+                        .content(objectMapper.writeValueAsString(user2))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(status().isOk()
+                        , content().json(objectMapper.writeValueAsString(user2)));
+
+        user2.setEmail("User1@mail.ru");
+        mockMvc.perform(patch("/users/{userId}", 2)
+                        .content(objectMapper.writeValueAsString(user2))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(status().isConflict());
+        user2.setEmail("UpdatedUser2@mail.ru");
+
+        //Получить пользователя по id
+        mockMvc.perform(get("/users/{userId}", 2))
+                .andExpectAll(status().isOk()
+                        , content().json(objectMapper.writeValueAsString(user2)));
+
+        mockMvc.perform(get("/users/{userId}", 3))
+                .andExpectAll(status().isNotFound());
+
+        //Получить всех пользователей
+        mockMvc.perform(get("/users"))
+                .andExpectAll(status().isOk()
+                        , jsonPath("$.size()").value(2));
+
+        //Удалить пользователя по id
+        mockMvc.perform(delete("/users/{userId}", 1))
+                .andExpectAll(status().isOk());
+
+        mockMvc.perform(delete("/users/{userId}", 2))
+                .andExpectAll(status().isOk());
+
+        mockMvc.perform(get("/users"))
                 .andExpectAll(status().isOk()
                         , jsonPath("$.size()").value(0));
     }
 }
+
