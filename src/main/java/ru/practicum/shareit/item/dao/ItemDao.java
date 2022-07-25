@@ -1,17 +1,16 @@
 package ru.practicum.shareit.item.dao;
 
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.Collection;
 import java.util.List;
 
 public interface ItemDao {
     //Добавление новой вещи
-    Item addItem(ItemDto itemDto, long userId);
+    Item addItem(Item item);
 
     //Редактирование вещи. Редактировать вещь может только её владелец.
-    Item updateItem(ItemDto itemDto, long userId, long itemId);
+    Item updateItem(Item item);
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
     Item getItemById(long itemId);

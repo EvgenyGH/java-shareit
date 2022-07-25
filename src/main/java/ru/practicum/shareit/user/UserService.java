@@ -20,9 +20,9 @@ import java.util.Set;
 @Slf4j
 public class UserService {
     private final UserDao userDao;
-    private long id = 0;
     private final ItemService itemService;
     private final Validator validator;
+    private long id = 0;
 
     @Autowired
     public UserService(@Lazy ItemService itemService, UserDao userDao) {
