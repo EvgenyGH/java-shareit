@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.dao;
 import ru.practicum.shareit.user.User;
 
 import java.util.Collection;
+import java.util.Set;
 
 public interface UserDao {
     //Добавить пользователя
@@ -19,4 +20,13 @@ public interface UserDao {
 
     //Получить всех пользователей
     Collection<User> getAllUsers();
+
+    //Получить все адреса почты
+    Set<String> getAllEmails();
+
+    //Добавить адрес почты
+    String addEmail(String email);
+
+    //Удалить адрес почты
+    String removeEmail(String email);
 }
