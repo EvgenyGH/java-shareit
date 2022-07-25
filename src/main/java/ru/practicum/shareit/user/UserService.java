@@ -22,7 +22,6 @@ public class UserService {
     private final UserDao userDao;
     private final ItemService itemService;
     private final Validator validator;
-    private long id = 0;
 
     @Autowired
     public UserService(@Lazy ItemService itemService, UserDao userDao) {
@@ -41,7 +40,6 @@ public class UserService {
                     , "Description", "Duplicates"));
         }
 
-        user.setId(++id);
         userDao.addUser(user);
 
         log.trace("Пользователь id={} добавлен: {}", user.getId(), user);
@@ -83,7 +81,7 @@ public class UserService {
                     , "Description", "Duplicates"));
         }
 
-        userDao.addUser(user);
+        userDao.updateUser(user);
 
         log.trace("Данные пользователя id={} обновлены: {}", user.getId(), user);
 

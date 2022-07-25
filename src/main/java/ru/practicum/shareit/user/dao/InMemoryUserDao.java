@@ -9,12 +9,14 @@ import java.util.*;
 public class InMemoryUserDao implements UserDao {
     private final Map<Long, User> users = new HashMap<>();
     private final Set<String> emails = new HashSet<>();
+    private long id = 0;
 
     //Добавить пользователя
     @Override
     public User addUser(User user) {
-        users.put(user.getId(), user);
-        emails.add(user.getEmail());
+        user.setId(++id);
+        updateUser(user);
+
         return user;
     }
 
@@ -23,6 +25,7 @@ public class InMemoryUserDao implements UserDao {
     public User updateUser(User user) {
         users.put(user.getId(), user);
         emails.add(user.getEmail());
+
         return user;
     }
 
@@ -38,6 +41,7 @@ public class InMemoryUserDao implements UserDao {
         User user = users.get(id);
         emails.remove(user.getEmail());
         users.remove(id);
+
         return user;
     }
 
@@ -54,12 +58,14 @@ public class InMemoryUserDao implements UserDao {
     //Добавить адрес почты
     public String addEmail(String email) {
         emails.add(email);
+
         return email;
     }
 
     //Удалить адрес почты
     public String removeEmail(String email) {
         emails.remove(email);
+
         return email;
     }
 }

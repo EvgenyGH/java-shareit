@@ -14,10 +14,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class InMemoryItemDao implements ItemDao {
     private final Map<Long, Map<Long, Item>> items = new HashMap<>();
+    private long id = 0;
 
     //Добавление новой вещи
     @Override
     public Item addItem(Item item) {
+        item.setId(++id);
+
         if (items.containsKey(item.getOwner_id())) {
             Map<Long, Item> userItems = items.get(item.getOwner_id());
             userItems.put(item.getId(), item);
@@ -42,11 +45,10 @@ public class InMemoryItemDao implements ItemDao {
     @Override
     public Item getItemById(long itemId) {
         Item itemFound = items.values().stream()
-                .filter(userItem -> userItem.containsKey(itemId))
                 .flatMap(userItems -> userItems.values().stream())
-                .findFirst().orElse(null);
+                .filter(item -> item.getId() == itemId).findFirst().orElse(null);
 
-        return itemFound;
+        return itemFound; //itemFound;
     }
 
     //Просмотр владельцем списка всех его вещей.

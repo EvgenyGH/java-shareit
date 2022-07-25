@@ -9,7 +9,7 @@ public class ItemDtoMapper {
     }
 
     public static Item dtoToItem(ItemDto itemDto, long ownerId) {
-        return new Item(itemDto.getId()
+        return new Item(itemDto.getId() == null ? 0 : itemDto.getId()
                 , itemDto.getName()
                 , itemDto.getDescription()
                 , itemDto.getAvailable() == null || itemDto.getAvailable()

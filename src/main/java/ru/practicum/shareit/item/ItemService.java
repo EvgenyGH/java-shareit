@@ -20,7 +20,6 @@ public class ItemService {
     private final ItemDao itemDao;
     private final UserService userService;
     private final Validator validator;
-    private long id = 0;
 
     @Autowired
     public ItemService(ItemDao itemDao, UserService userService) {
@@ -34,11 +33,10 @@ public class ItemService {
     public Item addItem(ItemDto itemDto, long userId) {
         userService.getUserById(userId);
 
-        itemDto.setId(++id);
         Item item = ItemDtoMapper.dtoToItem(itemDto, userId);
         itemDao.addItem(item);
 
-        log.trace("Item id={} добавлен: {}", id, item);
+        log.trace("Item id={} добавлен: {}", item.getId(), item);
 
         return item;
     }
