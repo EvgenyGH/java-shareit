@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
-public class User {
+public class UserDto {
     //уникальный идентификатор пользователя
     private long id;
 
@@ -16,8 +16,7 @@ public class User {
     @NotBlank
     private String name;
 
-    //адрес электронной почты
+    //адрес электронной почты (два пользователя не могут иметь одинаковый адрес электронной почты).
     @Email
-    @NotBlank
     private String email;
 }
