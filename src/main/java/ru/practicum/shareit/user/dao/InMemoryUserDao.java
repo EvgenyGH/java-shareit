@@ -54,18 +54,4 @@ public class InMemoryUserDao implements UserDao {
     public Set<String> getAllEmails() {
         return emails;
     }
-
-    //Добавить адрес почты
-    public String addEmail(String email) {
-        emails.add(email);
-
-        return email;
-    }
-
-    //Удалить адрес почты
-    public String removeEmail(String email) {
-        emails.remove(email);
-
-        return email;
-    }
 }

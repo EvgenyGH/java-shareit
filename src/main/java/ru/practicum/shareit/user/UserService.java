@@ -70,10 +70,9 @@ public class UserService {
             throw new ConstraintViolationException(violations);
         }
 
-        userDao.removeEmail(tempUser.getEmail());
-
-        if (userDao.getAllEmails().contains(user.getEmail())) {
-            userDao.addEmail(tempUser.getEmail());
+        Set<String> emails = userDao.getAllEmails();
+        emails.remove(tempUser.getEmail());
+        if (emails.contains(user.getEmail())) {
             throw new EmailExistsException("Пользователь с таким email уже существует"
                     , Map.of("Object", "User"
                     , "Field", "Email"

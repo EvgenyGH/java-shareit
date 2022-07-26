@@ -23,10 +23,4 @@ public interface UserDao {
 
     //Получить все адреса почты
     Set<String> getAllEmails();
-
-    //Добавить адрес почты
-    String addEmail(String email);
-
-    //Удалить адрес почты
-    String removeEmail(String email);
 }
