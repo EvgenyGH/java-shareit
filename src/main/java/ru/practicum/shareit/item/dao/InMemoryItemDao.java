@@ -48,7 +48,7 @@ public class InMemoryItemDao implements ItemDao {
                 .flatMap(userItems -> userItems.values().stream())
                 .filter(item -> item.getId() == itemId).findFirst().orElse(null);
 
-        return itemFound; //itemFound;
+        return itemFound;
     }
 
     //Просмотр владельцем списка всех его вещей.
