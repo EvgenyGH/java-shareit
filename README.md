@@ -6,6 +6,23 @@
 
 
 
+## *`Sprint 2`*
+#### *- Add JPA support*
+#### *- Add PostgreSql database*
+#### *- *
+#### *- *
+#### *- *
+#### *- *
+#### *- *
+#### *- *
+#### *- *
+#### *- *
+#### *- *
+#### *- *
+#### *- *
+#### *- *
+___
+
 ## *`Sprint 1`*
 #### *- Add UserController and ItemController*
 #### *- Add UserService and ItemService*
