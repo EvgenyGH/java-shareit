@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
 
@@ -23,13 +24,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 class ShareItTests {
-    // TODO: 23.07.2022 readme
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
 
     @Test
     void addGetGetAllUpdateFindItemTests1() throws Exception {
-        User user1 = new User(1, "User name", "User@mail.ru");
+        User user1 = new User(1L, "User name", "User@mail.ru");
 
         Item item1 = new Item(1L, "Item1 name", "Item1 description"
                 , true, 1L, null);
@@ -138,8 +139,8 @@ class ShareItTests {
     @Test
     @DirtiesContext
     void addUpdateDeleteGetUserGetAllUsers() throws Exception {
-        User user1 = new User(1, "User1 name", "User1@mail.ru");
-        User user2 = new User(2, "User2 name", "User2@mail.ru");
+        User user1 = new User(1L, "User1 name", "User1@mail.ru");
+        User user2 = new User(2L, "User2 name", "User2@mail.ru");
 
         //Добавить пользователя
         mockMvc.perform(post("/users")
@@ -213,6 +214,19 @@ class ShareItTests {
         mockMvc.perform(get("/users"))
                 .andExpectAll(status().isOk()
                         , jsonPath("$.size()").value(0));
+    }
+
+    @Test
+    void testUserRepository(){
+        User user1 = new User(1L, "User1 name", "User1@mail.ru");
+        User user2 = new User(2L, "User2 name", "User2@mail.ru");
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        System.out.println(userRepository.findFirstByEmailIgnoreCase("user1@mail.ru").get());
+        System.out.println(userRepository.findFirstByEmailIgnoreCaseAndIdNot
+                ("user1@mail.ru", 2L).orElse(null));
+
     }
 }
 

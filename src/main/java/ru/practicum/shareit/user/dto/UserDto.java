@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class UserDto {
     //уникальный идентификатор пользователя
-    private long id;
+    private Long id;
 
     //имя или логин пользователя
     @NotBlank
@@ -18,5 +18,6 @@ public class UserDto {
 
     //адрес электронной почты (два пользователя не могут иметь одинаковый адрес электронной почты).
     @Email
+    @NotBlank
     private String email;
 }
