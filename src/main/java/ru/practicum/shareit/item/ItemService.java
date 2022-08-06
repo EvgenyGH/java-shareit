@@ -144,6 +144,7 @@ public class ItemService {
         return itemsFound;
     }
 
+    // TODO: 06.08.2022 удалить после cascade
     //Удалить вещи пользователя (при удалении пользователя)
     @Transactional
     public void deleteUserItems(long userId) {
