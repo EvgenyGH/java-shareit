@@ -9,10 +9,9 @@
 ## *`Sprint 2`*
 #### *- Add JPA support*
 #### *- Add PostgreSql database*
-#### *- Refactor User and Item models* item request booking add comments
-#### *- Refactor User and Item models*
+#### *- Refactor User, Item, Booking, ItemRequest models and add Comment model*
 #### *- Add schema.sql file*
-#### *- Add User and Item repositories*
+#### *- Add UserRepository, ItemRepository, BookingRepository, ItemRequestRepository and CommentRepository*
 #### *- Refactor UserService and ItemService*
 #### *- *
 #### *- *

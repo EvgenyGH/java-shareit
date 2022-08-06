@@ -16,6 +16,7 @@ public class Comment {
     //уникальный идентификатор комментария
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
     private Long id;
 
     //содержимое комментария

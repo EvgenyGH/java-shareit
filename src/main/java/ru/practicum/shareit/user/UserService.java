@@ -3,9 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.user.exception.EmailExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -22,12 +20,10 @@ import java.util.Set;
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
-    private final ItemService itemService;
     private final Validator validator;
 
     @Autowired
-    public UserService(@Lazy ItemService itemService, UserRepository userRepository) {
-        this.itemService = itemService;
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
@@ -116,8 +112,6 @@ public class UserService {
         }
 
         userRepository.deleteById(id);
-
-        itemService.deleteUserItems(id);
 
         log.trace("Пользователь id={} удален: {}", id, userOpt.get());
 

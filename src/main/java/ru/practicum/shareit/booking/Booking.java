@@ -6,6 +6,7 @@ import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -18,6 +19,7 @@ public class Booking {
     //уникальный идентификатор бронирования
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "booking_id")
     private Long id;
 
     //дата начала бронирования
@@ -48,11 +50,11 @@ public class Booking {
 
         Booking booking = (Booking) o;
 
-        return id == booking.id;
+        return Objects.equals(id, booking.id);
     }
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return id != null ? id.hashCode() : 0;
     }
 }

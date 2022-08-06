@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class BookingDto {
     //уникальный идентификатор бронирования
-    private long id;
+    private Long bookingId;
 
     //дата начала бронирования
     private LocalDate start;
@@ -19,7 +19,7 @@ public class BookingDto {
     private LocalDate end;
 
     //вещь, которую пользователь бронирует
-    private long item_id;
+    private Long itemId;
 
     //статус бронирования.
     private Status status;

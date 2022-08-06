@@ -15,6 +15,7 @@ public class ItemRequest {
     //уникальный идентификатор запроса
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "request_id")
     private Long id;
 
     //текст запроса, содержащий описание требуемой вещи
