@@ -22,6 +22,9 @@
 #### *- *
 #### *- *
 ___
+*Entity relationship*:  
+![Entity relationship](/ER/ER.png)
+___
 
 ## *`Sprint 1`*
 #### *- Add UserController and ItemController*
