@@ -1,15 +1,24 @@
 package ru.practicum.shareit.item;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
+import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.user.User;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
-@Data
-@AllArgsConstructor
+@Getter @Setter @ToString
+@AllArgsConstructor @NoArgsConstructor
+@Entity
+@Table(name = "items")
 public class Item {
     //уникальный̆ идентификатор вещи
-    private long id;
+    @Id
+    @Column(name = "item_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     //краткое название
     @NotBlank
@@ -20,12 +29,33 @@ public class Item {
     private String description;
 
     //статус о том, доступна или нет вещь для аренды
-    private boolean available;
+    @NotNull
+    private Boolean available;
 
     //владелец вещи
-    private long owner_id;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     //если вещь была создана по запросу другого пользователя,
     //то в этом поле будет храниться ссылка на соответствующий запрос
-    private Long request_id;
+    @OneToOne
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Item item = (Item) o;
+
+        return Objects.equals(id, item.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

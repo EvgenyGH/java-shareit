@@ -10,6 +10,7 @@ import ru.practicum.shareit.user.exception.EmailExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import javax.validation.*;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +104,7 @@ public class UserService {
     }
 
     //Удалить пользователя по id
+    @Transactional
     public User deleteUserById(long id) {
         Optional<User> userOpt = userRepository.findById(id);
 

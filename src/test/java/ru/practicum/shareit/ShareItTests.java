@@ -10,8 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -27,15 +29,17 @@ class ShareItTests {
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
+    private final ItemService itemService;
 
     @Test
     void addGetGetAllUpdateFindItemTests1() throws Exception {
         User user1 = new User(1L, "User name", "User@mail.ru");
 
         Item item1 = new Item(1L, "Item1 name", "Item1 description"
-                , true, 1L, null);
+                , true, user1, null);
         Item item2 = new Item(2L, "Item2 name", "Item2 description"
-                , true, 1L, null);
+                , true, user1, null);
 
         mockMvc.perform(post("/users").content(objectMapper.writeValueAsString(user1))
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
@@ -217,7 +221,7 @@ class ShareItTests {
     }
 
     @Test
-    void testUserRepository(){
+    void testUserRepository() {
         User user1 = new User(1L, "User1 name", "User1@mail.ru");
         User user2 = new User(2L, "User2 name", "User2@mail.ru");
         userRepository.save(user1);
@@ -226,6 +230,30 @@ class ShareItTests {
         System.out.println(userRepository.findFirstByEmailIgnoreCase("user1@mail.ru").get());
         System.out.println(userRepository.findFirstByEmailIgnoreCaseAndIdNot
                 ("user1@mail.ru", 2L).orElse(null));
+
+    }
+
+    @Test
+    void testItemRepository() {
+        User user1 = new User(1L, "User1 name", "User1@mail.ru");
+        User user2 = new User(2L, "User2 name", "User2@mail.ru");
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        Item item1 = new Item(1L, "item1 name", "item1 description"
+                , true, user1, null);
+        Item item2 = new Item(2L, "item2 name", "item2 description"
+                , true, user1, null);
+        Item item3 = new Item(3L, "item3 name", "item3 description"
+                , true, user1, null);
+
+        itemRepository.save(item1);
+        itemRepository.save(item2);
+        itemRepository.save(item3);
+
+        itemService.deleteUserItems(1L);
+
+        System.out.println(userRepository.findAll());
 
     }
 }
