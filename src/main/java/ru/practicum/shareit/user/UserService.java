@@ -31,13 +31,6 @@ public class UserService {
 
     //Добавить пользователя
     public User addUser(User user) {
-        if (userRepository.findFirstByEmailIgnoreCase(user.getEmail()).isPresent()) {
-            throw new EmailExistsException("Пользователь с таким email уже существует"
-                    , Map.of("Object", "User"
-                    , "Field", "Email"
-                    , "Description", "Duplicates"));
-        }
-
         user.setId(null);
         user = userRepository.save(user);
 

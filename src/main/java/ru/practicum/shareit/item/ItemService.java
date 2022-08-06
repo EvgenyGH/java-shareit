@@ -11,7 +11,6 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
-import javax.transaction.Transactional;
 import javax.validation.*;
 import java.util.*;
 

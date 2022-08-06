@@ -5,7 +5,7 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 
 @Getter
@@ -23,10 +23,10 @@ public class Booking {
     private Long id;
 
     //дата начала бронирования
-    private LocalDate startDate;
+    private Date startDate;
 
     //дата конца бронирования
-    private LocalDate endDate;
+    private Date endDate;
 
     //вещь, которую пользователь бронирует
     @ManyToOne
@@ -39,7 +39,7 @@ public class Booking {
     private User booker;
 
     //статус бронирования.
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Status status;
 
 

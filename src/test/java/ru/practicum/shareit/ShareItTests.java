@@ -170,8 +170,9 @@ class ShareItTests {
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user2))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpectAll(status().isConflict());
+                .andExpectAll(status().is5xxServerError());
 
+        user2.setId(3L); //Проверка на стороне БД. id=2 теряется
         user2.setEmail("User2@mail.ru");
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user2))
@@ -182,25 +183,25 @@ class ShareItTests {
         //Обновить данные пользователя
         user2.setName("updated name");
         user2.setEmail("UpdatedUser2@mail.ru");
-        mockMvc.perform(patch("/users/{userId}", 2)
+        mockMvc.perform(patch("/users/{userId}", 3)
                         .content(objectMapper.writeValueAsString(user2))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpectAll(status().isOk()
                         , content().json(objectMapper.writeValueAsString(user2)));
 
         user2.setEmail("User1@mail.ru");
-        mockMvc.perform(patch("/users/{userId}", 2)
+        mockMvc.perform(patch("/users/{userId}", 3)
                         .content(objectMapper.writeValueAsString(user2))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpectAll(status().isConflict());
         user2.setEmail("UpdatedUser2@mail.ru");
 
         //Получить пользователя по id
-        mockMvc.perform(get("/users/{userId}", 2))
+        mockMvc.perform(get("/users/{userId}", 3))
                 .andExpectAll(status().isOk()
                         , content().json(objectMapper.writeValueAsString(user2)));
 
-        mockMvc.perform(get("/users/{userId}", 3))
+        mockMvc.perform(get("/users/{userId}", 4))
                 .andExpectAll(status().isNotFound());
 
         //Получить всех пользователей
@@ -212,7 +213,7 @@ class ShareItTests {
         mockMvc.perform(delete("/users/{userId}", 1))
                 .andExpectAll(status().isOk());
 
-        mockMvc.perform(delete("/users/{userId}", 2))
+        mockMvc.perform(delete("/users/{userId}", 3))
                 .andExpectAll(status().isOk());
 
         mockMvc.perform(get("/users"))
@@ -240,6 +241,15 @@ class ShareItTests {
 
         System.out.println(userRepository.findAll());
 
+    }
+
+    @Test
+    void testItemRepository2() {
+        itemRepository.findAll().forEach(System.out::println);
+        System.out.println();
+        itemRepository.findAllByNameOrDescriptionContainsIgnoreCase("Акк")
+                .forEach(System.out::println);
+        System.out.println();
     }
 }
 
