@@ -202,7 +202,7 @@ public class ItemService {
         return itemsFound;
     }
 
-    public Comment addCommentToItem(long userId, long itemId, CommentDto commentDto){
+    public Comment addCommentToItem(long userId, long itemId, CommentDto commentDto) {
         User author = userService.getUserById(userId);
         Item item = this.getItemById(itemId);
 
@@ -210,7 +210,7 @@ public class ItemService {
                 .findFirstByBooker_idAndItem_idAndStatusEqualsAndEndDateBefore(userId, itemId
                         , Status.APPROVED, LocalDateTime.now());
 
-        if (bookingOpt.isEmpty()){
+        if (bookingOpt.isEmpty()) {
             throw new ItemNotRented(String.format("Пользователь не арендовал вещь id=%d"
                     , userId)
                     , Map.of("Object", "Item"

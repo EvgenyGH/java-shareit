@@ -46,14 +46,14 @@ public class BookingService {
                     , "Description", "Item not available"));
         }
 
-         if (item.getOwner().getId().equals(userId)){
-             throw new BookingException(String.format(
-                     "Пользователь id=%d является владельцем вещи id=%d."
-                     , userId, item.getId())
-                     , Map.of("Object", "Item"
-                     , "id", String.valueOf(item.getId())
-                     , "Description", "User is the item owner"));
-         }
+        if (item.getOwner().getId().equals(userId)) {
+            throw new BookingException(String.format(
+                    "Пользователь id=%d является владельцем вещи id=%d."
+                    , userId, item.getId())
+                    , Map.of("Object", "Item"
+                    , "id", String.valueOf(item.getId())
+                    , "Description", "User is the item owner"));
+        }
 
         Booking booking = BookingDtoMapper.DtoRequestToBooking(bookingDtoRequest
                 , item, userService.getUserById(userId));
@@ -90,7 +90,7 @@ public class BookingService {
                     , "Description", "Item not available"));
         }
 
-        if (booking.getStatus().equals(Status.APPROVED)){
+        if (booking.getStatus().equals(Status.APPROVED)) {
             throw new ItemNotAvailableException("Заказ уже подтвержден", Map.of("Description", "Заказ уже подтвержден"));
         }
 
@@ -131,7 +131,7 @@ public class BookingService {
                 break;
             case PAST:
                 bookings = bookingRepository
-                        .findAllByBooker_idAndStartDateIsBeforeOrderByStartDateDesc(userId, LocalDateTime.now());
+                        .findAllByBooker_idAndEndDateIsBeforeOrderByStartDateDesc(userId, LocalDateTime.now());
                 break;
             case FUTURE:
                 bookings = bookingRepository

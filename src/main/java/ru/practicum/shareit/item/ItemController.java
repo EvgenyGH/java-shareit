@@ -67,11 +67,4 @@ public class ItemController {
         return CommentDtoMapper.CommentToDto(itemService
                 .addCommentToItem(userId, itemId, commentDto));
     }
-
-
-    //Осталось разрешить пользователям просматривать комментарии других пользователей.
-    // Отзывы можно будет увидеть по двум эндпоинтам — по GET /items/{itemId}
-    // для одной конкретной вещи и по GET /items для всех вещей данного пользователя.
-
-
 }

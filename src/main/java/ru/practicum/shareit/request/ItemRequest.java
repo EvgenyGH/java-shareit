@@ -7,8 +7,11 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Getter @Setter @ToString
-@AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "item_requests")
 public class ItemRequest {
