@@ -21,19 +21,10 @@ import java.util.Map;
 @RestControllerAdvice({"ru.practicum.shareit.booking"})
 @Slf4j
 public class BookingExceptionHandler {
-    @ExceptionHandler({IllegalArgumentException.class})
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Map<String, String>> unsupportedStatusExceptionHandler(IllegalArgumentException exception) {
-        log.warn("UnsupportedStatus");
-        Map<String, String> response = new HashMap<>();
-        response.put("error", "Unknown state: UNSUPPORTED_STATUS");
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class
             , MethodArgumentTypeMismatchException.class, ConstraintViolationException.class
             , HttpMessageNotReadableException.class})
-    @ResponseStatus(value=HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public Map<String, String> validationExceptionHandler(Exception exception) {
         log.warn("Выброшено исключение -> {}", exception.getMessage());
         return Map.of("Description", "Ошибка валидации входящих данных.");
@@ -41,7 +32,7 @@ public class BookingExceptionHandler {
 
     @ExceptionHandler({StartAfterEndExeption.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> userNotFoundExceptionHandler(StartAfterEndExeption exception) {
+    public Map<String, String> startAfterEndExceptionHandler(StartAfterEndExeption exception) {
         log.warn("Начало аренды после ее окончания (с {} по {})."
                 , exception.getProperties().get("Start")
                 , exception.getProperties().get("End"));
@@ -50,9 +41,18 @@ public class BookingExceptionHandler {
 
     @ExceptionHandler({ItemNotAvailableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> itemNotFoundExceptionHandler(ItemNotAvailableException exception) {
+    public Map<String, String> itemNotAvailableExceptionHandler(ItemNotAvailableException exception) {
         log.warn("Вещь id={} недоступна.", exception.getProperties().get("id"));
         return exception.getProperties();
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, String>> unsupportedStatusExceptionHandler(IllegalArgumentException exception) {
+        log.warn("Unsupported Status");
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Unknown state: UNSUPPORTED_STATUS");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({ItemNotFoundException.class})
@@ -64,27 +64,27 @@ public class BookingExceptionHandler {
 
     @ExceptionHandler({BookingNotExistsException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> itemNotFoundExceptionHandler(BookingNotExistsException exception) {
+    public Map<String, String> bookingNotExistsHandler(BookingNotExistsException exception) {
         log.warn("Заказ id={} не найден.", exception.getProperties().get("Id"));
         return exception.getProperties();
     }
 
     @ExceptionHandler({UserNotOwnerExeption.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> itemNotFoundExceptionHandler(UserNotOwnerExeption exception) {
+    public Map<String, String> userNotOwnerExeptionExceptionHandler(UserNotOwnerExeption exception) {
         log.warn("Пользователь id={} не владелец вещи", exception.getProperties().get("Id"));
         return exception.getProperties();
     }
 
     @ExceptionHandler({BookingException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> itemNotFoundExceptionHandler(BookingException exception) {
+    public Map<String, String> bookingExceptionExceptionHandler(BookingException exception) {
         log.warn("Выброшено BookingException {}.", exception.getProperties());
         return exception.getProperties();
     }
 
     @ExceptionHandler
-    @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> otherExceptionHandler(Exception exception) {
         log.warn("Неизвестная ошибка -> {}", exception.getMessage());
         return Map.of("Description", "Неизвестная ошибка.");

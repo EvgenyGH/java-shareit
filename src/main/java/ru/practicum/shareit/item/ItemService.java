@@ -5,7 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.Status;
+import ru.practicum.shareit.booking.exception.ItemNotRented;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
+import ru.practicum.shareit.item.comment.dto.CommentDtoMapper;
+import ru.practicum.shareit.item.comment.repository.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
@@ -27,13 +33,15 @@ public class ItemService {
     private final UserService userService;
     private final Validator validator;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
     public ItemService(ItemRepository itemRepository, UserService userService
-            , BookingRepository bookingRepository) {
+            , BookingRepository bookingRepository, CommentRepository commentRepository) {
         this.itemRepository = itemRepository;
         this.userService = userService;
         this.bookingRepository = bookingRepository;
+        this.commentRepository = commentRepository;
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
@@ -134,8 +142,10 @@ public class ItemService {
             nextBooking = bookingsAfterNowSorted.size() == 0 ? null : bookingsAfterNowSorted.get(0);
         }
 
+        List<Comment> comments = commentRepository.findAllByItem_id(itemId);
+
         return ItemDtoMapper.itemToDtoWithBookings(itemOpt.get()
-                , lastBooking, nextBooking);
+                , lastBooking, nextBooking, comments);
     }
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
@@ -190,5 +200,28 @@ public class ItemService {
         log.trace("Найдено {} Items содержащих <{}>.", itemsFound.size(), text);
 
         return itemsFound;
+    }
+
+    public Comment addCommentToItem(long userId, long itemId, CommentDto commentDto){
+        User author = userService.getUserById(userId);
+        Item item = this.getItemById(itemId);
+
+        Optional<Booking> bookingOpt = bookingRepository
+                .findFirstByBooker_idAndItem_idAndStatusEqualsAndEndDateBefore(userId, itemId
+                        , Status.APPROVED, LocalDateTime.now());
+
+        if (bookingOpt.isEmpty()){
+            throw new ItemNotRented(String.format("Пользователь не арендовал вещь id=%d"
+                    , userId)
+                    , Map.of("Object", "Item"
+                    , "UserId", String.valueOf(userId)
+                    , "ItemId", String.valueOf(itemId)
+                    , "Description", "Item not rented"));
+        }
+
+        Comment comment = CommentDtoMapper.DtoToComment(commentDto, item, author);
+        commentRepository.save(comment);
+
+        return comment;
     }
 }

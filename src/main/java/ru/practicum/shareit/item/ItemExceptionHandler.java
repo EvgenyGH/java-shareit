@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import ru.practicum.shareit.booking.exception.ItemNotRented;
 import ru.practicum.shareit.item.exception.ItemException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.user.exception.UserException;
@@ -40,6 +41,15 @@ public class ItemExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> itemNotFoundExceptionHandler(ItemException exception) {
         log.warn("Вещь id={} не найдена.", exception.getProperties().get("Id"));
+        return exception.getProperties();
+    }
+
+    @ExceptionHandler({ItemNotRented.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> itemNotRentedExceptionHandler(ItemNotRented exception) {
+        log.warn("Пользователь id={} не арендовал вещь id={}"
+                , exception.getProperties().get("UserId")
+                , exception.getProperties().get("ItemId"));
         return exception.getProperties();
     }
 

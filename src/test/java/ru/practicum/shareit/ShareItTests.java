@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Sql(scripts = {"/testSchema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-// TODO: 06.08.2022 add test profile
+@AutoConfigureTestDatabase
 class ShareItTests {
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;

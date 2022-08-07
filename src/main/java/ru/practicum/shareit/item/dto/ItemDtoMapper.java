@@ -3,8 +3,13 @@ package ru.practicum.shareit.item.dto;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.dto.BookingDtoMapper;
 import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.dto.CommentDtoMapper;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemDtoMapper {
     public static ItemDto ItemToDto(Item item) {
@@ -21,10 +26,12 @@ public class ItemDtoMapper {
                 , itemRequest);
     }
 
-    public static ItemDtoWithBookings itemToDtoWithBookings(Item item, Booking lastBooking, Booking nextBooking) {
+    public static ItemDtoWithBookings itemToDtoWithBookings(Item item, Booking lastBooking
+            , Booking nextBooking, List<Comment> comments) {
         return new ItemDtoWithBookings(item.getId(), item.getName(), item.getDescription()
                 , item.getAvailable(), item.getRequest() == null ? null : item.getRequest().getId()
                 , lastBooking == null ? null : BookingDtoMapper.bookingToDtoForItem(lastBooking)
-                , nextBooking == null ? null : BookingDtoMapper.bookingToDtoForItem(nextBooking));
+                , nextBooking == null ? null : BookingDtoMapper.bookingToDtoForItem(nextBooking)
+                , comments.stream().map(CommentDtoMapper::CommentToDto).collect(Collectors.toList()));
     }
 }

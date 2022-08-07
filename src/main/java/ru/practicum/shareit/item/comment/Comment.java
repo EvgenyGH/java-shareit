@@ -1,15 +1,18 @@
-package ru.practicum.shareit.comment;
+package ru.practicum.shareit.item.comment;
 
 import lombok.*;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Getter @Setter @ToString
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -33,7 +36,7 @@ public class Comment {
     private User author;
 
     //дата создания комментария
-    private LocalDate created;
+    private LocalDateTime created;
 
     @Override
     public boolean equals(Object o) {
