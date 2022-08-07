@@ -3,8 +3,8 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
+import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -33,15 +33,16 @@ public class BookingController {
     @ResponseStatus(HttpStatus.OK)
     public BookingDtoResponse approveBooking(@RequestHeader("X-Sharer-User-Id") long userId
             , @RequestParam boolean approved, @PathVariable long bookingId) {
-        return null;
+        return bookingService.approveBooking(userId, bookingId, approved);
     }
 
     //Получение данных о конкретном бронировании (включая его статус). Может быть выполнено либо автором бронирования,
     //либо владельцем вещи, к которой относится бронирование.
     @GetMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
-    public BookingDtoResponse getBooking(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return null;
+    public BookingDtoResponse getBooking(@RequestHeader("X-Sharer-User-Id") long userId
+            , @PathVariable long bookingId) {
+        return bookingService.getBooking(userId, bookingId);
     }
 
     //Получение списка всех бронирований текущего пользователя.
@@ -51,18 +52,17 @@ public class BookingController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<BookingDtoResponse> getUserBookingByStatus(@RequestHeader("X-Sharer-User-Id") long userId
-    , @RequestParam(required = false, defaultValue = "ALL") String state){
-        return null;
+            , @RequestParam(required = false, defaultValue = "ALL") String state) {
+        return bookingService.getUserBookingByStatus(userId, RequestStatus.valueOf(state));
     }
 
     //Получение списка бронирований для всех вещей текущего пользователя.
-    //Эндпоинт — GET /bookings/owner?state={state}.
     //Этот запрос имеет смысл для владельца хотя бы одной вещи.
     //Работа параметра state аналогична его работе в предыдущем сценарии.
     @GetMapping("/owner")
     @ResponseStatus(HttpStatus.OK)
     public List<BookingDtoResponse> getAllUserBookings(@RequestHeader("X-Sharer-User-Id") long userId
-            , @RequestParam String state){
-        return null;
+            , @RequestParam(required = false, defaultValue = "ALL") String state) {
+        return bookingService.getAllUserBookings(userId, RequestStatus.valueOf(state));
     }
 }

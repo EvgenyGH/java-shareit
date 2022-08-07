@@ -5,7 +5,7 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -23,10 +23,10 @@ public class Booking {
     private Long id;
 
     //дата начала бронирования
-    private Date startDate;
+    private LocalDateTime startDate;
 
     //дата конца бронирования
-    private Date endDate;
+    private LocalDateTime endDate;
 
     //вещь, которую пользователь бронирует
     @ManyToOne

@@ -4,15 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
+import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
 import javax.validation.*;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -21,11 +26,14 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final Validator validator;
+    private final BookingRepository bookingRepository;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository, UserService userService) {
+    public ItemService(ItemRepository itemRepository, UserService userService
+            , BookingRepository bookingRepository) {
         this.itemRepository = itemRepository;
         this.userService = userService;
+        this.bookingRepository = bookingRepository;
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
@@ -94,6 +102,43 @@ public class ItemService {
     }
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
+    //Информация по датам аренды только для пользователя, который еще не арендовал вещ.
+    public ItemDtoWithBookings getItemDtoWithBookingsById(long itemId, long userId) {
+        Booking lastBooking;
+        Booking nextBooking;
+        List<Booking> bookingsSorted;
+        List<Booking> bookingsAfterNowSorted;
+
+        Optional<Item> itemOpt = itemRepository.findById(itemId);
+
+        if (itemOpt.isEmpty()) {
+            throw new ItemNotFoundException(String.format("Вещь id=%d не найдена"
+                    , itemId)
+                    , Map.of("Object", "Item"
+                    , "Id", String.valueOf(itemId)
+                    , "Description", "Item not found"));
+        }
+
+        log.trace("Item id={} отправлен: {}", itemId, itemOpt.get());
+
+        if (!bookingRepository.findAllByItem_idAndBooker_id(itemId, userId).isEmpty()) {
+            lastBooking = null;
+            nextBooking = null;
+        } else {
+            bookingsSorted = bookingRepository
+                    .findAllByItemAndStartDateBeforeNowSorted(itemOpt.get().getId(), LocalDateTime.now());
+            lastBooking = bookingsSorted.size() == 0 ? null : bookingsSorted.get(0);
+
+            bookingsAfterNowSorted = bookingRepository
+                    .findAllByItemAndStartDateAfterNowSorted(itemOpt.get().getId(), LocalDateTime.now());
+            nextBooking = bookingsAfterNowSorted.size() == 0 ? null : bookingsAfterNowSorted.get(0);
+        }
+
+        return ItemDtoMapper.itemToDtoWithBookings(itemOpt.get()
+                , lastBooking, nextBooking);
+    }
+
+    //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
     public Item getItemById(long itemId) {
         Optional<Item> itemOpt = itemRepository.findById(itemId);
 
@@ -111,7 +156,7 @@ public class ItemService {
     }
 
     //Просмотр владельцем списка всех его вещей.
-    public Collection<Item> getAllUserItems(long userId) {
+    public List<ItemDtoWithBookings> getAllUserItems(long userId) {
         User user = userService.getUserById(userId);
         List<Item> userItems = itemRepository.findAllByOwnerOrderById(user);
 
@@ -123,9 +168,13 @@ public class ItemService {
                     , "Description", "Items not found"));
         }
 
+        List<ItemDtoWithBookings> itemDtoWithBookings = userItems.stream()
+                .map(item -> this.getItemDtoWithBookingsById(item.getId(), userId))
+                .collect(Collectors.toList());
+
         log.trace("Все {} Items пользователя id={} отправлены.", userItems.size(), userId);
 
-        return userItems;
+        return itemDtoWithBookings;
     }
 
     //Поиск вещи потенциальным арендатором. Пользователь передаёт в строке запроса текст,
