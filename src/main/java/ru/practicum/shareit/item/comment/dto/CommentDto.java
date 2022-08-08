@@ -19,7 +19,7 @@ public class CommentDto {
     //вещь, к которой относится комментарии
     private String itemName;
 
-    // author — автор комментария
+    //author — автор комментария
     private String authorName;
 
     //дата создания комментария

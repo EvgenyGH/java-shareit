@@ -11,46 +11,62 @@ import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b " +
-            "WHERE b.id = ?1 AND (b.booker.id = ?2 OR b.item.owner.id = ?2)")
+            "WHERE b.id = ?1 " +
+            "AND (b.booker.id = ?2 OR b.item.owner.id = ?2)")
     Optional<Booking> getOwnerOrBookerBooking(Long bookingId, Long bookerId);
 
-    List<Booking> findAllByBooker_idOrderByStartDateDesc(Long bookerId);
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = ?1 " +
+            "ORDER BY b.startDate DESC")
+    List<Booking> getBookingByBookerStatusAllOrdered(Long bookerId);
 
-    List<Booking> findAllByBooker_idAndStatusOrderByStartDateDesc(Long bookerId, Status status);
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = ?1 " +
+            "AND b.status = ?2 " +
+            "ORDER BY b.startDate DESC")
+    List<Booking> getBookingByBookerStatusOrdered(Long bookerId, Status status);
 
-    List<Booking> findAllByBooker_idAndEndDateIsBeforeOrderByStartDateDesc(long userId, LocalDateTime dateTime);
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = ?1 " +
+            "AND b.endDate < ?2 " +
+            "ORDER BY b.startDate DESC")
+    List<Booking> getBookingByBookerStatusPastOrdered(long userId, LocalDateTime dateTime);
 
-    List<Booking> findAllByBooker_idAndStartDateIsAfterOrderByStartDateDesc(long userId, LocalDateTime dateTime);
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = ?1 " +
+            "AND b.startDate > ?2 " +
+            "ORDER BY b.startDate DESC")
+    List<Booking> getBookingByBookerStatusFutureOrdered(long userId, LocalDateTime dateTime);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.booker.id = ?1 " +
             "AND b.endDate > ?2 " +
             "AND b.startDate < ?2" +
             "ORDER BY b.startDate DESC")
-    List<Booking> findAllByBooker_idAndStartDateIsBeforeAndEndDateIsAfterSorted(long userId, LocalDateTime dateTime);
+    List<Booking> getBookingByBookerStatusCurrentOrdered(long userId, LocalDateTime dateTime);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.owner.id = ?1 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> findAllOwnerBookingSorted(Long userId);
+    List<Booking> getBookingByOwnerStatusAllOrdered(Long userId);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.owner.id = ?1 " +
             "AND b.status = ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> findAllOwnerBookingStatusSorted(Long userId, Status status);
+    List<Booking> getBookingByOwnerStatusOrdered(Long userId, Status status);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.owner.id = ?1 " +
             "AND b.endDate < ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> findAllOwnerBookingPastSorted(Long userId, LocalDateTime time);
+    List<Booking> getBookingByOwnerStatusPastOrdered(Long userId, LocalDateTime time);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.owner.id = ?1 " +
             "AND b.startDate > ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> findAllOwnerBookingFutureSorted(Long userId, LocalDateTime time);
+    List<Booking> getBookingByOwnerStatusFutureOrdered(Long userId, LocalDateTime time);
 
 
     @Query("SELECT b FROM Booking b " +
@@ -58,22 +74,31 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "AND b.endDate > ?2 " +
             "AND b.startDate < ?2" +
             "ORDER BY b.startDate DESC")
-    List<Booking> findAllOwnerBookingCurrentSorted(Long userId, LocalDateTime time);
+    List<Booking> getBookingByOwnerStatusCurrentOrdered(Long userId, LocalDateTime time);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.id = ?1 " +
             "AND b.startDate < ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> findAllByItemAndStartDateBeforeNowSorted(Long itemId, LocalDateTime now);
+    List<Booking> getLastItemBookingOrdered(Long itemId, LocalDateTime now);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.id = ?1 " +
             "AND b.startDate > ?2 " +
             "ORDER BY b.startDate ASC")
-    List<Booking> findAllByItemAndStartDateAfterNowSorted(Long itemId, LocalDateTime now);
+    List<Booking> getNextItemBookingOrdered(Long itemId, LocalDateTime now);
 
-    List<Booking> findAllByItem_idAndBooker_id(Long itemId, Long bookerId);
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.item.id = ?1 " +
+            "AND b.booker.id = ?2 ")
+    List<Booking> getBookingByItemBooker(Long itemId, Long bookerId);
 
-    Optional<Booking> findFirstByBooker_idAndItem_idAndStatusEqualsAndEndDateBefore(Long bookerId
+
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = ?1 " +
+            "AND b.item.id = ?2 " +
+            "AND b.status = ?3 " +
+            "AND b.endDate < ?4")
+    Optional<Booking> getFinishedBookingByBookerItemStatus(Long bookerId
             , Long itemId, Status status, LocalDateTime now);
 }

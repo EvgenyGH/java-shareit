@@ -121,24 +121,24 @@ public class BookingService {
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findAllByBooker_idOrderByStartDateDesc(userId);
+                bookings = bookingRepository.getBookingByBookerStatusAllOrdered(userId);
                 break;
             case WAITING:
-                bookings = bookingRepository.findAllByBooker_idAndStatusOrderByStartDateDesc(userId, Status.WAITING);
+                bookings = bookingRepository.getBookingByBookerStatusOrdered(userId, Status.WAITING);
                 break;
             case REJECTED:
-                bookings = bookingRepository.findAllByBooker_idAndStatusOrderByStartDateDesc(userId, Status.REJECTED);
+                bookings = bookingRepository.getBookingByBookerStatusOrdered(userId, Status.REJECTED);
                 break;
             case PAST:
                 bookings = bookingRepository
-                        .findAllByBooker_idAndEndDateIsBeforeOrderByStartDateDesc(userId, LocalDateTime.now());
+                        .getBookingByBookerStatusPastOrdered(userId, LocalDateTime.now());
                 break;
             case FUTURE:
                 bookings = bookingRepository
-                        .findAllByBooker_idAndStartDateIsAfterOrderByStartDateDesc(userId, LocalDateTime.now());
+                        .getBookingByBookerStatusFutureOrdered(userId, LocalDateTime.now());
                 break;
             case CURRENT:
-                bookings = bookingRepository.findAllByBooker_idAndStartDateIsBeforeAndEndDateIsAfterSorted(userId
+                bookings = bookingRepository.getBookingByBookerStatusCurrentOrdered(userId
                         , LocalDateTime.now());
                 break;
             default:
@@ -155,22 +155,22 @@ public class BookingService {
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findAllOwnerBookingSorted(userId);
+                bookings = bookingRepository.getBookingByOwnerStatusAllOrdered(userId);
                 break;
             case WAITING:
-                bookings = bookingRepository.findAllOwnerBookingStatusSorted(userId, Status.WAITING);
+                bookings = bookingRepository.getBookingByOwnerStatusOrdered(userId, Status.WAITING);
                 break;
             case REJECTED:
-                bookings = bookingRepository.findAllOwnerBookingStatusSorted(userId, Status.REJECTED);
+                bookings = bookingRepository.getBookingByOwnerStatusOrdered(userId, Status.REJECTED);
                 break;
             case PAST:
-                bookings = bookingRepository.findAllOwnerBookingPastSorted(userId, LocalDateTime.now());
+                bookings = bookingRepository.getBookingByOwnerStatusPastOrdered(userId, LocalDateTime.now());
                 break;
             case FUTURE:
-                bookings = bookingRepository.findAllOwnerBookingFutureSorted(userId, LocalDateTime.now());
+                bookings = bookingRepository.getBookingByOwnerStatusFutureOrdered(userId, LocalDateTime.now());
                 break;
             case CURRENT:
-                bookings = bookingRepository.findAllOwnerBookingCurrentSorted(userId
+                bookings = bookingRepository.getBookingByOwnerStatusCurrentOrdered(userId
                         , LocalDateTime.now());
                 break;
             default:

@@ -129,16 +129,16 @@ public class ItemService {
 
         log.trace("Item id={} отправлен: {}", itemId, itemOpt.get());
 
-        if (!bookingRepository.findAllByItem_idAndBooker_id(itemId, userId).isEmpty()) {
+        if (!bookingRepository.getBookingByItemBooker(itemId, userId).isEmpty()) {
             lastBooking = null;
             nextBooking = null;
         } else {
             bookingsSorted = bookingRepository
-                    .findAllByItemAndStartDateBeforeNowSorted(itemOpt.get().getId(), LocalDateTime.now());
+                    .getLastItemBookingOrdered(itemOpt.get().getId(), LocalDateTime.now());
             lastBooking = bookingsSorted.size() == 0 ? null : bookingsSorted.get(0);
 
             bookingsAfterNowSorted = bookingRepository
-                    .findAllByItemAndStartDateAfterNowSorted(itemOpt.get().getId(), LocalDateTime.now());
+                    .getNextItemBookingOrdered(itemOpt.get().getId(), LocalDateTime.now());
             nextBooking = bookingsAfterNowSorted.size() == 0 ? null : bookingsAfterNowSorted.get(0);
         }
 
@@ -207,7 +207,7 @@ public class ItemService {
         Item item = this.getItemById(itemId);
 
         Optional<Booking> bookingOpt = bookingRepository
-                .findFirstByBooker_idAndItem_idAndStatusEqualsAndEndDateBefore(userId, itemId
+                .getFinishedBookingByBookerItemStatus(userId, itemId
                         , Status.APPROVED, LocalDateTime.now());
 
         if (bookingOpt.isEmpty()) {

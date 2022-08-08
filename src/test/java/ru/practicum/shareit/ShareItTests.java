@@ -13,9 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
-import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
 
@@ -30,8 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ShareItTests {
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
-    private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
 
     @Test
     void addGetGetAllUpdateFindItemTests1() throws Exception {
@@ -220,37 +216,6 @@ class ShareItTests {
         mockMvc.perform(get("/users"))
                 .andExpectAll(status().isOk()
                         , jsonPath("$.size()").value(0));
-    }
-
-    @Test
-    void testItemRepository() {
-        User user1 = new User(1L, "User1 name", "User1@mail.ru");
-        User user2 = new User(2L, "User2 name", "User2@mail.ru");
-        userRepository.save(user1);
-        userRepository.save(user2);
-
-        Item item1 = new Item(1L, "item1 name", "item1 description"
-                , true, user1, null);
-        Item item2 = new Item(2L, "item2 name", "item2 description"
-                , true, user1, null);
-        Item item3 = new Item(3L, "item3 name", "item3 description"
-                , true, user1, null);
-
-        itemRepository.save(item1);
-        itemRepository.save(item2);
-        itemRepository.save(item3);
-
-        System.out.println(userRepository.findAll());
-
-    }
-
-    @Test
-    void testItemRepository2() {
-        itemRepository.findAll().forEach(System.out::println);
-        System.out.println();
-        itemRepository.findAllByNameOrDescriptionContainsIgnoreCase("Акк")
-                .forEach(System.out::println);
-        System.out.println();
     }
 }
 
