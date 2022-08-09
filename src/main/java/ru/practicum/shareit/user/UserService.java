@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 import javax.validation.*;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -41,20 +40,18 @@ public class UserService {
 
     //Обновить данные пользователя
     public User updateUser(User user) {
-        Optional<User> userStoredOpt = userRepository.findById(user.getId());
-
-        if (userStoredOpt.isEmpty()) {
-            throw new UserNotFoundException("Пользователь не найден id=" + user.getId()
-                    , Map.of("Object", "User"
-                    , "Id", String.valueOf(user.getId())
-                    , "Description", "Not found"));
-        }
+        User userStored = userRepository.findById(user.getId())
+                .orElseThrow(() ->
+                        new UserNotFoundException("Пользователь не найден id=" + user.getId()
+                                , Map.of("Object", "User"
+                                , "Id", String.valueOf(user.getId())
+                                , "Description", "Not found")));
 
         if (user.getName() == null) {
-            user.setName(userStoredOpt.get().getName());
+            user.setName(userStored.getName());
         }
         if (user.getEmail() == null) {
-            user.setEmail(userStoredOpt.get().getEmail());
+            user.setEmail(userStored.getEmail());
         }
 
         Set<ConstraintViolation<User>> violations = validator.validate(user);
@@ -70,45 +67,40 @@ public class UserService {
                     , "Description", "Duplicates"));
         }
 
-        user = userRepository.save(user);
+        User userSaved = userRepository.save(user);
 
-        log.trace("Данные пользователя id={} обновлены: {}", user.getId(), user);
+        log.trace("Данные пользователя id={} обновлены: {}", user.getId(), userSaved);
 
-        return user;
+        return userSaved;
     }
 
     //Получить пользователя по id
     public User getUserById(long id) {
-        Optional<User> userOpt = userRepository.findById(id);
-        if (userOpt.isEmpty()) {
-            throw new UserNotFoundException("Пользователь не найден id=" + id
-                    , Map.of("Object", "User"
-                    , "Id", String.valueOf(id)
-                    , "Description", "Not found"));
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден id=" + id
+                        , Map.of("Object", "User"
+                        , "Id", String.valueOf(id)
+                        , "Description", "Not found")));
 
-        log.trace("Пользователь id={} отправлен: {}", id, userOpt.get());
+        log.trace("Пользователь id={} отправлен: {}", id, user);
 
-        return userOpt.get();
+        return user;
     }
 
     //Удалить пользователя по id
     @Transactional
     public User deleteUserById(long id) {
-        Optional<User> userOpt = userRepository.findById(id);
-
-        if (userOpt.isEmpty()) {
-            throw new UserNotFoundException("Пользователь не найден id=" + id
-                    , Map.of("Object", "User"
-                    , "Id", String.valueOf(id)
-                    , "Description", "Not found"));
-        }
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException("Пользователь не найден id=" + id
+                        , Map.of("Object", "User"
+                        , "Id", String.valueOf(id)
+                        , "Description", "Not found")));
 
         userRepository.deleteById(id);
 
-        log.trace("Пользователь id={} удален: {}", id, userOpt.get());
+        log.trace("Пользователь id={} удален: {}", id, user);
 
-        return userOpt.get();
+        return user;
     }
 
     //Получить всех пользователей

@@ -14,7 +14,7 @@
 #### *- Add Exceptions for Booking and Item packages*
 #### *- Add Dto to Item, Booking, Comment models*
 #### *- Add DtoMapper to Item, Bookings and Comment DTOs*
-#### *- Add new endpoints*
+#### *- Add endpoints POST /bookings, PATCH /bookings/{bookingId}?approved={approved}, GET /bookings/{bookingId}, GET /bookings?state={state}, GET /bookings/owner?state={state}, POST /items/{itemId}/comment*
 ___
 *Entity relationship*:  
 ![Entity relationship](/ER/ER.png)

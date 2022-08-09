@@ -17,7 +17,6 @@ import ru.practicum.shareit.user.UserService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,17 +69,12 @@ public class BookingService {
     }
 
     public BookingDtoResponse approveBooking(long userId, long bookingId, boolean approved) {
-        Optional<Booking> bookingOpt = bookingRepository.findById(bookingId);
-
-        if (bookingOpt.isEmpty()) {
-            throw new BookingNotExistsException(String.format(
-                    "Заказа id=%d не существует", bookingId)
-                    , Map.of("Object", "Booking"
-                    , "id", String.valueOf(bookingId)
-                    , "Description", "Request does not exist"));
-        }
-
-        Booking booking = bookingOpt.get();
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
+                new BookingNotExistsException(String.format(
+                        "Заказа id=%d не существует", bookingId)
+                        , Map.of("Object", "Booking"
+                        , "id", String.valueOf(bookingId)
+                        , "Description", "Request does not exist")));
 
         if (!booking.getItem().getOwner().getId().equals(userId)) {
             throw new UserNotOwnerExeption(String.format(
@@ -91,7 +85,8 @@ public class BookingService {
         }
 
         if (booking.getStatus().equals(Status.APPROVED)) {
-            throw new ItemNotAvailableException("Заказ уже подтвержден", Map.of("Description", "Заказ уже подтвержден"));
+            throw new ItemNotAvailableException("Заказ уже подтвержден"
+                    , Map.of("Description", "Заказ уже подтвержден"));
         }
 
         booking.setStatus(approved ? Status.APPROVED : Status.REJECTED);
@@ -101,17 +96,12 @@ public class BookingService {
     }
 
     public BookingDtoResponse getBooking(long userId, long bookingId) {
-        Optional<Booking> bookingOpt =
-                bookingRepository.getOwnerOrBookerBooking(bookingId, userId);
+        Booking booking = bookingRepository.getOwnerOrBookerBooking(bookingId, userId)
+                .orElseThrow(() -> new BookingException(
+                        "Заказ по запросу не найден (или пользователь не является владельцем или заказчиком)"
+                        , Map.of("Description", "Booking not found (or user is not owner nor booker")));
 
-        if (bookingOpt.isEmpty()) {
-            throw new BookingException(
-                    "Заказ по запросу не найден (или пользователь не " +
-                            "является владельцем или заказчиком)"
-                    , Map.of("Description", "Booking not found (or user is not owner nor booker"));
-        }
-
-        return BookingDtoMapper.bookingToDto(bookingOpt.get());
+        return BookingDtoMapper.bookingToDto(booking);
     }
 
     public List<BookingDtoResponse> getUserBookingByStatus(long userId, RequestStatus state) {
