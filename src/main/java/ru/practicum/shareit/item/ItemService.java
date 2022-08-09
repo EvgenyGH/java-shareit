@@ -117,7 +117,6 @@ public class ItemService {
         List<Booking> bookingsSorted;
         List<Booking> bookingsAfterNowSorted;
 
-        //Optional<Item> itemOpt = itemRepository.findById(itemId);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() ->
                         new ItemNotFoundException(String.format("Вещь id=%d не найдена"
