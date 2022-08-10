@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.Status;
@@ -130,11 +131,11 @@ public class ItemService {
             nextBooking = null;
         } else {
             bookingsSorted = bookingRepository
-                    .getLastItemBookingOrdered(item.getId(), LocalDateTime.now());
+                    .getLastItemBookingOrdered(PageRequest.of(0, 1),item.getId(), LocalDateTime.now());
             lastBooking = bookingsSorted.size() == 0 ? null : bookingsSorted.get(0);
 
             bookingsAfterNowSorted = bookingRepository
-                    .getNextItemBookingOrdered(item.getId(), LocalDateTime.now());
+                    .getNextItemBookingOrdered(PageRequest.of(0,1), item.getId(), LocalDateTime.now());
             nextBooking = bookingsAfterNowSorted.size() == 0 ? null : bookingsAfterNowSorted.get(0);
         }
 
