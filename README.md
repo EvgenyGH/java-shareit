@@ -2,9 +2,23 @@
 
 ###### The service for sharing items. Backend.
 ###### The service allows users to give a description of items they have for sharing, allows to find desirable item and rent it. It allows to book items for particular time. Users may send request for items they required and receive offers for sharing in return.
-###### Spring-Boot, java-core, lombok
+###### Spring-Boot, jpa, postgresql, h2, java-core, lombok
 
-
+## *`Sprint 2`*
+#### *- Add JPA support*
+#### *- Add PostgreSql database*
+#### *- Refactor User, Item, Booking, ItemRequest models and add Comment model*
+#### *- Add schema.sql file*
+#### *- Add UserRepository, ItemRepository, BookingRepository, ItemRequestRepository and CommentRepository*
+#### *- Refactor UserService, ItemService and add BookingService*
+#### *- Add Exceptions for Booking and Item packages*
+#### *- Add Dto to Item, Booking, Comment models*
+#### *- Add DtoMapper to Item, Bookings and Comment DTOs*
+#### *- Add endpoints POST /bookings, PATCH /bookings/{bookingId}?approved={approved}, GET /bookings/{bookingId}, GET /bookings?state={state}, GET /bookings/owner?state={state}, POST /items/{itemId}/comment*
+___
+*Entity relationship*:  
+![Entity relationship](/ER/ER.png)
+___
 
 ## *`Sprint 1`*
 #### *- Add UserController and ItemController*

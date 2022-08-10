@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -45,7 +45,7 @@ public class UserController {
     //Получить всех пользователей
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public Collection<User> getAllUsers() {
+    public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 }

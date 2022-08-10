@@ -1,34 +1,60 @@
 package ru.practicum.shareit.booking;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
 
-import java.time.LocalDate;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "bookings")
 public class Booking {
-    // WAITING — новое бронирование, ожидает одобрения,
-    // APPROVED — бронирование подтверждено владельцем,
-    // REJECTED — бронирование отклонено владельцем,
-    // CANCELED — бронирование отменено создателем.
-    public enum Status {WAITING, APPROVED, REJECTED, CANCELED}
-
     //уникальный идентификатор бронирования
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "booking_id")
+    private Long id;
 
     //дата начала бронирования
-    private LocalDate start;
+    private LocalDateTime startDate;
 
     //дата конца бронирования
-    private LocalDate end;
+    private LocalDateTime endDate;
 
     //вещь, которую пользователь бронирует
-    private long item_id;
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
 
     //пользователь, который осуществляет бронирование;
-    private long booker_id;
+    @ManyToOne
+    @JoinColumn(name = "booker_id")
+    private User booker;
 
     //статус бронирования.
+    @Enumerated(EnumType.STRING)
     private Status status;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Booking booking = (Booking) o;
+
+        return Objects.equals(id, booking.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }
