@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.Status;
@@ -125,23 +126,22 @@ public class ItemService {
                                 , "Id", String.valueOf(itemId)
                                 , "Description", "Item not found")));
 
-
-        log.trace("Item id={} отправлен: {}", itemId, item);
-
         if (!bookingRepository.getBookingByItemBooker(itemId, userId).isEmpty()) {
             lastBooking = null;
             nextBooking = null;
         } else {
             bookingsSorted = bookingRepository
-                    .getLastItemBookingOrdered(item.getId(), LocalDateTime.now());
+                    .getLastItemBookingOrdered(PageRequest.of(0, 1),item.getId(), LocalDateTime.now());
             lastBooking = bookingsSorted.size() == 0 ? null : bookingsSorted.get(0);
 
             bookingsAfterNowSorted = bookingRepository
-                    .getNextItemBookingOrdered(item.getId(), LocalDateTime.now());
+                    .getNextItemBookingOrdered(PageRequest.of(0,1), item.getId(), LocalDateTime.now());
             nextBooking = bookingsAfterNowSorted.size() == 0 ? null : bookingsAfterNowSorted.get(0);
         }
 
         List<Comment> comments = commentRepository.findAllByItem_id(itemId);
+
+        log.trace("Item id={} отправлен: {}", itemId, item);
 
         return ItemDtoMapper.itemToDtoWithBookings(item
                 , lastBooking, nextBooking, comments);

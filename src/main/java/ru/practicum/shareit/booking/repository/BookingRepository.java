@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.Booking;
@@ -80,13 +81,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "WHERE b.item.id = ?1 " +
             "AND b.startDate < ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> getLastItemBookingOrdered(Long itemId, LocalDateTime now);
+    List<Booking> getLastItemBookingOrdered(PageRequest limit, Long itemId, LocalDateTime now);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.id = ?1 " +
             "AND b.startDate > ?2 " +
             "ORDER BY b.startDate ASC")
-    List<Booking> getNextItemBookingOrdered(Long itemId, LocalDateTime now);
+    List<Booking> getNextItemBookingOrdered(PageRequest limit, Long itemId, LocalDateTime now);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.id = ?1 " +
