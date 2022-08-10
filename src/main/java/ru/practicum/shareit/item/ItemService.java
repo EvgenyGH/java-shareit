@@ -125,9 +125,6 @@ public class ItemService {
                                 , "Id", String.valueOf(itemId)
                                 , "Description", "Item not found")));
 
-
-        log.trace("Item id={} отправлен: {}", itemId, item);
-
         if (!bookingRepository.getBookingByItemBooker(itemId, userId).isEmpty()) {
             lastBooking = null;
             nextBooking = null;
@@ -142,6 +139,8 @@ public class ItemService {
         }
 
         List<Comment> comments = commentRepository.findAllByItem_id(itemId);
+
+        log.trace("Item id={} отправлен: {}", itemId, item);
 
         return ItemDtoMapper.itemToDtoWithBookings(item
                 , lastBooking, nextBooking, comments);
