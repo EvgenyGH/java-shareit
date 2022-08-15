@@ -1,7 +1,7 @@
 # **Java-shareit**
 
 ###### The service for sharing items. Backend.
-###### The service allows users to give a description of items they have for sharing, allows to find desirable item and rent it. It allows to book items for particular time. Users may send request for items they required and receive offers for sharing in return.
+###### The service allows users to give a description of items they have for sharing, allows to find desirable item and rent it. It allows to book items for particular time. Users may send request for items they required and receive sharing offers in return.
 ###### Spring-Boot, jpa, postgresql, h2, java-core, lombok
 
 ## *`Sprint 2`*
