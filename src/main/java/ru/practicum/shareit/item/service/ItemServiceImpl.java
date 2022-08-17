@@ -19,6 +19,8 @@ import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
@@ -39,14 +41,17 @@ public class ItemServiceImpl implements ItemService {
     private final Validator validator;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestService itemRequestService;
 
     @Autowired
     public ItemServiceImpl(ItemRepository itemRepository, UserServiceImpl userService
-            , BookingRepository bookingRepository, CommentRepository commentRepository) {
+            , BookingRepository bookingRepository, CommentRepository commentRepository
+            , ItemRequestService itemRequestService) {
         this.itemRepository = itemRepository;
         this.userService = userService;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
+        this.itemRequestService = itemRequestService;
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
@@ -57,8 +62,12 @@ public class ItemServiceImpl implements ItemService {
         User user = userService.getUserById(userId);
         itemDto.setId(null);
 
-        //Функционал ItemRequest будет реализован в следующем спринте, поэтому значение null
-        Item item = ItemDtoMapper.dtoToItem(itemDto, user, null);
+        // TODO: 17.08.2022
+        ItemRequest itemRequest = itemDto.getRequestId() == null ? null
+                : itemRequestService.getItemRequestById(itemDto.getRequestId());
+
+        Item item = ItemDtoMapper.dtoToItem(itemDto, user
+                , itemRequest);
         item = itemRepository.save(item);
 
         log.trace("Item id={} добавлен: {}", item.getId(), item);

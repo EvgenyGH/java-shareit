@@ -19,4 +19,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "AND (LOWER(i.name) LIKE LOWER(CONCAT('%', :text, '%')) " +
             "OR LOWER(i.description) LIKE LOWER(CONCAT('%', :text, '%')))")
     List<Item> findAllByNameOrDescriptionContainsIgnoreCase(@Param("text") String text);
+
+    List<Item> findAllByRequestId(Long requestId);
 }

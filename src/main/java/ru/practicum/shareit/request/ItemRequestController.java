@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
 public class ItemRequestController {
-    private ItemRequestService itemRequestService;
+    private final ItemRequestService itemRequestService;
 
     //добавить новый запрос вещи.
     @PostMapping

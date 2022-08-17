@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.service;
 
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoWithResponse;
 
@@ -19,6 +20,9 @@ public interface ItemRequestService {
     //from — индекс первого элемента, size — количество элементов для отображения.
     List<ItemRequestDto> getAllRequests(int from, int size);
 
-
+    //Получить данные об одном конкретном запросе вместе с данными об ответах по id.
     ItemRequestDtoWithResponse getRequestById(Long requestId);
+
+    //Получить запрос по id.
+    ItemRequest getItemRequestById(Long requestId);
 }
