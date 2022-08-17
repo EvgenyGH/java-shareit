@@ -1,18 +1,21 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.RequestStatus;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.BookingDtoMapper;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.exception.*;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.ItemService;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,11 +25,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BookingService {
-    private final UserService userService;
+public class BookingServiceImpl implements BookingService {
+    private final UserServiceImpl userService;
     private final ItemService itemService;
     private final BookingRepository bookingRepository;
 
+    @Override
     public BookingDtoResponse bookItem(BookingDtoRequest bookingDtoRequest, long userId) {
         if (bookingDtoRequest.getStart().isAfter(bookingDtoRequest.getEnd())) {
             throw new StartAfterEndExeption("Начало аренды после ее окончания"
@@ -68,6 +72,7 @@ public class BookingService {
         return BookingDtoMapper.bookingToDto(booking);
     }
 
+    @Override
     public BookingDtoResponse approveBooking(long userId, long bookingId, boolean approved) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new BookingNotExistsException(String.format(
@@ -95,6 +100,7 @@ public class BookingService {
         return BookingDtoMapper.bookingToDto(booking);
     }
 
+    @Override
     public BookingDtoResponse getBooking(long userId, long bookingId) {
         Booking booking = bookingRepository.getOwnerOrBookerBooking(bookingId, userId)
                 .orElseThrow(() -> new BookingException(
@@ -104,6 +110,7 @@ public class BookingService {
         return BookingDtoMapper.bookingToDto(booking);
     }
 
+    @Override
     public List<BookingDtoResponse> getUserBookingByStatus(long userId, RequestStatus state) {
         userService.getUserById(userId);
 
@@ -138,6 +145,7 @@ public class BookingService {
         return bookings.stream().map(BookingDtoMapper::bookingToDto).collect(Collectors.toList());
     }
 
+    @Override
     public List<BookingDtoResponse> getAllUserBookings(long userId, RequestStatus state) {
         userService.getUserById(userId);
 

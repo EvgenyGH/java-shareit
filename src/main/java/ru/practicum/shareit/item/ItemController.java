@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.comment.dto.CommentDtoMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
+import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import java.util.List;

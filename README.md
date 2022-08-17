@@ -4,6 +4,10 @@
 ###### The service allows users to give a description of items they have for sharing, allows to find desirable item and rent it. It allows to book items for particular time. Users may send request for items they required and receive sharing offers in return.
 ###### Spring-Boot, jpa, postgresql, h2, java-core, lombok
 
+## *`Sprint 3`*
+#### *- *
+___
+
 ## *`Sprint 2`*
 #### *- Add JPA support*
 #### *- Add PostgreSql database*
