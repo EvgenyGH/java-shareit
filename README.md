@@ -6,6 +6,10 @@
 
 ## *`Sprint 3`*
 #### *- *
+#### *- *
+#### *- *
+#### *- *
+#### *- Add endpoints POST /requests, GET /requests, GET /requests/all?from={from}&size={size}, GET /requests/{requestId}*
 ___
 
 ## *`Sprint 2`*
