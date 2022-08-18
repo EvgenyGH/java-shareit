@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
-import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoMapper;
 import ru.practicum.shareit.request.dto.ItemRequestDtoWithResponse;
+import ru.practicum.shareit.request.exeption.ItemRequestNotFound;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -64,17 +64,30 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDtoWithResponse getRequestById(Long requestId) {
-        return null;
+    public ItemRequestDtoWithResponse getRequestById(Long userId, Long requestId) {
+        userService.getUserById(userId);
+
+        ItemRequest itemRequest = getItemRequestById(requestId);
+        ItemRequestDtoWithResponse itemRequestDtoWithResponse =
+                ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
+                        , itemRepository.findAllByRequestId(itemRequest.getId())
+                                .stream().map(ItemDtoMapper::ItemToDto).collect(Collectors.toList()));
+
+        log.trace("Возвращен запрос вещи (DtoWithResponse) id={}: {}", requestId, itemRequestDtoWithResponse);
+
+        return itemRequestDtoWithResponse;
     }
 
     @Override
     public ItemRequest getItemRequestById(Long requestId) {
-        return itemRequestRepository.findById(requestId).orElseThrow(
-                ()-> new ItemNotFoundException(String.format("Запрос вещи id=%d не найден", requestId)
+        ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow(
+                () -> new ItemRequestNotFound(String.format("Запрос вещи id=%d не найден", requestId)
                         , Map.of("Object", "ItemRequest"
-                                , "Id", String.valueOf(requestId)
-                                , "Description", "ItemRequest not found"))
-                );
+                        , "Id", String.valueOf(requestId)
+                        , "Description", "ItemRequest not found")));
+
+        log.trace("Возвращен запрос вещи id={}: {}", requestId, itemRequest);
+
+        return itemRequest;
     }
 }

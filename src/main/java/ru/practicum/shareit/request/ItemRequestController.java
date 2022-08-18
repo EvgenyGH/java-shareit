@@ -46,7 +46,8 @@ public class ItemRequestController {
     //Получить данные об одном конкретном запросе вместе с данными об ответах.
     @GetMapping("/{requestId}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemRequestDtoWithResponse getRequestById(@PathVariable Long requestId){
-        return itemRequestService.getRequestById(requestId);
+    public ItemRequestDtoWithResponse getRequestById(@RequestHeader("X-Sharer-User-Id") Long userId
+            , @PathVariable Long requestId) {
+        return itemRequestService.getRequestById(userId, requestId);
     }
 }

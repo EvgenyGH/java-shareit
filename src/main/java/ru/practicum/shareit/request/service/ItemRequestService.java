@@ -21,7 +21,7 @@ public interface ItemRequestService {
     List<ItemRequestDto> getAllRequests(int from, int size);
 
     //Получить данные об одном конкретном запросе вместе с данными об ответах по id.
-    ItemRequestDtoWithResponse getRequestById(Long requestId);
+    ItemRequestDtoWithResponse getRequestById(Long userId, Long requestId);
 
     //Получить запрос по id.
     ItemRequest getItemRequestById(Long requestId);
