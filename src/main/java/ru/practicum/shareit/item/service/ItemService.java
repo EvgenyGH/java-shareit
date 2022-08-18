@@ -23,12 +23,12 @@ public interface ItemService {
     Item getItemById(long itemId);
 
     //Просмотр владельцем списка всех его вещей.
-    List<ItemDtoWithBookings> getAllUserItems(long userId);
+    List<ItemDtoWithBookings> getAllUserItems(long userId, int from, int size);
 
     //Поиск вещи потенциальным арендатором. Пользователь передаёт в строке запроса текст,
     //и система ищет вещи, содержащие этот текст в названии или описании.
     //Поиск возвращает только доступные для аренды вещи.
-    List<Item> findItems(String text);
+    List<Item> findItems(String text, int from, int size);
 
     //Добавить комментарий
     Comment addCommentToItem(long userId, long itemId, CommentDto commentDto);

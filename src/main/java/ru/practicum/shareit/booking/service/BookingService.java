@@ -25,10 +25,10 @@ public interface BookingService {
     //Параметр state необязательный и по умолчанию равен ALL.
     //Также он может принимать значения CURRENT, PAST, FUTURE, WAITING, REJECTED.
     //Бронирования должны возвращаться отсортированными по дате от более новых к более старым.
-    List<BookingDtoResponse> getUserBookingByStatus(long userId, RequestStatus state);
+    List<BookingDtoResponse> getUserBookingByStatus(long userId, RequestStatus state, int from, int size);
 
     //Получение списка бронирований для всех вещей текущего пользователя.
     //Этот запрос имеет смысл для владельца хотя бы одной вещи.
     //Работа параметра state аналогична его работе в предыдущем сценарии.
-    List<BookingDtoResponse> getAllUserBookings(long userId, RequestStatus state);
+    List<BookingDtoResponse> getAllUserBookings(long userId, RequestStatus state, int from, int size);
 }

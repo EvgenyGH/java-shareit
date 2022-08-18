@@ -2,18 +2,21 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
+@Validated
 public class BookingController {
     private final BookingServiceImpl bookingService;
 
@@ -53,8 +56,10 @@ public class BookingController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<BookingDtoResponse> getUserBookingByStatus(@RequestHeader("X-Sharer-User-Id") long userId
-            , @RequestParam(required = false, defaultValue = "ALL") String state) {
-        return bookingService.getUserBookingByStatus(userId, RequestStatus.valueOf(state));
+            , @RequestParam(required = false, defaultValue = "ALL") String state
+            , @RequestParam(required = false, defaultValue = "0") @Min(0) int from
+            , @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
+        return bookingService.getUserBookingByStatus(userId, RequestStatus.valueOf(state), from, size);
     }
 
     //Получение списка бронирований для всех вещей текущего пользователя.
@@ -63,7 +68,9 @@ public class BookingController {
     @GetMapping("/owner")
     @ResponseStatus(HttpStatus.OK)
     public List<BookingDtoResponse> getAllUserBookings(@RequestHeader("X-Sharer-User-Id") long userId
-            , @RequestParam(required = false, defaultValue = "ALL") String state) {
-        return bookingService.getAllUserBookings(userId, RequestStatus.valueOf(state));
+            , @RequestParam(required = false, defaultValue = "ALL") String state
+            , @RequestParam(required = false, defaultValue = "0") @Min(0) int from
+            , @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
+        return bookingService.getAllUserBookings(userId, RequestStatus.valueOf(state), from, size);
     }
 }

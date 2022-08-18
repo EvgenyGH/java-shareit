@@ -148,7 +148,7 @@ public class ItemServiceImpl implements ItemService {
             lastBooking = bookingsSorted.size() == 0 ? null : bookingsSorted.get(0);
 
             bookingsAfterNowSorted = bookingRepository
-                    .getNextItemBookingOrdered(item.getId(), LocalDateTime.now(), PageRequest.of(0,1));
+                    .getNextItemBookingOrdered(item.getId(), LocalDateTime.now(), PageRequest.of(0, 1));
             nextBooking = bookingsAfterNowSorted.size() == 0 ? null : bookingsAfterNowSorted.get(0);
         }
 
@@ -178,9 +178,9 @@ public class ItemServiceImpl implements ItemService {
 
     //Просмотр владельцем списка всех его вещей.
     @Override
-    public List<ItemDtoWithBookings> getAllUserItems(long userId) {
+    public List<ItemDtoWithBookings> getAllUserItems(long userId, int from, int size) {
         User user = userService.getUserById(userId);
-        List<Item> userItems = itemRepository.findAllByOwnerOrderById(user);
+        List<Item> userItems = itemRepository.findAllByOwnerOrderById(user, PageRequest.of(from, size));
 
         if (userItems.isEmpty()) {
             throw new ItemNotFoundException(String.format("Вещи у пользователя id=%d не найдены"
@@ -203,12 +203,13 @@ public class ItemServiceImpl implements ItemService {
     //и система ищет вещи, содержащие этот текст в названии или описании.
     //Поиск возвращает только доступные для аренды вещи.
     @Override
-    public List<Item> findItems(String text) {
+    public List<Item> findItems(String text, int from, int size) {
         if (text == null || text.isBlank()) {
             return Collections.emptyList();
         }
 
-        List<Item> itemsFound = itemRepository.findAllByNameOrDescriptionContainsIgnoreCase(text);
+        List<Item> itemsFound = itemRepository.findAllByNameOrDescriptionIgnoreCase(text
+                , PageRequest.of(from, size));
 
         log.trace("Найдено {} Items содержащих <{}>.", itemsFound.size(), text);
 
@@ -222,13 +223,13 @@ public class ItemServiceImpl implements ItemService {
         Item item = this.getItemById(itemId);
 
         bookingRepository.getFinishedBookingByBookerItemStatus(userId, itemId
-                        , Status.APPROVED, LocalDateTime.now()).orElseThrow(() ->
-                        new ItemNotRented(String.format("Пользователь не арендовал вещь id=%d"
-                                , userId)
-                                , Map.of("Object", "Item"
-                                , "UserId", String.valueOf(userId)
-                                , "ItemId", String.valueOf(itemId)
-                                , "Description", "Item not rented")));
+                , Status.APPROVED, LocalDateTime.now()).orElseThrow(() ->
+                new ItemNotRented(String.format("Пользователь не арендовал вещь id=%d"
+                        , userId)
+                        , Map.of("Object", "Item"
+                        , "UserId", String.valueOf(userId)
+                        , "ItemId", String.valueOf(itemId)
+                        , "Description", "Item not rented")));
 
         Comment comment = CommentDtoMapper.DtoToComment(commentDto, item, author);
         commentRepository.save(comment);

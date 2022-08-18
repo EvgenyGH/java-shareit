@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -110,33 +111,34 @@ public class BookingServiceImpl implements BookingService {
         return BookingDtoMapper.bookingToDto(booking);
     }
 
-    @Override
-    public List<BookingDtoResponse> getUserBookingByStatus(long userId, RequestStatus state) {
+    public List<BookingDtoResponse> getUserBookingByStatus(long userId, RequestStatus state, int from, int size) {
         userService.getUserById(userId);
 
         List<Booking> bookings;
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.getBookingByBookerStatusAllOrdered(userId);
+                bookings = bookingRepository.getBookingByBookerStatusAllOrdered(userId, PageRequest.of(from, size));
                 break;
             case WAITING:
-                bookings = bookingRepository.getBookingByBookerStatusOrdered(userId, Status.WAITING);
+                bookings = bookingRepository.getBookingByBookerStatusOrdered(userId, Status.WAITING
+                        , PageRequest.of(from, size));
                 break;
             case REJECTED:
-                bookings = bookingRepository.getBookingByBookerStatusOrdered(userId, Status.REJECTED);
+                bookings = bookingRepository.getBookingByBookerStatusOrdered(userId, Status.REJECTED
+                        , PageRequest.of(from, size));
                 break;
             case PAST:
                 bookings = bookingRepository
-                        .getBookingByBookerStatusPastOrdered(userId, LocalDateTime.now());
+                        .getBookingByBookerStatusPastOrdered(userId, LocalDateTime.now(), PageRequest.of(from, size));
                 break;
             case FUTURE:
                 bookings = bookingRepository
-                        .getBookingByBookerStatusFutureOrdered(userId, LocalDateTime.now());
+                        .getBookingByBookerStatusFutureOrdered(userId, LocalDateTime.now(), PageRequest.of(from, size));
                 break;
             case CURRENT:
                 bookings = bookingRepository.getBookingByBookerStatusCurrentOrdered(userId
-                        , LocalDateTime.now());
+                        , LocalDateTime.now(), PageRequest.of(from, size));
                 break;
             default:
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "UNSUPPORTED_STATUS");
@@ -146,30 +148,34 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoResponse> getAllUserBookings(long userId, RequestStatus state) {
+    public List<BookingDtoResponse> getAllUserBookings(long userId, RequestStatus state, int from, int size) {
         userService.getUserById(userId);
 
         List<Booking> bookings;
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.getBookingByOwnerStatusAllOrdered(userId);
+                bookings = bookingRepository.getBookingByOwnerStatusAllOrdered(userId, PageRequest.of(from, size));
                 break;
             case WAITING:
-                bookings = bookingRepository.getBookingByOwnerStatusOrdered(userId, Status.WAITING);
+                bookings = bookingRepository.getBookingByOwnerStatusOrdered(userId, Status.WAITING
+                        , PageRequest.of(from, size));
                 break;
             case REJECTED:
-                bookings = bookingRepository.getBookingByOwnerStatusOrdered(userId, Status.REJECTED);
+                bookings = bookingRepository.getBookingByOwnerStatusOrdered(userId, Status.REJECTED
+                        , PageRequest.of(from, size));
                 break;
             case PAST:
-                bookings = bookingRepository.getBookingByOwnerStatusPastOrdered(userId, LocalDateTime.now());
+                bookings = bookingRepository.getBookingByOwnerStatusPastOrdered(userId, LocalDateTime.now()
+                        , PageRequest.of(from, size));
                 break;
             case FUTURE:
-                bookings = bookingRepository.getBookingByOwnerStatusFutureOrdered(userId, LocalDateTime.now());
+                bookings = bookingRepository.getBookingByOwnerStatusFutureOrdered(userId, LocalDateTime.now()
+                        , PageRequest.of(from, size));
                 break;
             case CURRENT:
                 bookings = bookingRepository.getBookingByOwnerStatusCurrentOrdered(userId
-                        , LocalDateTime.now());
+                        , LocalDateTime.now(), PageRequest.of(from, size));
                 break;
             default:
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "UNSUPPORTED_STATUS");
