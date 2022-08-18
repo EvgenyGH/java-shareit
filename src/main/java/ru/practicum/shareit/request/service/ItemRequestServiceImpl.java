@@ -2,6 +2,7 @@ package ru.practicum.shareit.request.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
@@ -14,9 +15,12 @@ import ru.practicum.shareit.request.exeption.ItemRequestNotFound;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.service.UserService;
 
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,8 +63,31 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getAllRequests(int from, int size) {
-        return null;
+    public List<ItemRequestDtoWithResponse> getAllRequests(Optional<Integer> fromOpt, Optional<Integer> sizeOpt
+            , Long ownerId) {
+        Integer from = fromOpt.orElse(null);
+        Integer size = sizeOpt.orElse(null);
+
+        if (from == null || size == null) {
+            return Collections.emptyList();
+        } else if (from < 0 || size < 1) {
+            throw new ValidationException("Должно быть from >=0, size > 1");
+        }
+
+        List<ItemRequest> itemRequests = itemRequestRepository
+                .findAllNotOwner(ownerId, PageRequest.of(from, size));
+
+        List<ItemRequestDtoWithResponse> itemRequestDtoWithResponseList =
+                itemRequests.stream().map(itemRequest -> {
+                    List<Item> items = itemRepository.findAllByRequestId(itemRequest.getId());
+                    return ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
+                            , items.stream().map(ItemDtoMapper::ItemToDto).collect(Collectors.toList()));
+                }).collect(Collectors.toList());
+
+        log.trace("Возвращено {} запросов вещей с {} размер страницы {}", itemRequestDtoWithResponseList.size()
+                , from, size);
+
+        return itemRequestDtoWithResponseList;
     }
 
     @Override

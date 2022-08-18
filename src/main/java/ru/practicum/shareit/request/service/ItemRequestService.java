@@ -5,6 +5,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoWithResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ItemRequestService {
     //добавить новый запрос вещи.
@@ -18,7 +19,8 @@ public interface ItemRequestService {
     //Запросы сортируются от более новых к более старым.
     //Результаты возвращаются постранично.
     //from — индекс первого элемента, size — количество элементов для отображения.
-    List<ItemRequestDto> getAllRequests(int from, int size);
+    List<ItemRequestDtoWithResponse> getAllRequests(Optional<Integer> fromOpt, Optional<Integer> sizeOpt
+            , Long ownerId);
 
     //Получить данные об одном конкретном запросе вместе с данными об ответах по id.
     ItemRequestDtoWithResponse getRequestById(Long userId, Long requestId);

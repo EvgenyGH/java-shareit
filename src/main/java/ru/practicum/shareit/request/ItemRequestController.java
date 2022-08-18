@@ -2,6 +2,7 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoWithResponse;
@@ -9,11 +10,13 @@ import ru.practicum.shareit.request.service.ItemRequestService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
+@Validated
 public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
@@ -37,10 +40,12 @@ public class ItemRequestController {
     //Запросы сортируются от более новых к более старым.
     //Результаты возвращаются постранично.
     //from — индекс первого элемента, size — количество элементов для отображения.
-    @GetMapping("requests/all")
+    @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemRequestDto> getAllRequests(@RequestParam int from, @RequestParam int size) {
-        return itemRequestService.getAllRequests(from, size);
+    public List<ItemRequestDtoWithResponse> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long ownerId
+            , @RequestParam Optional<Integer> from
+            , @RequestParam Optional<Integer> size) {
+        return itemRequestService.getAllRequests(from, size, ownerId);
     }
 
     //Получить данные об одном конкретном запросе вместе с данными об ответах.
