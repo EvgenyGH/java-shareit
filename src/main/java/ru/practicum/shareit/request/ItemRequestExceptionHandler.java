@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.practicum.shareit.request.exeption.ItemRequestNotFound;
+import ru.practicum.shareit.request.exeption.ItemRequestNotFoundException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
@@ -26,9 +26,9 @@ public class ItemRequestExceptionHandler {
         return Map.of("Description", "Ошибка валидации входящих данных.");
     }
 
-    @ExceptionHandler({ItemRequestNotFound.class})
+    @ExceptionHandler({ItemRequestNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> ItemRequestNotFoundExceptionHandler(ItemRequestNotFound exception) {
+    public Map<String, String> ItemRequestNotFoundExceptionHandler(ItemRequestNotFoundException exception) {
         log.warn("Запрос вещи id={} не найден.", exception.getProperties().get("Id"));
         return exception.getProperties();
     }

@@ -11,7 +11,7 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoMapper;
 import ru.practicum.shareit.request.dto.ItemRequestDtoWithResponse;
-import ru.practicum.shareit.request.exeption.ItemRequestNotFound;
+import ru.practicum.shareit.request.exeption.ItemRequestNotFoundException;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -108,7 +108,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public ItemRequest getItemRequestById(Long requestId) {
         ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow(
-                () -> new ItemRequestNotFound(String.format("Запрос вещи id=%d не найден", requestId)
+                () -> new ItemRequestNotFoundException(String.format("Запрос вещи id=%d не найден", requestId)
                         , Map.of("Object", "ItemRequest"
                         , "Id", String.valueOf(requestId)
                         , "Description", "ItemRequest not found")));
