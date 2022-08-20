@@ -1,13 +1,12 @@
 package ru.practicum.shareit.item.service;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.Status;
-import ru.practicum.shareit.booking.exception.ItemNotRented;
+import ru.practicum.shareit.booking.exception.ItemNotRentedException;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.comment.Comment;
@@ -22,7 +21,7 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.service.UserServiceImpl;
+import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.*;
 import java.time.LocalDateTime;
@@ -34,17 +33,16 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
-    private final UserServiceImpl userService;
+    private final UserService userService;
     private final Validator validator;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final ItemRequestService itemRequestService;
 
     @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository, UserServiceImpl userService
+    public ItemServiceImpl(ItemRepository itemRepository, UserService userService
             , BookingRepository bookingRepository, CommentRepository commentRepository
             , ItemRequestService itemRequestService) {
         this.itemRepository = itemRepository;
@@ -62,7 +60,6 @@ public class ItemServiceImpl implements ItemService {
         User user = userService.getUserById(userId);
         itemDto.setId(null);
 
-        // TODO: 17.08.2022
         ItemRequest itemRequest = itemDto.getRequestId() == null ? null
                 : itemRequestService.getItemRequestById(itemDto.getRequestId());
 
@@ -91,7 +88,6 @@ public class ItemServiceImpl implements ItemService {
 
         itemDto.setId(itemId);
 
-        //Функционал ItemRequest будет реализован в следующем спринте, поэтому значение null
         Item item = ItemDtoMapper.dtoToItem(itemDto, user, null);
 
         if (itemDto.getDescription() == null) {
@@ -108,6 +104,8 @@ public class ItemServiceImpl implements ItemService {
 
         if (itemDto.getRequestId() == null) {
             item.setRequest(currentItem.getRequest());
+        } else {
+            item.setRequest(itemRequestService.getItemRequestById(itemDto.getRequestId()));
         }
 
         Set<ConstraintViolation<Item>> violations = validator.validate(item);
@@ -152,7 +150,7 @@ public class ItemServiceImpl implements ItemService {
             nextBooking = bookingsAfterNowSorted.size() == 0 ? null : bookingsAfterNowSorted.get(0);
         }
 
-        List<Comment> comments = commentRepository.findAllByItem_id(itemId);
+        List<Comment> comments = commentRepository.findAllByItemId(itemId);
 
         log.trace("Item id={} отправлен: {}", itemId, item);
 
@@ -224,7 +222,7 @@ public class ItemServiceImpl implements ItemService {
 
         bookingRepository.getFinishedBookingByBookerItemStatus(userId, itemId
                 , Status.APPROVED, LocalDateTime.now()).orElseThrow(() ->
-                new ItemNotRented(String.format("Пользователь не арендовал вещь id=%d"
+                new ItemNotRentedException(String.format("Пользователь не арендовал вещь id=%d"
                         , userId)
                         , Map.of("Object", "Item"
                         , "UserId", String.valueOf(userId)

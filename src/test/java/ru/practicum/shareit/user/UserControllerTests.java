@@ -9,9 +9,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.user.exception.EmailExistsException;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
 
+import javax.validation.ValidationException;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -80,5 +84,29 @@ public class UserControllerTests {
 
         mockMvc.perform(get("/users")).andExpectAll(status().isOk(),
                 content().json(mapper.writeValueAsString(List.of(userFirst, userSecond))));
+    }
+
+    @Test
+    void userExceptionHandlerTests() throws Exception {
+        when(userService.deleteUserById(anyLong())).thenThrow(ValidationException.class);
+        mockMvc.perform(delete("/users/{userId}", userFirst.getId()))
+                .andExpectAll(status().isBadRequest());
+
+        reset(userService);
+        when(userService.deleteUserById(userFirst.getId()))
+                .thenThrow(new UserNotFoundException("message", Map.of("Id", "2")));
+        mockMvc.perform(delete("/users/{userId}", userFirst.getId()))
+                .andExpectAll(status().isNotFound());
+
+        reset(userService);
+        when(userService.deleteUserById(userFirst.getId()))
+                .thenThrow(new EmailExistsException("message", Map.of("Id", "2")));
+        mockMvc.perform(delete("/users/{userId}", userFirst.getId()))
+                .andExpectAll(status().isConflict());
+
+        reset(userService);
+        when(userService.deleteUserById(userFirst.getId())).thenThrow(new RuntimeException());
+        mockMvc.perform(delete("/users/{userId}", userFirst.getId()))
+                .andExpectAll(status().isInternalServerError());
     }
 }
