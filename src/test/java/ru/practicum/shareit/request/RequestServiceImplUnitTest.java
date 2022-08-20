@@ -45,9 +45,7 @@ public class RequestServiceImplUnitTest {
     private ItemRequestServiceImpl itemRequestService;
 
     private User user;
-
     private ItemRequest itemRequest;
-
     private Item item;
 
     @BeforeEach
