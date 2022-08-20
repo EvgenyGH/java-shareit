@@ -41,5 +41,4 @@ public class CommentRepositoryTest {
         List<Comment> comments = commentRepository.findAllByItemId(comment.getId());
         assertThat(comments).isEqualTo(List.of(comment));
     }
-
 }
