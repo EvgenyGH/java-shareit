@@ -35,6 +35,6 @@ public class UserRepositoryTests {
         Optional<User> user = userRepository.findFirstByEmailIgnoreCaseAndIdNot(userFirst.getEmail()
                 , userFirst.getId());
 
-        assertThat(user.get()).isEqualTo(userSecond);
+        assertThat(user.orElse(null)).isEqualTo(userSecond);
     }
 }
