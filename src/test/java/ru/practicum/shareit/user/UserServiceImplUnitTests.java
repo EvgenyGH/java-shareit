@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImplUnitTest {
+public class UserServiceImplUnitTests {
     @Mock
     private UserRepository userRepository;
 
@@ -91,6 +91,7 @@ public class UserServiceImplUnitTest {
         userService.deleteUserById(user.getId());
         verify(userRepository, times(1)).deleteById(user.getId());
         verify(userRepository, times(1)).findById(user.getId());
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
