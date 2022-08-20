@@ -27,6 +27,7 @@ public class BookingDtoResponse {
     @NotNull
     private ItemDto item;
 
+    //заказчик
     private UserDto booker;
 
     //статус бронирования.
