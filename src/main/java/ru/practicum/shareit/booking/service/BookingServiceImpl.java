@@ -16,7 +16,7 @@ import ru.practicum.shareit.booking.exception.*;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.service.UserServiceImpl;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class BookingServiceImpl implements BookingService {
-    private final UserServiceImpl userService;
+    private final UserService userService;
     private final ItemService itemService;
     private final BookingRepository bookingRepository;
 
@@ -83,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
                         , "Description", "Request does not exist")));
 
         if (!booking.getItem().getOwner().getId().equals(userId)) {
-            throw new UserNotOwnerExeption(String.format(
+            throw new UserNotOwnerException(String.format(
                     "Пользователь id=%d не владелец вещи", userId)
                     , Map.of("Object", "Item"
                     , "id", String.valueOf(booking.getItem().getOwner().getId())

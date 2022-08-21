@@ -69,9 +69,9 @@ public class BookingExceptionHandler {
         return exception.getProperties();
     }
 
-    @ExceptionHandler({UserNotOwnerExeption.class})
+    @ExceptionHandler({UserNotOwnerException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> userNotOwnerExeptionExceptionHandler(UserNotOwnerExeption exception) {
+    public Map<String, String> userNotOwnerExeptionExceptionHandler(UserNotOwnerException exception) {
         log.warn("Пользователь id={} не владелец вещи", exception.getProperties().get("Id"));
         return exception.getProperties();
     }

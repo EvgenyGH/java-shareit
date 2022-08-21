@@ -5,11 +5,10 @@
 ###### Spring-Boot, jpa, postgresql, h2, java-core, lombok
 
 ## *`Sprint 3`*
-#### *- *
-#### *- *
-#### *- *
-#### *- *
+#### *- Add ItemRequestController, ItemRequestService, ItemRequestRepository, ItemRequestExceptions, ItemRequestDto, ItemRequestDtoMapper*
 #### *- Add endpoints POST /requests, GET /requests, GET /requests/all?from={from}&size={size}, GET /requests/{requestId}*
+#### *- Add pagination to GET /requests/all, GET /items, GET /items/search, GET /bookings и GET /bookings/owner endpoints*
+#### *- Add unit tests (controller tests, repository tests, service tests, json dto tests) and integration tests (service + database)*
 ___
 
 ## *`Sprint 2`*
