@@ -22,7 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
-public class ItemDtoTest {
+public class ItemDtoJsonTest {
     private ItemDto itemDto;
 
     private ItemDtoWithBookings itemDtoWithBookings;
