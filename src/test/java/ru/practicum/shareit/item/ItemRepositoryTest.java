@@ -40,26 +40,26 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    void findByIdAndOwnerTest(){
+    void findByIdAndOwnerTest() {
         Item itemTest = itemRepository.findByIdAndOwner(item.getId(), user).orElse(null);
         assertThat(itemTest).isEqualTo(item);
     }
 
     @Test
-    void findAllByOwnerOrderByIdTest(){
-        List<Item> items = itemRepository.findAllByOwnerOrderById(user, PageRequest.of(0,1));
+    void findAllByOwnerOrderByIdTest() {
+        List<Item> items = itemRepository.findAllByOwnerOrderById(user, PageRequest.of(0, 1));
         assertThat(items).isEqualTo(List.of(item));
     }
 
     @Test
-    void findAllByNameOrDescriptionIgnoreCase(){
+    void findAllByNameOrDescriptionIgnoreCase() {
         List<Item> items = itemRepository
                 .findAllByNameOrDescriptionIgnoreCase("15", PageRequest.of(0, 10));
         assertThat(items).isEqualTo(List.of(item));
     }
 
     @Test
-    void findAllByRequestId(){
+    void findAllByRequestId() {
         List<Item> items = itemRepository.findAllByRequestId(item.getRequest().getId());
         assertThat(items).isEqualTo(List.of(item));
     }

@@ -27,18 +27,21 @@ public class CommentRepositoryTest {
 
     @BeforeEach
     void initialize() {
-        User user = new User(10L, "user name 10", "email@10.com");
+        User user = new User(200L, "user name 200", "email@200.com");
         user = userRepository.save(user);
-        Item item = new Item(15L, "item name 15", "description 15"
+        Item item = new Item(300L, "item name 300", "description 300"
                 , true, user, null);
         item = itemRepository.save(item);
-        comment = new Comment(33L, "text 33", item, user, LocalDateTime.now());
+        comment = new Comment(33L, "text 150", item, user, LocalDateTime.now());
         comment = commentRepository.save(comment);
+        System.out.println(comment);
     }
 
+    //todo
     @Test
     void findAllByItemIdTest() {
-        List<Comment> comments = commentRepository.findAllByItemId(comment.getId());
+
+        List<Comment> comments = commentRepository.findAllByItemId(comment.getItem().getId());
         assertThat(comments).isEqualTo(List.of(comment));
     }
 }

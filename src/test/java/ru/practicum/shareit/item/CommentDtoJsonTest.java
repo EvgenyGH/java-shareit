@@ -14,6 +14,7 @@ import ru.practicum.shareit.user.User;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +26,7 @@ public class CommentDtoJsonTest {
     private JacksonTester<CommentDto> jsonDto;
 
     @BeforeEach
-    void initialize(){
+    void initialize() {
         User user = new User(10L, "name 10", "email@10.ru");
         ItemRequest itemRequest = new ItemRequest(5L, "description 5"
                 , user, LocalDateTime.now().minusHours(1));
@@ -42,7 +43,8 @@ public class CommentDtoJsonTest {
         assertThat(json).extractingJsonPathNumberValue("$.id")
                 .isEqualTo(commentDto.getId().intValue());
         assertThat(json).extractingJsonPathStringValue("$.created")
-                .isEqualTo(commentDto.getCreated().toString());
+                .isEqualTo(commentDto.getCreated()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathStringValue("$.text")
                 .isEqualTo(commentDto.getText());
         assertThat(json).extractingJsonPathStringValue("$.itemName")

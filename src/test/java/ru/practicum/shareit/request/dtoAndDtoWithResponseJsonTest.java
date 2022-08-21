@@ -15,6 +15,7 @@ import ru.practicum.shareit.user.User;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,10 +63,11 @@ public class dtoAndDtoWithResponseJsonTest {
         assertThat(jsonContent).extractingJsonPathStringValue("$.description")
                 .isEqualTo(itemRequestDtoWithResponse.getDescription());
         assertThat(jsonContent).extractingJsonPathStringValue("$.created")
-                .isEqualTo(itemRequestDtoWithResponse.getCreated().toString());
+                .isEqualTo(itemRequestDtoWithResponse.getCreated()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(jsonContent).extractingJsonPathValue("$.items.size()")
                 .isEqualTo(itemRequestDtoWithResponse.getItems().size());
-       assertThat(jsonContent).extractingJsonPathNumberValue("$.items[0].id")
+        assertThat(jsonContent).extractingJsonPathNumberValue("$.items[0].id")
                 .isEqualTo(itemRequestDtoWithResponse.getItems().get(0).getId().intValue());
     }
 }

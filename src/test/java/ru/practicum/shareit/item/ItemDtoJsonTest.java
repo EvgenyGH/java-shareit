@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.User;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,9 +75,11 @@ public class ItemDtoJsonTest {
         assertThat(json).extractingJsonPathValue("$.lastBooking.id")
                 .isEqualTo(itemDtoWithBookings.getLastBooking().getId().intValue());
         assertThat(json).extractingJsonPathStringValue("$.lastBooking.end")
-                .isEqualTo(itemDtoWithBookings.getLastBooking().getEnd().toString());
+                .isEqualTo(itemDtoWithBookings.getLastBooking().getEnd()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathStringValue("$.lastBooking.start")
-                .isEqualTo(itemDtoWithBookings.getLastBooking().getStart().toString());
+                .isEqualTo(itemDtoWithBookings.getLastBooking().getStart()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathValue("$.lastBooking.status")
                 .isEqualTo(itemDtoWithBookings.getLastBooking().getStatus().toString());
         assertThat(json).extractingJsonPathValue("$.lastBooking.bookerId")
@@ -84,9 +87,11 @@ public class ItemDtoJsonTest {
         assertThat(json).extractingJsonPathValue("$.nextBooking.id")
                 .isEqualTo(itemDtoWithBookings.getNextBooking().getId().intValue());
         assertThat(json).extractingJsonPathStringValue("$.nextBooking.end")
-                .isEqualTo(itemDtoWithBookings.getNextBooking().getEnd().toString());
+                .isEqualTo(itemDtoWithBookings.getNextBooking().getEnd()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathStringValue("$.nextBooking.start")
-                .isEqualTo(itemDtoWithBookings.getNextBooking().getStart().toString());
+                .isEqualTo(itemDtoWithBookings.getNextBooking().getStart()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathValue("$.nextBooking.status")
                 .isEqualTo(itemDtoWithBookings.getNextBooking().getStatus().toString());
         assertThat(json).extractingJsonPathValue("$.nextBooking.bookerId")

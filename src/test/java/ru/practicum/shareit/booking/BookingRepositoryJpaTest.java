@@ -252,7 +252,7 @@ public class BookingRepositoryJpaTest {
     @Test
     void getFinishedBookingByBookerItemStatusTest() {
         Booking bookingTest = bookingRepository.getFinishedBookingByBookerItemStatus(userSecond.getId()
-                ,item.getId(), Status.APPROVED, LocalDateTime.now()).orElse(null);
+                , item.getId(), Status.APPROVED, LocalDateTime.now()).orElse(null);
 
         assertThat(bookingTest).isEqualTo(bookingFirst);
     }
@@ -260,7 +260,7 @@ public class BookingRepositoryJpaTest {
     @Test
     void getFinishedBookingByBookerItemStatusNoBookingsTest() {
         Booking bookingTest = bookingRepository.getFinishedBookingByBookerItemStatus(userThird.getId()
-                ,item.getId(), Status.APPROVED, LocalDateTime.now()).orElse(null);
+                , item.getId(), Status.APPROVED, LocalDateTime.now()).orElse(null);
 
         assertThat(bookingTest).isNull();
     }

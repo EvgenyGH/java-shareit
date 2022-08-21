@@ -120,7 +120,7 @@ public class BookingServiceAndDbIntegrationTest {
 
     @Test
     @Transactional
-    void getAllUserBookingsStatusPastTest(){
+    void getAllUserBookingsStatusPastTest() {
         List<BookingDtoResponse> bookingsDtoTest = bookingService.getAllUserBookings(
                 userFirst.getId(), RequestStatus.PAST, 0, 10);
 

@@ -138,7 +138,7 @@ class ShareItTests {
     }
 
     @Test
-    //@SQL()
+        //@SQL()
     void addUpdateDeleteGetUserGetAllUsers() throws Exception {
         User user1 = new User(1L, "User1 name", "User1@mail.ru");
         User user2 = new User(2L, "User2 name", "User2@mail.ru");

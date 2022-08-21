@@ -9,17 +9,22 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.shareit.booking.dto.BookingDtoMapper;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
+import ru.practicum.shareit.booking.exception.*;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -121,5 +126,90 @@ public class BookingControllerTest {
                 .andExpectAll(status().isOk()
                         , content().json(mapper.writeValueAsString(Stream.of(bookingFirst, bookingSecond)
                                 .map(BookingDtoMapper::bookingToDto).collect(Collectors.toList()))));
+    }
+
+    @Test
+    void bookingExceptionHandlerTest() throws Exception {
+        when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
+                .thenThrow(MethodArgumentTypeMismatchException.class);
+
+        mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
+                .andExpect(status().isBadRequest());
+        reset(bookingService);
+
+        when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
+                .thenThrow(new StartAfterEndExeption("msg",
+                        Map.of("start", LocalDateTime.now().toString()
+                                , "end", LocalDateTime.now().plusDays(1).toString())));
+
+        mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
+                .andExpect(status().isBadRequest());
+        reset(bookingService);
+
+        when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
+                .thenThrow(new ItemNotAvailableException("msg", Map.of("id", "1")));
+
+        mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
+                .andExpect(status().isBadRequest());
+        reset(bookingService);
+
+        when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
+                .thenThrow(new IllegalArgumentException("msg", null));
+
+        mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
+                .andExpect(status().isBadRequest());
+        reset(bookingService);
+
+        when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
+                .thenThrow(new ItemNotFoundException("msg", Map.of("Id", "1")));
+
+        mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
+                .andExpect(status().isNotFound());
+        reset(bookingService);
+
+        when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
+                .thenThrow(new BookingNotExistsException("msg", Map.of("Id", "1")));
+
+        mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
+                .andExpect(status().isNotFound());
+        reset(bookingService);
+
+        when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
+                .thenThrow(new UserNotOwnerException("msg", Map.of("Id", "1")));
+
+        mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
+                .andExpect(status().isNotFound());
+        reset(bookingService);
+
+        when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
+                .thenThrow(BookingException.class);
+
+        mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
+                .andExpect(status().isNotFound());
+        reset(bookingService);
+
+        when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
+                .thenThrow(RuntimeException.class);
+
+        mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
+                .andExpect(status().isInternalServerError());
     }
 }

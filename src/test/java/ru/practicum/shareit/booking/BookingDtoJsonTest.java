@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.User;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,9 +53,11 @@ public class BookingDtoJsonTest {
         JsonContent<BookingDtoRequest> json = jsonBookingDtoRequest.write(bookingDtoRequest);
 
         assertThat(json).extractingJsonPathStringValue("$.start")
-                .isEqualTo(bookingDtoRequest.getStart().toString());
+                .isEqualTo(bookingDtoRequest.getStart()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathStringValue("$.end")
-                .isEqualTo(bookingDtoRequest.getEnd().toString());
+                .isEqualTo(bookingDtoRequest.getEnd()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathNumberValue("$.itemId")
                 .isEqualTo(bookingDtoRequest.getItemId().intValue());
     }
@@ -64,9 +67,11 @@ public class BookingDtoJsonTest {
         JsonContent<BookingDtoResponse> json = jsonBookingDtoResponse.write(bookingDtoResponse);
 
         assertThat(json).extractingJsonPathStringValue("$.start")
-                .isEqualTo(bookingDtoResponse.getStart().toString());
+                .isEqualTo(bookingDtoResponse.getStart()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathStringValue("$.end")
-                .isEqualTo(bookingDtoResponse.getEnd().toString());
+                .isEqualTo(bookingDtoResponse.getEnd()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathNumberValue("$.item.id")
                 .isEqualTo(bookingDtoResponse.getItem().getId().intValue());
         assertThat(json).extractingJsonPathStringValue("$.item.name")
@@ -94,9 +99,11 @@ public class BookingDtoJsonTest {
         assertThat(json).extractingJsonPathNumberValue("$.id")
                 .isEqualTo(bookingDtoForItem.getId().intValue());
         assertThat(json).extractingJsonPathStringValue("$.start")
-                .isEqualTo(bookingDtoForItem.getStart().toString());
+                .isEqualTo(bookingDtoForItem.getStart()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathStringValue("$.end")
-                .isEqualTo(bookingDtoForItem.getEnd().toString());
+                .isEqualTo(bookingDtoForItem.getEnd()
+                        .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(json).extractingJsonPathNumberValue("$.bookerId")
                 .isEqualTo(bookingDtoForItem.getBookerId().intValue());
         assertThat(json).extractingJsonPathValue("$.status")

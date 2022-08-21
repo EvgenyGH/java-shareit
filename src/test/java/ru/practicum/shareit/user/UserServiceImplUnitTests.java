@@ -82,7 +82,7 @@ public class UserServiceImplUnitTests {
     @Test
     void getUserByIdUserNotFoundExceptionTest() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
-        assertThatThrownBy(()->userService.getUserById(user.getId())).isInstanceOf(UserNotFoundException.class);
+        assertThatThrownBy(() -> userService.getUserById(user.getId())).isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class UserServiceImplUnitTests {
     @Test
     void deleteUserByIdUserNotFoundExceptionTest() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
-        assertThatThrownBy(()->userService.deleteUserById(user.getId())).isInstanceOf(UserNotFoundException.class);
+        assertThatThrownBy(() -> userService.deleteUserById(user.getId())).isInstanceOf(UserNotFoundException.class);
     }
 
     @Test

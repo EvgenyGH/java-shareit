@@ -131,7 +131,7 @@ public class IntegrationRequestServiceAndDbTest {
     @Test
     @Transactional
     void getRequestByIdTest() {
-        ItemRequestDtoWithResponse request = itemRequestService.getRequestById (user.getId(), itemRequest.getId());
+        ItemRequestDtoWithResponse request = itemRequestService.getRequestById(user.getId(), itemRequest.getId());
 
         TypedQuery<ItemRequest> queryRequest = entityManager.createQuery(
                 "SELECT i FROM ItemRequest i " +
@@ -146,7 +146,7 @@ public class IntegrationRequestServiceAndDbTest {
         List<Item> items = queryItem.setParameter("id", itemRequest.getId()).getResultList();
 
         ItemRequestDtoWithResponse requestDtoDb = ItemRequestDtoMapper.itemRequestToDtoWithResponse(requestsDb
-                                , items.stream().map(ItemDtoMapper::ItemToDto).collect(Collectors.toList()));
+                , items.stream().map(ItemDtoMapper::ItemToDto).collect(Collectors.toList()));
 
         assertThat(requestDtoDb.getId()).isEqualTo(request.getId());
         assertThat(requestDtoDb.getDescription()).isEqualTo(request.getDescription());
@@ -156,7 +156,7 @@ public class IntegrationRequestServiceAndDbTest {
     @Test
     @Transactional
     void getItemRequestByIdTest() {
-        ItemRequest request = itemRequestService.getItemRequestById (itemRequest.getId());
+        ItemRequest request = itemRequestService.getItemRequestById(itemRequest.getId());
 
         TypedQuery<ItemRequest> queryRequest = entityManager.createQuery(
                 "SELECT i FROM ItemRequest i " +
