@@ -118,27 +118,27 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.getBookingByBookerStatusAllOrdered(userId, PageRequest.of(from, size));
+                bookings = bookingRepository.getBookingByBookerStatusAllOrdered(userId, PageRequest.of(from / size, size));
                 break;
             case WAITING:
                 bookings = bookingRepository.getBookingByBookerStatusOrdered(userId, Status.WAITING
-                        , PageRequest.of(from, size));
+                        , PageRequest.of(from / size, size));
                 break;
             case REJECTED:
                 bookings = bookingRepository.getBookingByBookerStatusOrdered(userId, Status.REJECTED
-                        , PageRequest.of(from, size));
+                        , PageRequest.of(from / size, size));
                 break;
             case PAST:
                 bookings = bookingRepository
-                        .getBookingByBookerStatusPastOrdered(userId, LocalDateTime.now(), PageRequest.of(from, size));
+                        .getBookingByBookerStatusPastOrdered(userId, LocalDateTime.now(), PageRequest.of(from / size, size));
                 break;
             case FUTURE:
                 bookings = bookingRepository
-                        .getBookingByBookerStatusFutureOrdered(userId, LocalDateTime.now(), PageRequest.of(from, size));
+                        .getBookingByBookerStatusFutureOrdered(userId, LocalDateTime.now(), PageRequest.of(from / size, size));
                 break;
             case CURRENT:
                 bookings = bookingRepository.getBookingByBookerStatusCurrentOrdered(userId
-                        , LocalDateTime.now(), PageRequest.of(from, size));
+                        , LocalDateTime.now(), PageRequest.of(from / size, size));
                 break;
             default:
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "UNSUPPORTED_STATUS");
@@ -155,27 +155,27 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.getBookingByOwnerStatusAllOrdered(userId, PageRequest.of(from, size));
+                bookings = bookingRepository.getBookingByOwnerStatusAllOrdered(userId, PageRequest.of(from / size, size));
                 break;
             case WAITING:
                 bookings = bookingRepository.getBookingByOwnerStatusOrdered(userId, Status.WAITING
-                        , PageRequest.of(from, size));
+                        , PageRequest.of(from / size, size));
                 break;
             case REJECTED:
                 bookings = bookingRepository.getBookingByOwnerStatusOrdered(userId, Status.REJECTED
-                        , PageRequest.of(from, size));
+                        , PageRequest.of(from / size, size));
                 break;
             case PAST:
                 bookings = bookingRepository.getBookingByOwnerStatusPastOrdered(userId, LocalDateTime.now()
-                        , PageRequest.of(from, size));
+                        , PageRequest.of(from / size, size));
                 break;
             case FUTURE:
                 bookings = bookingRepository.getBookingByOwnerStatusFutureOrdered(userId, LocalDateTime.now()
-                        , PageRequest.of(from, size));
+                        , PageRequest.of(from / size, size));
                 break;
             case CURRENT:
                 bookings = bookingRepository.getBookingByOwnerStatusCurrentOrdered(userId
-                        , LocalDateTime.now(), PageRequest.of(from, size));
+                        , LocalDateTime.now(), PageRequest.of(from / size, size));
                 break;
             default:
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "UNSUPPORTED_STATUS");

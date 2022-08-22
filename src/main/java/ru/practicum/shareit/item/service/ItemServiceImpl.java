@@ -178,7 +178,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDtoWithBookings> getAllUserItems(long userId, int from, int size) {
         User user = userService.getUserById(userId);
-        List<Item> userItems = itemRepository.findAllByOwnerOrderById(user, PageRequest.of(from, size));
+        List<Item> userItems = itemRepository.findAllByOwnerOrderById(user, PageRequest.of(from/size, size));
 
         if (userItems.isEmpty()) {
             throw new ItemNotFoundException(String.format("Вещи у пользователя id=%d не найдены"
@@ -207,7 +207,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         List<Item> itemsFound = itemRepository.findAllByNameOrDescriptionIgnoreCase(text
-                , PageRequest.of(from, size));
+                , PageRequest.of(from/size, size));
 
         log.trace("Найдено {} Items содержащих <{}>.", itemsFound.size(), text);
 
