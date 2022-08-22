@@ -57,9 +57,9 @@ public class BookingController {
     @ResponseStatus(HttpStatus.OK)
     public List<BookingDtoResponse> getUserBookingByStatus(@RequestHeader("X-Sharer-User-Id") long userId
             , @RequestParam(required = false, defaultValue = "ALL") String state
-            , @RequestParam(required = false, defaultValue = "0") @Min(0) int from
+            , @RequestParam(required = false, defaultValue = "1") @Min(1) int from
             , @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
-        return bookingService.getUserBookingByStatus(userId, RequestStatus.valueOf(state), from, size);
+        return bookingService.getUserBookingByStatus(userId, RequestStatus.valueOf(state), from - 1, size);
     }
 
     //Получение списка бронирований для всех вещей текущего пользователя.
