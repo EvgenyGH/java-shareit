@@ -75,7 +75,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
 
         List<ItemRequest> itemRequests = itemRequestRepository
-                .findAllNotOwner(ownerId, PageRequest.of(from/size, size));
+                .findAllNotOwner(ownerId, PageRequest.of(from / size, size));
 
         List<ItemRequestDtoWithResponse> itemRequestDtoWithResponseList =
                 itemRequests.stream().map(itemRequest -> {
