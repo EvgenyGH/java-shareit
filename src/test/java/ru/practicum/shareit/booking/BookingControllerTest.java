@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -129,7 +128,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    void bookingExceptionHandlerTest() throws Exception {
+    void bookingExceptionHandlerMethodArgumentTypeMismatchExceptionTest() throws Exception {
         when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
                 .thenThrow(MethodArgumentTypeMismatchException.class);
 
@@ -137,10 +136,12 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
                 .andExpect(status().isBadRequest());
-        reset(bookingService);
+    }
 
+    @Test
+    void bookingExceptionHandlerStartAfterEndExceptionTest() throws Exception {
         when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
-                .thenThrow(new StartAfterEndExeption("msg",
+                .thenThrow(new StartAfterEndException("msg",
                         Map.of("start", LocalDateTime.now().toString()
                                 , "end", LocalDateTime.now().plusDays(1).toString())));
 
@@ -148,8 +149,10 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
                 .andExpect(status().isBadRequest());
-        reset(bookingService);
+    }
 
+    @Test
+    void bookingExceptionHandlerItemNotAvailableExceptionTest() throws Exception {
         when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
                 .thenThrow(new ItemNotAvailableException("msg", Map.of("id", "1")));
 
@@ -157,8 +160,10 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
                 .andExpect(status().isBadRequest());
-        reset(bookingService);
+    }
 
+    @Test
+    void bookingExceptionHandlerIllegalArgumentExceptionTest() throws Exception {
         when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
                 .thenThrow(new IllegalArgumentException("msg", null));
 
@@ -166,8 +171,10 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
                 .andExpect(status().isBadRequest());
-        reset(bookingService);
+    }
 
+    @Test
+    void bookingExceptionHandlerItemNotFoundExceptionTest() throws Exception {
         when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
                 .thenThrow(new ItemNotFoundException("msg", Map.of("Id", "1")));
 
@@ -175,8 +182,10 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
                 .andExpect(status().isNotFound());
-        reset(bookingService);
+    }
 
+    @Test
+    void bookingExceptionHandlerBookingNotExistsExceptionTest() throws Exception {
         when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
                 .thenThrow(new BookingNotExistsException("msg", Map.of("Id", "1")));
 
@@ -184,8 +193,10 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
                 .andExpect(status().isNotFound());
-        reset(bookingService);
+    }
 
+    @Test
+    void bookingExceptionHandlerUserNotOwnerExceptionTest() throws Exception {
         when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
                 .thenThrow(new UserNotOwnerException("msg", Map.of("Id", "1")));
 
@@ -193,8 +204,10 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
                 .andExpect(status().isNotFound());
-        reset(bookingService);
+    }
 
+    @Test
+    void bookingExceptionHandlerBookingExceptionTest() throws Exception {
         when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
                 .thenThrow(BookingException.class);
 
@@ -202,8 +215,10 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
                 .andExpect(status().isNotFound());
-        reset(bookingService);
+    }
 
+    @Test
+    void bookingExceptionHandlerRuntimeExceptionTest() throws Exception {
         when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
                 .thenThrow(RuntimeException.class);
 

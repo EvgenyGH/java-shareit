@@ -34,10 +34,8 @@ public class CommentRepositoryTest {
         item = itemRepository.save(item);
         comment = new Comment(33L, "text 150", item, user, LocalDateTime.now());
         comment = commentRepository.save(comment);
-        System.out.println(comment);
     }
 
-    //todo
     @Test
     void findAllByItemIdTest() {
 

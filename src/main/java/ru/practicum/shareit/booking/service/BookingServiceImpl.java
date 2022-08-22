@@ -34,7 +34,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDtoResponse bookItem(BookingDtoRequest bookingDtoRequest, long userId) {
         if (bookingDtoRequest.getStart().isAfter(bookingDtoRequest.getEnd())) {
-            throw new StartAfterEndExeption("Начало аренды после ее окончания"
+            throw new StartAfterEndException("Начало аренды после ее окончания"
                     , Map.of("Object", "Booking"
                     , "Start", bookingDtoRequest.getStart().toString()
                     , "End", bookingDtoRequest.getEnd().toString()

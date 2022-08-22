@@ -26,7 +26,6 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -128,32 +127,40 @@ public class ItemControllerTest {
     }
 
     @Test
-    void itemExceptionHandlerTest() throws Exception {
+    void itemExceptionHandlerValidationExceptionTest() throws Exception {
         when(itemService.findItems("text", 0, 10))
                 .thenThrow(ValidationException.class);
         mockMvc.perform(get("/items/search").param("text", "text"))
                 .andExpectAll(status().isBadRequest());
+    }
 
-        reset(itemService);
+    @Test
+    void itemExceptionHandlerUserNotFoundExceptionTest() throws Exception {
         when(itemService.findItems("text", 0, 10))
                 .thenThrow(new UserNotFoundException("message", Map.of("Id", "1")));
         mockMvc.perform(get("/items/search").param("text", "text"))
                 .andExpectAll(status().isNotFound());
+    }
 
-        reset(itemService);
+    @Test
+    void itemExceptionHandlerItemNotFoundExceptionTest() throws Exception {
         when(itemService.findItems("text", 0, 10))
                 .thenThrow(new ItemNotFoundException("message", Map.of("Id", "1")));
         mockMvc.perform(get("/items/search").param("text", "text"))
                 .andExpectAll(status().isNotFound());
+    }
 
-        reset(itemService);
+    @Test
+    void itemExceptionHandlerItemNotRentedExceptionTest() throws Exception {
         when(itemService.findItems("text", 0, 10))
                 .thenThrow(new ItemNotRentedException("message"
                         , Map.of("ItemId", "1", "UserId", "1")));
         mockMvc.perform(get("/items/search").param("text", "text"))
                 .andExpectAll(status().isBadRequest());
+    }
 
-        reset(itemService);
+    @Test
+    void itemExceptionHandlerRuntimeExceptionTest() throws Exception {
         when(itemService.findItems("text", 0, 10))
                 .thenThrow(RuntimeException.class);
         mockMvc.perform(get("/items/search").param("text", "text"))

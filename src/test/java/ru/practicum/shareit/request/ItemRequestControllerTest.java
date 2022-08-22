@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -105,18 +104,22 @@ public class ItemRequestControllerTest {
     }
 
     @Test
-    void ItemRequestExceptionHandlerTest() throws Exception {
+    void ItemRequestExceptionHandlerValidationExceptionTest() throws Exception {
         when(itemRequestService.getRequestById(anyLong(), anyLong())).thenThrow(ValidationException.class);
         mockMvc.perform(get("/requests/15").header("X-Sharer-User-Id", 10))
                 .andExpectAll(status().isBadRequest());
+    }
 
-        reset(itemRequestService);
+    @Test
+    void ItemRequestExceptionHandlerItemRequestNotFoundExceptionTest() throws Exception {
         when(itemRequestService.getRequestById(anyLong(), anyLong()))
                 .thenThrow(new ItemRequestNotFoundException("message", Map.of("Id", "10")));
         mockMvc.perform(get("/requests/15").header("X-Sharer-User-Id", 10))
                 .andExpectAll(status().isNotFound());
+    }
 
-        reset(itemRequestService);
+    @Test
+    void ItemRequestExceptionHandlerRuntimeExceptionTest() throws Exception {
         when(itemRequestService.getRequestById(anyLong(), anyLong())).thenThrow(RuntimeException.class);
         mockMvc.perform(get("/requests/15").header("X-Sharer-User-Id", 10))
                 .andExpectAll(status().isInternalServerError());

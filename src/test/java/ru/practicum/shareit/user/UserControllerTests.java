@@ -87,24 +87,30 @@ public class UserControllerTests {
     }
 
     @Test
-    void userExceptionHandlerTests() throws Exception {
+    void userExceptionHandlerValidationExceptionTests() throws Exception {
         when(userService.deleteUserById(anyLong())).thenThrow(ValidationException.class);
         mockMvc.perform(delete("/users/{userId}", userFirst.getId()))
                 .andExpectAll(status().isBadRequest());
+    }
 
-        reset(userService);
+    @Test
+    void userExceptionHandlerUserNotFoundExceptionTests() throws Exception {
         when(userService.deleteUserById(userFirst.getId()))
                 .thenThrow(new UserNotFoundException("message", Map.of("Id", "2")));
         mockMvc.perform(delete("/users/{userId}", userFirst.getId()))
                 .andExpectAll(status().isNotFound());
+    }
 
-        reset(userService);
+    @Test
+    void userExceptionHandlerEmailExistsExceptionTests() throws Exception {
         when(userService.deleteUserById(userFirst.getId()))
                 .thenThrow(new EmailExistsException("message", Map.of("Id", "2")));
         mockMvc.perform(delete("/users/{userId}", userFirst.getId()))
                 .andExpectAll(status().isConflict());
+    }
 
-        reset(userService);
+    @Test
+    void userExceptionHandlerTests() throws Exception {
         when(userService.deleteUserById(userFirst.getId())).thenThrow(new RuntimeException());
         mockMvc.perform(delete("/users/{userId}", userFirst.getId()))
                 .andExpectAll(status().isInternalServerError());

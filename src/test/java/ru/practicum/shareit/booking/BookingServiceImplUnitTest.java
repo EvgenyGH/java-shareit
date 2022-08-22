@@ -86,7 +86,7 @@ public class BookingServiceImplUnitTest {
                 , bookingFirst.getEndDate(), bookingFirst.getItem().getId());
 
         assertThatThrownBy(() -> bookingService.bookItem(dtoRequest, bookingFirst.getBooker().getId()))
-                .isInstanceOf(StartAfterEndExeption.class);
+                .isInstanceOf(StartAfterEndException.class);
     }
 
     @Test
