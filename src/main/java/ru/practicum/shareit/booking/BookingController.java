@@ -35,7 +35,7 @@ public class BookingController {
     //параметр approved может принимать значения true или false.
     @PatchMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
-    public BookingDtoResponse approveBooking(@/**/RequestHeader("X-Sharer-User-Id") long userId
+    public BookingDtoResponse approveBooking(@RequestHeader("X-Sharer-User-Id") long userId
             , @RequestParam boolean approved, @PathVariable long bookingId) {
         return bookingService.approveBooking(userId, bookingId, approved);
     }
