@@ -46,14 +46,14 @@ public class IntegrationRequestServiceAndDbTest {
                 .itemRequestToDto(itemRequest));
         itemRequest.setId(itemRequestDto.getId());
         Item item = new Item(15L, "item name 15", "description 15", true, user, itemRequest);
-        itemService.addItem(ItemDtoMapper.ItemToDto(item), user.getId());
+        itemService.addItem(ItemDtoMapper.itemToDto(item), user.getId());
     }
 
     @Test
     @Transactional
     void addRequestAndGetRequestTest() {
-        ItemRequestDto itemRequestDto = itemRequestService.addRequest(user.getId()
-                , ItemRequestDtoMapper.itemRequestToDto(itemRequest));
+        ItemRequestDto itemRequestDto = itemRequestService.addRequest(user.getId(),
+                ItemRequestDtoMapper.itemRequestToDto(itemRequest));
 
         assertThat(itemRequestService.getItemRequestById(itemRequestDto.getId()))
                 .isEqualTo(ItemRequestDtoMapper.toItemRequest(itemRequestDto, user));
@@ -78,8 +78,8 @@ public class IntegrationRequestServiceAndDbTest {
 
 
         List<ItemRequestDtoWithResponse> requestDtoDb = requestsDb.stream().map(itemRequest ->
-                        ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
-                                , items.stream().map(ItemDtoMapper::ItemToDto).collect(Collectors.toList())))
+                        ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest,
+                                items.stream().map(ItemDtoMapper::itemToDto).collect(Collectors.toList())))
                 .collect(Collectors.toList());
 
         assertThat(requestDtoDb.size()).isEqualTo(requests.size());
@@ -92,14 +92,14 @@ public class IntegrationRequestServiceAndDbTest {
     @Transactional
     void getAllRequestsTest() {
         User userTest = userService.addUser(new User(15L, "user name new", "email@new.com"));
-        ItemRequest itemRequestTest = new ItemRequest(20L, "description new", userTest
-                , LocalDateTime.now());
+        ItemRequest itemRequestTest = new ItemRequest(20L, "description new", userTest,
+                LocalDateTime.now());
         ItemRequestDto itemRequestDtoTest = itemRequestService.addRequest(userTest.getId(), ItemRequestDtoMapper
                 .itemRequestToDto(itemRequestTest));
         itemRequestTest.setId(itemRequestDtoTest.getId());
-        Item itemTest = new Item(15L, "item name new", "description new", true
-                , userTest, itemRequestTest);
-        itemService.addItem(ItemDtoMapper.ItemToDto(itemTest), userTest.getId());
+        Item itemTest = new Item(15L, "item name new", "description new", true,
+                userTest, itemRequestTest);
+        itemService.addItem(ItemDtoMapper.itemToDto(itemTest), userTest.getId());
 
         List<ItemRequestDtoWithResponse> allRequests = itemRequestService.getAllRequests(
                 Optional.of(0), Optional.of(5), user.getId());
@@ -118,8 +118,8 @@ public class IntegrationRequestServiceAndDbTest {
 
 
         List<ItemRequestDtoWithResponse> requestDtoDb = requestsDb.stream().map(itemRequest ->
-                        ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
-                                , items.stream().map(ItemDtoMapper::ItemToDto).collect(Collectors.toList())))
+                        ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest,
+                                items.stream().map(ItemDtoMapper::itemToDto).collect(Collectors.toList())))
                 .collect(Collectors.toList());
 
         assertThat(requestDtoDb.size()).isEqualTo(allRequests.size());
@@ -145,8 +145,8 @@ public class IntegrationRequestServiceAndDbTest {
 
         List<Item> items = queryItem.setParameter("id", itemRequest.getId()).getResultList();
 
-        ItemRequestDtoWithResponse requestDtoDb = ItemRequestDtoMapper.itemRequestToDtoWithResponse(requestsDb
-                , items.stream().map(ItemDtoMapper::ItemToDto).collect(Collectors.toList()));
+        ItemRequestDtoWithResponse requestDtoDb = ItemRequestDtoMapper.itemRequestToDtoWithResponse(requestsDb,
+                items.stream().map(ItemDtoMapper::itemToDto).collect(Collectors.toList()));
 
         assertThat(requestDtoDb.getId()).isEqualTo(request.getId());
         assertThat(requestDtoDb.getDescription()).isEqualTo(request.getDescription());

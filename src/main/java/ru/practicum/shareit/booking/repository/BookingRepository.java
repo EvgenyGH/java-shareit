@@ -100,6 +100,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "AND b.item.id = ?2 " +
             "AND b.status = ?3 " +
             "AND b.endDate < ?4")
-    Optional<Booking> getFinishedBookingByBookerItemStatus(Long bookerId
-            , Long itemId, Status status, LocalDateTime now);
+    Optional<Booking> getFinishedBookingByBookerItemStatus(Long bookerId,
+                                                           Long itemId, Status status, LocalDateTime now);
 }

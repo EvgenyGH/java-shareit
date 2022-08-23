@@ -43,10 +43,10 @@ public class UserServiceImpl implements UserService {
     public User updateUser(User user) {
         User userStored = userRepository.findById(user.getId())
                 .orElseThrow(() ->
-                        new UserNotFoundException("Пользователь не найден id=" + user.getId()
-                                , Map.of("Object", "User"
-                                , "Id", String.valueOf(user.getId())
-                                , "Description", "Not found")));
+                        new UserNotFoundException("Пользователь не найден id=" + user.getId(),
+                                Map.of("Object", "User",
+                                        "Id", String.valueOf(user.getId()),
+                                        "Description", "Not found")));
 
         if (user.getName() == null) {
             user.setName(userStored.getName());
@@ -61,11 +61,11 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userRepository.findFirstByEmailIgnoreCaseAndIdNot(user.getEmail(), user.getId()).isPresent()) {
-            throw new EmailExistsException("Пользователь с таким email уже существует"
-                    , Map.of("Object", "User"
-                    , "Field", "Email"
-                    , "Value", user.getEmail()
-                    , "Description", "Duplicates"));
+            throw new EmailExistsException("Пользователь с таким email уже существует",
+                    Map.of("Object", "User",
+                            "Field", "Email",
+                            "Value", user.getEmail(),
+                            "Description", "Duplicates"));
         }
 
         User userSaved = userRepository.save(user);
@@ -79,10 +79,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден id=" + id
-                        , Map.of("Object", "User"
-                        , "Id", String.valueOf(id)
-                        , "Description", "Not found")));
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден id=" + id,
+                        Map.of("Object", "User",
+                                "Id", String.valueOf(id),
+                                "Description", "Not found")));
 
         log.trace("Пользователь id={} отправлен: {}", id, user);
 
@@ -94,10 +94,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User deleteUserById(long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new UserNotFoundException("Пользователь не найден id=" + id
-                        , Map.of("Object", "User"
-                        , "Id", String.valueOf(id)
-                        , "Description", "Not found")));
+                new UserNotFoundException("Пользователь не найден id=" + id,
+                        Map.of("Object", "User",
+                                "Id", String.valueOf(id),
+                                "Description", "Not found")));
 
         userRepository.deleteById(id);
 

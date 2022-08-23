@@ -29,8 +29,8 @@ public class CommentRepositoryTest {
     void initialize() {
         User user = new User(200L, "user name 200", "email@200.com");
         user = userRepository.save(user);
-        Item item = new Item(300L, "item name 300", "description 300"
-                , true, user, null);
+        Item item = new Item(300L, "item name 300", "description 300",
+                true, user, null);
         item = itemRepository.save(item);
         comment = new Comment(33L, "text 150", item, user, LocalDateTime.now());
         comment = commentRepository.save(comment);

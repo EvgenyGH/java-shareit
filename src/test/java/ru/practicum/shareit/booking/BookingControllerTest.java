@@ -49,16 +49,16 @@ public class BookingControllerTest {
         userFirst = new User(25L, "name 25", "email@25.com");
         userSecond = new User(35L, "name 35", "email@35.com");
 
-        Item item = new Item(105L, "name 105", "description 105"
-                , true, userFirst, null);
+        Item item = new Item(105L, "name 105", "description 105",
+                true, userFirst, null);
 
-        bookingFirst = new Booking(115L, LocalDateTime.now().plusDays(15)
-                , LocalDateTime.now().plusDays(20), item, userSecond, Status.APPROVED);
-        bookingSecond = new Booking(125L, LocalDateTime.now().plusDays(5)
-                , LocalDateTime.now().plusDays(6), item, userSecond, Status.APPROVED);
+        bookingFirst = new Booking(115L, LocalDateTime.now().plusDays(15),
+                LocalDateTime.now().plusDays(20), item, userSecond, Status.APPROVED);
+        bookingSecond = new Booking(125L, LocalDateTime.now().plusDays(5),
+                LocalDateTime.now().plusDays(6), item, userSecond, Status.APPROVED);
 
-        dtoRequestFirst = new BookingDtoRequest(bookingFirst.getStartDate(), bookingFirst.getEndDate()
-                , bookingFirst.getItem().getId());
+        dtoRequestFirst = new BookingDtoRequest(bookingFirst.getStartDate(), bookingFirst.getEndDate(),
+                bookingFirst.getItem().getId());
     }
 
     @Test
@@ -78,8 +78,8 @@ public class BookingControllerTest {
         BookingDtoResponse dtoResponseTest = BookingDtoMapper.bookingToDto(bookingFirst);
         dtoResponseTest.setStatus(Status.REJECTED);
 
-        when(bookingService.approveBooking(bookingFirst.getItem().getOwner().getId()
-                , bookingFirst.getId(), false)).thenReturn(dtoResponseTest);
+        when(bookingService.approveBooking(bookingFirst.getItem().getOwner().getId(),
+                bookingFirst.getId(), false)).thenReturn(dtoResponseTest);
 
         mockMvc.perform(patch("/bookings/{bookingId}", bookingFirst.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -96,8 +96,8 @@ public class BookingControllerTest {
         mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
-                .andExpectAll(status().isOk()
-                        , content().json(mapper.writeValueAsString(BookingDtoMapper.bookingToDto(bookingFirst))));
+                .andExpectAll(status().isOk(),
+                        content().json(mapper.writeValueAsString(BookingDtoMapper.bookingToDto(bookingFirst))));
     }
 
     @Test
@@ -108,8 +108,8 @@ public class BookingControllerTest {
 
         mockMvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", bookingFirst.getBooker().getId()))
-                .andExpectAll(status().isOk()
-                        , content().json(mapper.writeValueAsString(Stream.of(bookingFirst, bookingSecond)
+                .andExpectAll(status().isOk(),
+                        content().json(mapper.writeValueAsString(Stream.of(bookingFirst, bookingSecond)
                                 .map(BookingDtoMapper::bookingToDto).collect(Collectors.toList()))));
 
     }
@@ -122,8 +122,8 @@ public class BookingControllerTest {
 
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", userFirst.getId()))
-                .andExpectAll(status().isOk()
-                        , content().json(mapper.writeValueAsString(Stream.of(bookingFirst, bookingSecond)
+                .andExpectAll(status().isOk(),
+                        content().json(mapper.writeValueAsString(Stream.of(bookingFirst, bookingSecond)
                                 .map(BookingDtoMapper::bookingToDto).collect(Collectors.toList()))));
     }
 
@@ -142,8 +142,8 @@ public class BookingControllerTest {
     void bookingExceptionHandlerStartAfterEndExceptionTest() throws Exception {
         when(bookingService.getBooking(bookingFirst.getBooker().getId(), bookingFirst.getId()))
                 .thenThrow(new StartAfterEndException("msg",
-                        Map.of("start", LocalDateTime.now().toString()
-                                , "end", LocalDateTime.now().plusDays(1).toString())));
+                        Map.of("start", LocalDateTime.now().toString(),
+                                "end", LocalDateTime.now().plusDays(1).toString())));
 
         mockMvc.perform(get("/bookings/{bookingId}", bookingFirst.getId())
                         .contentType(MediaType.APPLICATION_JSON)

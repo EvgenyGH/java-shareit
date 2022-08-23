@@ -57,34 +57,34 @@ public class ItemServiceAndDbIntegrationTest {
         userSecond = userService.addUser(userSecond);
 
         ItemRequest itemRequest = new ItemRequest(5L, "description 5", userSecond, LocalDateTime.now().minusHours(1));
-        ItemRequestDto itemRequestDto = itemRequestService.addRequest(itemRequest.getRequestor().getId()
-                , ItemRequestDtoMapper.itemRequestToDto(itemRequest));
+        ItemRequestDto itemRequestDto = itemRequestService.addRequest(itemRequest.getRequestor().getId(),
+                ItemRequestDtoMapper.itemRequestToDto(itemRequest));
         itemRequest.setId(itemRequestDto.getId());
 
         item = new Item(15L, "name 15", "description 15", true, userFirst, itemRequest);
-        itemDto = ItemDtoMapper.ItemToDto(item);
+        itemDto = ItemDtoMapper.itemToDto(item);
         item = itemService.addItem(itemDto, item.getOwner().getId());
         itemDto.setId(item.getId());
 
-        bookingFirst = new Booking(2L, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1)
-                , item, userSecond, Status.APPROVED);
-        bookingSecond = new Booking(3L, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2)
-                , item, userSecond, Status.APPROVED);
+        bookingFirst = new Booking(2L, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1),
+                item, userSecond, Status.APPROVED);
+        bookingSecond = new Booking(3L, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2),
+                item, userSecond, Status.APPROVED);
         BookingDtoResponse bookingDtoResponse = bookingService.bookItem(
-                new BookingDtoRequest(bookingFirst.getStartDate(), bookingFirst.getEndDate()
-                        , bookingFirst.getItem().getId()), bookingFirst.getBooker().getId());
+                new BookingDtoRequest(bookingFirst.getStartDate(), bookingFirst.getEndDate(),
+                        bookingFirst.getItem().getId()), bookingFirst.getBooker().getId());
         bookingFirst.setId(bookingDtoResponse.getId());
         bookingDtoResponse = bookingService.bookItem(
-                new BookingDtoRequest(bookingSecond.getStartDate(), bookingSecond.getEndDate()
-                        , bookingSecond.getItem().getId()), bookingSecond.getBooker().getId());
+                new BookingDtoRequest(bookingSecond.getStartDate(), bookingSecond.getEndDate(),
+                        bookingSecond.getItem().getId()), bookingSecond.getBooker().getId());
         bookingSecond.setId(bookingDtoResponse.getId());
 
         bookingService.approveBooking(item.getOwner().getId(), bookingFirst.getId(), true);
         bookingService.approveBooking(item.getOwner().getId(), bookingSecond.getId(), true);
 
         comment = new Comment(3L, "text 3", item, userSecond, LocalDateTime.now());
-        comment = itemService.addCommentToItem(comment.getAuthor().getId(), item.getId()
-                , CommentDtoMapper.CommentToDto(comment));
+        comment = itemService.addCommentToItem(comment.getAuthor().getId(), item.getId(),
+                CommentDtoMapper.commentToDto(comment));
     }
 
     @Test
@@ -113,8 +113,8 @@ public class ItemServiceAndDbIntegrationTest {
     @Test
     @Transactional
     void getItemDtoWithBookingsByIdTest() {
-        ItemDtoWithBookings itemDtoWithBookings = itemService.getItemDtoWithBookingsById(item.getId()
-                , userSecond.getId());
+        ItemDtoWithBookings itemDtoWithBookings = itemService.getItemDtoWithBookingsById(item.getId(),
+                userSecond.getId());
 
         Item itemTest = manager.createQuery("SELECT i FROM Item i " +
                 "WHERE i.id = :id", Item.class).setParameter("id", item.getId()).getSingleResult();
@@ -134,8 +134,8 @@ public class ItemServiceAndDbIntegrationTest {
         List<Comment> comments = manager.createQuery("SELECT c FROM Comment c " +
                 "WHERE c.item.id = ?1", Comment.class).setParameter(1, item.getId()).getResultList();
 
-        ItemDtoWithBookings itemDtoWithBookingsTest = ItemDtoMapper.itemToDtoWithBookings(itemTest
-                , bookingFirst, bookingSecond, comments);
+        ItemDtoWithBookings itemDtoWithBookingsTest = ItemDtoMapper.itemToDtoWithBookings(itemTest,
+                bookingFirst, bookingSecond, comments);
 
         assertThat(itemDtoWithBookings).isEqualTo(itemDtoWithBookingsTest);
     }
@@ -151,8 +151,8 @@ public class ItemServiceAndDbIntegrationTest {
     @Transactional
     void getAllUserItemsTest() {
         List<ItemDtoWithBookings> items = itemService.getAllUserItems(item.getOwner().getId(), 0, 10);
-        List<ItemDtoWithBookings> itemsTest = List.of(ItemDtoMapper.itemToDtoWithBookings(item
-                , bookingFirst, bookingSecond, List.of(comment)));
+        List<ItemDtoWithBookings> itemsTest = List.of(ItemDtoMapper.itemToDtoWithBookings(item,
+                bookingFirst, bookingSecond, List.of(comment)));
         assertThat(items).isEqualTo(itemsTest);
     }
 

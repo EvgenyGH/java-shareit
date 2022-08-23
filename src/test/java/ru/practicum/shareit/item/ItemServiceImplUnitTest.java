@@ -66,10 +66,10 @@ public class ItemServiceImplUnitTest {
 
     @Test
     void addItemWithRequestTest() {
-        ItemRequest itemRequest = new ItemRequest(20L, "description 20", item.getOwner()
-                , LocalDateTime.now());
+        ItemRequest itemRequest = new ItemRequest(20L, "description 20", item.getOwner(),
+                LocalDateTime.now());
         item.setRequest(itemRequest);
-        ItemDto itemDto = ItemDtoMapper.ItemToDto(item);
+        ItemDto itemDto = ItemDtoMapper.itemToDto(item);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
         when(itemRequestService.getItemRequestById(itemRequest.getId())).thenReturn(itemRequest);
@@ -82,7 +82,7 @@ public class ItemServiceImplUnitTest {
 
     @Test
     void addItemWithoutRequestTest() {
-        ItemDto itemDto = ItemDtoMapper.ItemToDto(item);
+        ItemDto itemDto = ItemDtoMapper.itemToDto(item);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
         when(itemRepository.save(any(Item.class))).thenReturn(item);
@@ -94,7 +94,7 @@ public class ItemServiceImplUnitTest {
 
     @Test
     void updateItemTest() {
-        ItemDto itemDto = ItemDtoMapper.ItemToDto(item);
+        ItemDto itemDto = ItemDtoMapper.itemToDto(item);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
         when(itemRepository.findByIdAndOwner(item.getId(), item.getOwner())).thenReturn(Optional.ofNullable(item));
@@ -108,7 +108,7 @@ public class ItemServiceImplUnitTest {
     @Test
     void updateItemRequestIdNotNullTest() {
         item.setRequest(new ItemRequest(300L, "description 300", user, LocalDateTime.now()));
-        ItemDto itemDto = ItemDtoMapper.ItemToDto(item);
+        ItemDto itemDto = ItemDtoMapper.itemToDto(item);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
         when(itemRepository.findByIdAndOwner(item.getId(), item.getOwner())).thenReturn(Optional.ofNullable(item));
@@ -129,7 +129,7 @@ public class ItemServiceImplUnitTest {
         itemNulls.setId(null);
         itemNulls.setName(null);
 
-        ItemDto itemDto = ItemDtoMapper.ItemToDto(itemNulls);
+        ItemDto itemDto = ItemDtoMapper.itemToDto(itemNulls);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
         when(itemRepository.findByIdAndOwner(item.getId(), item.getOwner())).thenReturn(Optional.ofNullable(item));
@@ -143,7 +143,7 @@ public class ItemServiceImplUnitTest {
     @Test
     void updateItemConstraintViolationExceptionTest() {
         item.setName("");
-        ItemDto itemDto = ItemDtoMapper.ItemToDto(item);
+        ItemDto itemDto = ItemDtoMapper.itemToDto(item);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
         when(itemRepository.findByIdAndOwner(item.getId(), item.getOwner())).thenReturn(Optional.ofNullable(item));
@@ -154,7 +154,7 @@ public class ItemServiceImplUnitTest {
 
     @Test
     void updateItemItemNotFoundExceptionTest() {
-        ItemDto itemDto = ItemDtoMapper.ItemToDto(item);
+        ItemDto itemDto = ItemDtoMapper.itemToDto(item);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
         when(itemRepository.findByIdAndOwner(item.getId(), item.getOwner())).thenReturn(Optional.empty());
@@ -165,22 +165,22 @@ public class ItemServiceImplUnitTest {
 
     @Test
     void getItemDtoWithBookingsByIdTest() {
-        Booking bookingLast = new Booking(1L, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(5)
-                , item, item.getOwner(), Status.APPROVED);
-        Booking bookingNext = new Booking(2L, LocalDateTime.now().plusDays(10), LocalDateTime.now().plusDays(11)
-                , item, item.getOwner(), Status.APPROVED);
-        List<Comment> comments = List.of(new Comment(1L, "text", item, item.getOwner()
-                , LocalDateTime.now().minusDays(20)));
-        ItemDtoWithBookings itemDtoWithBookings = ItemDtoMapper.itemToDtoWithBookings(item
-                , bookingLast, bookingNext, comments);
+        Booking bookingLast = new Booking(1L, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(5),
+                item, item.getOwner(), Status.APPROVED);
+        Booking bookingNext = new Booking(2L, LocalDateTime.now().plusDays(10), LocalDateTime.now().plusDays(11),
+                item, item.getOwner(), Status.APPROVED);
+        List<Comment> comments = List.of(new Comment(1L, "text", item, item.getOwner(),
+                LocalDateTime.now().minusDays(20)));
+        ItemDtoWithBookings itemDtoWithBookings = ItemDtoMapper.itemToDtoWithBookings(item,
+                bookingLast, bookingNext, comments);
 
         when(itemRepository.findById(item.getId())).thenReturn(Optional.ofNullable(item));
         when(bookingRepository.getBookingByItemBooker(item.getId(), item.getOwner().getId()))
                 .thenReturn(Collections.emptyList());
-        when(bookingRepository.getLastItemBookingOrdered(anyLong(), any(LocalDateTime.class)
-                , any(PageRequest.class))).thenReturn(List.of(bookingLast));
-        when(bookingRepository.getNextItemBookingOrdered(anyLong(), any(LocalDateTime.class)
-                , any(PageRequest.class))).thenReturn(List.of(bookingNext));
+        when(bookingRepository.getLastItemBookingOrdered(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class))).thenReturn(List.of(bookingLast));
+        when(bookingRepository.getNextItemBookingOrdered(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class))).thenReturn(List.of(bookingNext));
         when(commentRepository.findAllByItemId(item.getId())).thenReturn(comments);
 
         assertThat(itemService.getItemDtoWithBookingsById(item.getId(), item.getOwner().getId()))
@@ -189,12 +189,12 @@ public class ItemServiceImplUnitTest {
 
     @Test
     void getItemDtoWithBookingsByIdWithNullBookingsTest() {
-        Booking booking = new Booking(1L, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(5)
-                , item, item.getOwner(), Status.APPROVED);
-        List<Comment> comments = List.of(new Comment(1L, "text", item, item.getOwner()
-                , LocalDateTime.now().minusDays(20)));
-        ItemDtoWithBookings itemDtoWithBookings = ItemDtoMapper.itemToDtoWithBookings(item
-                , null, null, comments);
+        Booking booking = new Booking(1L, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(5),
+                item, item.getOwner(), Status.APPROVED);
+        List<Comment> comments = List.of(new Comment(1L, "text", item, item.getOwner(),
+                LocalDateTime.now().minusDays(20)));
+        ItemDtoWithBookings itemDtoWithBookings = ItemDtoMapper.itemToDtoWithBookings(item,
+                null, null, comments);
 
         when(itemRepository.findById(item.getId())).thenReturn(Optional.ofNullable(item));
         when(bookingRepository.getBookingByItemBooker(item.getId(), item.getOwner().getId()))
@@ -228,8 +228,8 @@ public class ItemServiceImplUnitTest {
 
     @Test
     void getAllUserItemsTest() {
-        ItemDtoWithBookings itemDtoWithBookings = ItemDtoMapper.itemToDtoWithBookings(item
-                , null, null, Collections.emptyList());
+        ItemDtoWithBookings itemDtoWithBookings = ItemDtoMapper.itemToDtoWithBookings(item,
+                null, null, Collections.emptyList());
         List<ItemDtoWithBookings> bookings = List.of(itemDtoWithBookings);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
@@ -271,10 +271,10 @@ public class ItemServiceImplUnitTest {
     @Test
     void addCommentToItemTest() {
         Comment comment = new Comment(1L, "text", item, item.getOwner(), LocalDateTime.now());
-        CommentDto commentDto = CommentDtoMapper.CommentToDto(comment);
+        CommentDto commentDto = CommentDtoMapper.commentToDto(comment);
         User booker = new User(15L, "user name 15", "email@15.com");
-        Booking booking = new Booking(1L, LocalDateTime.now(), LocalDateTime.now().plusDays(12)
-                , item, booker, Status.APPROVED);
+        Booking booking = new Booking(1L, LocalDateTime.now(), LocalDateTime.now().plusDays(12),
+                item, booker, Status.APPROVED);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
         doReturn(item).when(itemService).getItemById(item.getId());
@@ -289,7 +289,7 @@ public class ItemServiceImplUnitTest {
     @Test
     void addCommentToItemItemNotRentedExceptionTest() {
         Comment comment = new Comment(1L, "text", item, item.getOwner(), LocalDateTime.now());
-        CommentDto commentDto = CommentDtoMapper.CommentToDto(comment);
+        CommentDto commentDto = CommentDtoMapper.commentToDto(comment);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
         doReturn(item).when(itemService).getItemById(item.getId());

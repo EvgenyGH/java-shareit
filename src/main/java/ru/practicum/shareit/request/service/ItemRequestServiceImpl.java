@@ -35,8 +35,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto addRequest(Long userId, ItemRequestDto itemRequestDto) {
         itemRequestDto.setId(null);
         itemRequestDto.setCreated(LocalDateTime.now());
-        ItemRequest itemRequest = ItemRequestDtoMapper.toItemRequest(itemRequestDto
-                , userService.getUserById(userId));
+        ItemRequest itemRequest = ItemRequestDtoMapper.toItemRequest(itemRequestDto,
+                userService.getUserById(userId));
         itemRequest = itemRequestRepository.save(itemRequest);
 
         log.trace("Запрос вещи id={} добавлен: {}", itemRequest.getId(), itemRequest);
@@ -52,19 +52,19 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequestDtoWithResponse> itemRequestDtoWithResponse =
                 itemRequests.stream().map(itemRequest -> {
                     List<Item> items = itemRepository.findAllByRequestId(itemRequest.getId());
-                    return ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
-                            , items.stream().map(ItemDtoMapper::ItemToDto).collect(Collectors.toList()));
+                    return ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest,
+                            items.stream().map(ItemDtoMapper::itemToDto).collect(Collectors.toList()));
                 }).collect(Collectors.toList());
 
-        log.trace("Возвращено {} запросов пользователя id={} c ответами.", itemRequestDtoWithResponse.size()
-                , userId);
+        log.trace("Возвращено {} запросов пользователя id={} c ответами.", itemRequestDtoWithResponse.size(),
+                userId);
 
         return itemRequestDtoWithResponse;
     }
 
     @Override
-    public List<ItemRequestDtoWithResponse> getAllRequests(Optional<Integer> fromOpt, Optional<Integer> sizeOpt
-            , Long ownerId) {
+    public List<ItemRequestDtoWithResponse> getAllRequests(Optional<Integer> fromOpt, Optional<Integer> sizeOpt,
+                                                           Long ownerId) {
         Integer from = fromOpt.orElse(null);
         Integer size = sizeOpt.orElse(null);
 
@@ -80,12 +80,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequestDtoWithResponse> itemRequestDtoWithResponseList =
                 itemRequests.stream().map(itemRequest -> {
                     List<Item> items = itemRepository.findAllByRequestId(itemRequest.getId());
-                    return ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
-                            , items.stream().map(ItemDtoMapper::ItemToDto).collect(Collectors.toList()));
+                    return ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest,
+                            items.stream().map(ItemDtoMapper::itemToDto).collect(Collectors.toList()));
                 }).collect(Collectors.toList());
 
-        log.trace("Возвращено {} запросов вещей с {} размер страницы {}", itemRequestDtoWithResponseList.size()
-                , from, size);
+        log.trace("Возвращено {} запросов вещей с {} размер страницы {}", itemRequestDtoWithResponseList.size(),
+                from, size);
 
         return itemRequestDtoWithResponseList;
     }
@@ -96,9 +96,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         ItemRequest itemRequest = getItemRequestById(requestId);
         ItemRequestDtoWithResponse itemRequestDtoWithResponse =
-                ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
-                        , itemRepository.findAllByRequestId(itemRequest.getId())
-                                .stream().map(ItemDtoMapper::ItemToDto).collect(Collectors.toList()));
+                ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest,
+                        itemRepository.findAllByRequestId(itemRequest.getId())
+                                .stream().map(ItemDtoMapper::itemToDto).collect(Collectors.toList()));
 
         log.trace("Возвращен запрос вещи (DtoWithResponse) id={}: {}", requestId, itemRequestDtoWithResponse);
 
@@ -108,10 +108,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public ItemRequest getItemRequestById(Long requestId) {
         ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow(
-                () -> new ItemRequestNotFoundException(String.format("Запрос вещи id=%d не найден", requestId)
-                        , Map.of("Object", "ItemRequest"
-                        , "Id", String.valueOf(requestId)
-                        , "Description", "ItemRequest not found")));
+                () -> new ItemRequestNotFoundException(String.format("Запрос вещи id=%d не найден", requestId),
+                        Map.of("Object", "ItemRequest",
+                                "Id", String.valueOf(requestId),
+                                "Description", "ItemRequest not found")));
 
         log.trace("Возвращен запрос вещи id={}: {}", requestId, itemRequest);
 

@@ -25,8 +25,8 @@ public class BookingController {
     //После создания запрос находится в статусе WAITING — «ожидает подтверждения».
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public BookingDtoResponse bookItem(@RequestBody @Valid BookingDtoRequest bookingDtoRequest
-            , @RequestHeader("X-Sharer-User-Id") long userId) {
+    public BookingDtoResponse bookItem(@RequestBody @Valid BookingDtoRequest bookingDtoRequest,
+                                       @RequestHeader("X-Sharer-User-Id") long userId) {
         return bookingService.bookItem(bookingDtoRequest, userId);
     }
 
@@ -35,8 +35,8 @@ public class BookingController {
     //параметр approved может принимать значения true или false.
     @PatchMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
-    public BookingDtoResponse approveBooking(@RequestHeader("X-Sharer-User-Id") long userId
-            , @RequestParam boolean approved, @PathVariable long bookingId) {
+    public BookingDtoResponse approveBooking(@RequestHeader("X-Sharer-User-Id") long userId,
+                                             @RequestParam boolean approved, @PathVariable long bookingId) {
         return bookingService.approveBooking(userId, bookingId, approved);
     }
 
@@ -44,8 +44,8 @@ public class BookingController {
     //либо владельцем вещи, к которой относится бронирование.
     @GetMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
-    public BookingDtoResponse getBooking(@RequestHeader("X-Sharer-User-Id") long userId
-            , @PathVariable long bookingId) {
+    public BookingDtoResponse getBooking(@RequestHeader("X-Sharer-User-Id") long userId,
+                                         @PathVariable long bookingId) {
         return bookingService.getBooking(userId, bookingId);
     }
 
@@ -55,10 +55,13 @@ public class BookingController {
     //Бронирования должны возвращаться отсортированными по дате от более новых к более старым.
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<BookingDtoResponse> getUserBookingByStatus(@RequestHeader("X-Sharer-User-Id") long userId
-            , @RequestParam(required = false, defaultValue = "ALL") String state
-            , @RequestParam(required = false, defaultValue = "0") @Min(0) int from
-            , @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
+    public List<BookingDtoResponse> getUserBookingByStatus(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                           @RequestParam(required = false,
+                                                                   defaultValue = "ALL") String state,
+                                                           @RequestParam(required = false,
+                                                                   defaultValue = "0") @Min(0) int from,
+                                                           @RequestParam(required = false,
+                                                                   defaultValue = "10") @Min(1) int size) {
         return bookingService.getUserBookingByStatus(userId, RequestStatus.valueOf(state), from, size);
     }
 
@@ -67,10 +70,13 @@ public class BookingController {
     //Работа параметра state аналогична его работе в предыдущем сценарии.
     @GetMapping("/owner")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookingDtoResponse> getAllUserBookings(@RequestHeader("X-Sharer-User-Id") long userId
-            , @RequestParam(required = false, defaultValue = "ALL") String state
-            , @RequestParam(required = false, defaultValue = "0") @Min(0) int from
-            , @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
+    public List<BookingDtoResponse> getAllUserBookings(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                       @RequestParam(required = false,
+                                                               defaultValue = "ALL") String state,
+                                                       @RequestParam(required = false,
+                                                               defaultValue = "0") @Min(0) int from,
+                                                       @RequestParam(required = false,
+                                                               defaultValue = "10") @Min(1) int size) {
         return bookingService.getAllUserBookings(userId, RequestStatus.valueOf(state), from, size);
     }
 }

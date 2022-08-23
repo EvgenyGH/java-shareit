@@ -9,19 +9,19 @@ import ru.practicum.shareit.user.dto.UserDtoMapper;
 
 public class BookingDtoMapper {
     public static BookingDtoResponse bookingToDto(Booking booking) {
-        return new BookingDtoResponse(booking.getId(), booking.getStartDate()
-                , booking.getEndDate(), ItemDtoMapper.ItemToDto(booking.getItem())
-                , UserDtoMapper.userToDto(booking.getBooker()), booking.getStatus());
+        return new BookingDtoResponse(booking.getId(), booking.getStartDate(),
+                booking.getEndDate(), ItemDtoMapper.itemToDto(booking.getItem()),
+                UserDtoMapper.userToDto(booking.getBooker()), booking.getStatus());
     }
 
-    public static Booking DtoRequestToBooking(BookingDtoRequest bookingDtoRequest, Item item, User booker) {
-        return new Booking(null, bookingDtoRequest.getStart(), bookingDtoRequest.getEnd()
-                , item, booker, Status.WAITING);
+    public static Booking dtoRequestToBooking(BookingDtoRequest bookingDtoRequest, Item item, User booker) {
+        return new Booking(null, bookingDtoRequest.getStart(), bookingDtoRequest.getEnd(),
+                item, booker, Status.WAITING);
     }
 
     public static BookingDtoForItem bookingToDtoForItem(Booking booking) {
-        return new BookingDtoForItem(booking.getId(), booking.getStartDate()
-                , booking.getEndDate(), booking.getBooker().getId()
-                , booking.getStatus());
+        return new BookingDtoForItem(booking.getId(), booking.getStartDate(),
+                booking.getEndDate(), booking.getBooker().getId(),
+                booking.getStatus());
     }
 }

@@ -28,12 +28,12 @@ public class CommentDtoJsonTest {
     @BeforeEach
     void initialize() {
         User user = new User(10L, "name 10", "email@10.ru");
-        ItemRequest itemRequest = new ItemRequest(5L, "description 5"
-                , user, LocalDateTime.now().minusHours(1));
-        Item item = new Item(15L, "name 15", "description 15", true
-                , user, itemRequest);
+        ItemRequest itemRequest = new ItemRequest(5L, "description 5",
+                user, LocalDateTime.now().minusHours(1));
+        Item item = new Item(15L, "name 15", "description 15", true,
+                user, itemRequest);
         Comment comment = new Comment(11L, "text 11", item, user, LocalDateTime.now());
-        commentDto = CommentDtoMapper.CommentToDto(comment);
+        commentDto = CommentDtoMapper.commentToDto(comment);
     }
 
     @Test

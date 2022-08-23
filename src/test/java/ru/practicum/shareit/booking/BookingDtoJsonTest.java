@@ -35,17 +35,17 @@ public class BookingDtoJsonTest {
     @BeforeEach
     void initialize() {
         User user = new User(25L, "name 25", "email@25.com");
-        ItemRequest itemRequest = new ItemRequest(40L, "description 40"
-                , user, LocalDateTime.now());
-        Item item = new Item(105L, "name 105", "description 105"
-                , true, user, itemRequest);
-        Booking booking = new Booking(115L, LocalDateTime.now().minusDays(15)
-                , LocalDateTime.now().minusDays(12), item, user, Status.APPROVED);
+        ItemRequest itemRequest = new ItemRequest(40L, "description 40",
+                user, LocalDateTime.now());
+        Item item = new Item(105L, "name 105", "description 105",
+                true, user, itemRequest);
+        Booking booking = new Booking(115L, LocalDateTime.now().minusDays(15),
+                LocalDateTime.now().minusDays(12), item, user, Status.APPROVED);
 
         bookingDtoResponse = BookingDtoMapper.bookingToDto(booking);
         bookingDtoForItem = BookingDtoMapper.bookingToDtoForItem(booking);
-        bookingDtoRequest = new BookingDtoRequest(booking.getStartDate(), booking.getEndDate()
-                , booking.getItem().getId());
+        bookingDtoRequest = new BookingDtoRequest(booking.getStartDate(), booking.getEndDate(),
+                booking.getItem().getId());
     }
 
     @Test

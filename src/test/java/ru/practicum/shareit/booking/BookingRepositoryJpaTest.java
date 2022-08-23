@@ -43,16 +43,16 @@ public class BookingRepositoryJpaTest {
         userFirst = userRepository.save(userFirst);
         userSecond = userRepository.save(userSecond);
 
-        item = new Item(105L, "name 105", "description 105"
-                , true, userFirst, null);
+        item = new Item(105L, "name 105", "description 105",
+                true, userFirst, null);
         item = itemRepository.save(item);
 
-        bookingFirst = new Booking(115L, LocalDateTime.now().minusDays(15)
-                , LocalDateTime.now().minusDays(12), item, userSecond, Status.APPROVED);
-        bookingSecond = new Booking(125L, LocalDateTime.now().plusDays(15)
-                , LocalDateTime.now().plusDays(20), item, userSecond, Status.APPROVED);
-        bookingThird = new Booking(130L, LocalDateTime.now().minusDays(1)
-                , LocalDateTime.now().plusDays(1), item, userSecond, Status.APPROVED);
+        bookingFirst = new Booking(115L, LocalDateTime.now().minusDays(15),
+                LocalDateTime.now().minusDays(12), item, userSecond, Status.APPROVED);
+        bookingSecond = new Booking(125L, LocalDateTime.now().plusDays(15),
+                LocalDateTime.now().plusDays(20), item, userSecond, Status.APPROVED);
+        bookingThird = new Booking(130L, LocalDateTime.now().minusDays(1),
+                LocalDateTime.now().plusDays(1), item, userSecond, Status.APPROVED);
         bookingFirst = bookingRepository.save(bookingFirst);
         bookingSecond = bookingRepository.save(bookingSecond);
         bookingThird = bookingRepository.save(bookingThird);
@@ -119,8 +119,8 @@ public class BookingRepositoryJpaTest {
     @Test
     void getBookingByBookerStatusPastOrderedTest() {
         List<Booking> bookingsTest = bookingRepository
-                .getBookingByBookerStatusPastOrdered(userSecond.getId(), LocalDateTime.now()
-                        , PageRequest.of(0, 10));
+                .getBookingByBookerStatusPastOrdered(userSecond.getId(), LocalDateTime.now(),
+                        PageRequest.of(0, 10));
 
         assertThat(bookingsTest).isEqualTo(List.of(bookingFirst));
     }
@@ -128,8 +128,8 @@ public class BookingRepositoryJpaTest {
     @Test
     void getBookingByBookerStatusFutureOrderedTest() {
         List<Booking> bookingsTest = bookingRepository
-                .getBookingByBookerStatusFutureOrdered(userSecond.getId(), LocalDateTime.now()
-                        , PageRequest.of(0, 10));
+                .getBookingByBookerStatusFutureOrdered(userSecond.getId(), LocalDateTime.now(),
+                        PageRequest.of(0, 10));
 
         assertThat(bookingsTest).isEqualTo(List.of(bookingSecond));
     }
@@ -137,8 +137,8 @@ public class BookingRepositoryJpaTest {
     @Test
     void getBookingByBookerStatusCurrentOrderedTest() {
         List<Booking> bookingsTest = bookingRepository
-                .getBookingByBookerStatusCurrentOrdered(userSecond.getId(), LocalDateTime.now()
-                        , PageRequest.of(0, 10));
+                .getBookingByBookerStatusCurrentOrdered(userSecond.getId(), LocalDateTime.now(),
+                        PageRequest.of(0, 10));
 
         assertThat(bookingsTest).isEqualTo(List.of(bookingThird));
     }
@@ -146,8 +146,8 @@ public class BookingRepositoryJpaTest {
     @Test
     void getBookingByBookerStatusCurrentOrderedWrongBookerTest() {
         List<Booking> bookingsTest = bookingRepository
-                .getBookingByBookerStatusCurrentOrdered(userFirst.getId(), LocalDateTime.now()
-                        , PageRequest.of(0, 10));
+                .getBookingByBookerStatusCurrentOrdered(userFirst.getId(), LocalDateTime.now(),
+                        PageRequest.of(0, 10));
 
         assertThat(bookingsTest).isEqualTo(Collections.emptyList());
     }
@@ -190,24 +190,24 @@ public class BookingRepositoryJpaTest {
 
     @Test
     void getBookingByOwnerStatusPastOrderedTest() {
-        List<Booking> bookingsTest = bookingRepository.getBookingByOwnerStatusPastOrdered(userFirst.getId()
-                , LocalDateTime.now(), PageRequest.of(0, 10));
+        List<Booking> bookingsTest = bookingRepository.getBookingByOwnerStatusPastOrdered(userFirst.getId(),
+                LocalDateTime.now(), PageRequest.of(0, 10));
 
         assertThat(bookingsTest).isEqualTo(List.of(bookingFirst));
     }
 
     @Test
     void getBookingByOwnerStatusFutureOrderedTest() {
-        List<Booking> bookingsTest = bookingRepository.getBookingByOwnerStatusFutureOrdered(userFirst.getId()
-                , LocalDateTime.now(), PageRequest.of(0, 10));
+        List<Booking> bookingsTest = bookingRepository.getBookingByOwnerStatusFutureOrdered(userFirst.getId(),
+                LocalDateTime.now(), PageRequest.of(0, 10));
 
         assertThat(bookingsTest).isEqualTo(List.of(bookingSecond));
     }
 
     @Test
     void getBookingByOwnerStatusCurrentOrderedTest() {
-        List<Booking> bookingsTest = bookingRepository.getBookingByOwnerStatusCurrentOrdered(userFirst.getId()
-                , LocalDateTime.now(), PageRequest.of(0, 10));
+        List<Booking> bookingsTest = bookingRepository.getBookingByOwnerStatusCurrentOrdered(userFirst.getId(),
+                LocalDateTime.now(), PageRequest.of(0, 10));
 
         assertThat(bookingsTest).isEqualTo(List.of(bookingThird));
     }
@@ -215,8 +215,8 @@ public class BookingRepositoryJpaTest {
 
     @Test
     void getLastItemBookingOrderedTest() {
-        List<Booking> bookingsTest = bookingRepository.getLastItemBookingOrdered(item.getId()
-                , LocalDateTime.now(), PageRequest.of(0, 10));
+        List<Booking> bookingsTest = bookingRepository.getLastItemBookingOrdered(item.getId(),
+                LocalDateTime.now(), PageRequest.of(0, 10));
 
         List<Booking> bookings = new ArrayList<>();
         Collections.addAll(bookings, bookingFirst, bookingThird);
@@ -227,40 +227,40 @@ public class BookingRepositoryJpaTest {
 
     @Test
     void getNextItemBookingOrderedTest() {
-        List<Booking> bookingsTest = bookingRepository.getNextItemBookingOrdered(item.getId()
-                , LocalDateTime.now(), PageRequest.of(0, 10));
+        List<Booking> bookingsTest = bookingRepository.getNextItemBookingOrdered(item.getId(),
+                LocalDateTime.now(), PageRequest.of(0, 10));
 
         assertThat(bookingsTest).isEqualTo(List.of(bookingSecond));
     }
 
     @Test
     void getBookingByItemBookerTest() {
-        List<Booking> bookingsTest = bookingRepository.getBookingByItemBooker(item.getId()
-                , userSecond.getId());
+        List<Booking> bookingsTest = bookingRepository.getBookingByItemBooker(item.getId(),
+                userSecond.getId());
 
         assertThat(bookingsTest).containsOnly(bookingFirst, bookingThird, bookingSecond);
     }
 
     @Test
     void getBookingByItemBookerWithNoBookingsTest() {
-        List<Booking> bookingsTest = bookingRepository.getBookingByItemBooker(item.getId()
-                , userFirst.getId());
+        List<Booking> bookingsTest = bookingRepository.getBookingByItemBooker(item.getId(),
+                userFirst.getId());
 
         assertThat(bookingsTest).isEmpty();
     }
 
     @Test
     void getFinishedBookingByBookerItemStatusTest() {
-        Booking bookingTest = bookingRepository.getFinishedBookingByBookerItemStatus(userSecond.getId()
-                , item.getId(), Status.APPROVED, LocalDateTime.now()).orElse(null);
+        Booking bookingTest = bookingRepository.getFinishedBookingByBookerItemStatus(userSecond.getId(),
+                item.getId(), Status.APPROVED, LocalDateTime.now()).orElse(null);
 
         assertThat(bookingTest).isEqualTo(bookingFirst);
     }
 
     @Test
     void getFinishedBookingByBookerItemStatusNoBookingsTest() {
-        Booking bookingTest = bookingRepository.getFinishedBookingByBookerItemStatus(userThird.getId()
-                , item.getId(), Status.APPROVED, LocalDateTime.now()).orElse(null);
+        Booking bookingTest = bookingRepository.getFinishedBookingByBookerItemStatus(userThird.getId(),
+                item.getId(), Status.APPROVED, LocalDateTime.now()).orElse(null);
 
         assertThat(bookingTest).isNull();
     }

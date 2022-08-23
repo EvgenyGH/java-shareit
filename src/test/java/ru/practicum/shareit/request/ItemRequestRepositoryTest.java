@@ -40,10 +40,10 @@ public class ItemRequestRepositoryTest {
         itemRequestSecond = new ItemRequest(40L, "description Second", userSecond, LocalDateTime.now());
         itemRequestFirst = itemRequestRepository.save(itemRequestFirst);
         itemRequestSecond = itemRequestRepository.save(itemRequestSecond);
-        Item itemFirst = new Item(40L, "item name 40", "description 40", true, userFirst
-                , itemRequestFirst);
-        Item itemSecond = new Item(50L, "item name 50", "description 50", true, userSecond
-                , itemRequestSecond);
+        Item itemFirst = new Item(40L, "item name 40", "description 40", true,
+                userFirst, itemRequestFirst);
+        Item itemSecond = new Item(50L, "item name 50", "description 50", true,
+                userSecond, itemRequestSecond);
         itemRepository.save(itemFirst);
         itemRepository.save(itemSecond);
     }
