@@ -1,9 +1,9 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.exception.EmailExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -15,20 +15,20 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
-public class UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final Validator validator;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
 
     //Добавить пользователя
+    @Override
     public User addUser(User user) {
         user.setId(null);
         user = userRepository.save(user);
@@ -39,6 +39,7 @@ public class UserService {
     }
 
     //Обновить данные пользователя
+    @Override
     public User updateUser(User user) {
         User userStored = userRepository.findById(user.getId())
                 .orElseThrow(() ->
@@ -75,6 +76,7 @@ public class UserService {
     }
 
     //Получить пользователя по id
+    @Override
     public User getUserById(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден id=" + id
@@ -88,6 +90,7 @@ public class UserService {
     }
 
     //Удалить пользователя по id
+    @Override
     @Transactional
     public User deleteUserById(long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
@@ -104,6 +107,7 @@ public class UserService {
     }
 
     //Получить всех пользователей
+    @Override
     public List<User> getAllUsers() {
         List<User> users = userRepository.findAll();
 

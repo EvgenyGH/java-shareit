@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.repository;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.Booking;
@@ -19,55 +19,55 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b " +
             "WHERE b.booker.id = ?1 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> getBookingByBookerStatusAllOrdered(Long bookerId);
+    List<Booking> getBookingByBookerStatusAllOrdered(Long bookerId, Pageable pageable);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.booker.id = ?1 " +
             "AND b.status = ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> getBookingByBookerStatusOrdered(Long bookerId, Status status);
+    List<Booking> getBookingByBookerStatusOrdered(Long bookerId, Status status, Pageable pageable);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.booker.id = ?1 " +
             "AND b.endDate < ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> getBookingByBookerStatusPastOrdered(long userId, LocalDateTime dateTime);
+    List<Booking> getBookingByBookerStatusPastOrdered(long userId, LocalDateTime dateTime, Pageable pageable);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.booker.id = ?1 " +
             "AND b.startDate > ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> getBookingByBookerStatusFutureOrdered(long userId, LocalDateTime dateTime);
+    List<Booking> getBookingByBookerStatusFutureOrdered(long userId, LocalDateTime dateTime, Pageable pageable);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.booker.id = ?1 " +
             "AND b.endDate > ?2 " +
             "AND b.startDate < ?2" +
             "ORDER BY b.startDate DESC")
-    List<Booking> getBookingByBookerStatusCurrentOrdered(long userId, LocalDateTime dateTime);
+    List<Booking> getBookingByBookerStatusCurrentOrdered(long userId, LocalDateTime dateTime, Pageable pageable);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.owner.id = ?1 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> getBookingByOwnerStatusAllOrdered(Long userId);
+    List<Booking> getBookingByOwnerStatusAllOrdered(Long userId, Pageable pageable);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.owner.id = ?1 " +
             "AND b.status = ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> getBookingByOwnerStatusOrdered(Long userId, Status status);
+    List<Booking> getBookingByOwnerStatusOrdered(Long userId, Status status, Pageable pageable);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.owner.id = ?1 " +
             "AND b.endDate < ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> getBookingByOwnerStatusPastOrdered(Long userId, LocalDateTime time);
+    List<Booking> getBookingByOwnerStatusPastOrdered(Long userId, LocalDateTime time, Pageable pageable);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.owner.id = ?1 " +
             "AND b.startDate > ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> getBookingByOwnerStatusFutureOrdered(Long userId, LocalDateTime time);
+    List<Booking> getBookingByOwnerStatusFutureOrdered(Long userId, LocalDateTime time, Pageable pageable);
 
 
     @Query("SELECT b FROM Booking b " +
@@ -75,19 +75,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "AND b.endDate > ?2 " +
             "AND b.startDate < ?2" +
             "ORDER BY b.startDate DESC")
-    List<Booking> getBookingByOwnerStatusCurrentOrdered(Long userId, LocalDateTime time);
+    List<Booking> getBookingByOwnerStatusCurrentOrdered(Long userId, LocalDateTime time, Pageable pageable);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.id = ?1 " +
             "AND b.startDate < ?2 " +
             "ORDER BY b.startDate DESC")
-    List<Booking> getLastItemBookingOrdered(PageRequest limit, Long itemId, LocalDateTime now);
+    List<Booking> getLastItemBookingOrdered(Long itemId, LocalDateTime now, Pageable limit);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.id = ?1 " +
             "AND b.startDate > ?2 " +
             "ORDER BY b.startDate ASC")
-    List<Booking> getNextItemBookingOrdered(PageRequest limit, Long itemId, LocalDateTime now);
+    List<Booking> getNextItemBookingOrdered(Long itemId, LocalDateTime now, Pageable limit);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item.id = ?1 " +

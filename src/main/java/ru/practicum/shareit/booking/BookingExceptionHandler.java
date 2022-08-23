@@ -30,9 +30,9 @@ public class BookingExceptionHandler {
         return Map.of("Description", "Ошибка валидации входящих данных.");
     }
 
-    @ExceptionHandler({StartAfterEndExeption.class})
+    @ExceptionHandler({StartAfterEndException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> startAfterEndExceptionHandler(StartAfterEndExeption exception) {
+    public Map<String, String> startAfterEndExceptionHandler(StartAfterEndException exception) {
         log.warn("Начало аренды после ее окончания (с {} по {})."
                 , exception.getProperties().get("Start")
                 , exception.getProperties().get("End"));
@@ -69,9 +69,9 @@ public class BookingExceptionHandler {
         return exception.getProperties();
     }
 
-    @ExceptionHandler({UserNotOwnerExeption.class})
+    @ExceptionHandler({UserNotOwnerException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> userNotOwnerExeptionExceptionHandler(UserNotOwnerExeption exception) {
+    public Map<String, String> userNotOwnerExeptionExceptionHandler(UserNotOwnerException exception) {
         log.warn("Пользователь id={} не владелец вещи", exception.getProperties().get("Id"));
         return exception.getProperties();
     }

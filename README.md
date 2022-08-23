@@ -4,6 +4,13 @@
 ###### The service allows users to give a description of items they have for sharing, allows to find desirable item and rent it. It allows to book items for particular time. Users may send request for items they required and receive sharing offers in return.
 ###### Spring-Boot, jpa, postgresql, h2, java-core, lombok
 
+## *`Sprint 3`*
+#### *- Add ItemRequestController, ItemRequestService, ItemRequestRepository, ItemRequestExceptions, ItemRequestDto, ItemRequestDtoMapper*
+#### *- Add endpoints POST /requests, GET /requests, GET /requests/all?from={from}&size={size}, GET /requests/{requestId}*
+#### *- Add pagination to GET /requests/all, GET /items, GET /items/search, GET /bookings и GET /bookings/owner endpoints*
+#### *- Add unit tests (controller tests, repository tests, service tests, json dto tests) and integration tests (service + database)*
+___
+
 ## *`Sprint 2`*
 #### *- Add JPA support*
 #### *- Add PostgreSql database*

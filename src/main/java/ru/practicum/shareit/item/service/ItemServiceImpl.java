@@ -1,14 +1,14 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.service;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.Status;
-import ru.practicum.shareit.booking.exception.ItemNotRented;
+import ru.practicum.shareit.booking.exception.ItemNotRentedException;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.comment.dto.CommentDtoMapper;
@@ -18,8 +18,10 @@ import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.*;
 import java.time.LocalDateTime;
@@ -31,32 +33,38 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
-public class ItemService {
+public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final Validator validator;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestService itemRequestService;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository, UserService userService
-            , BookingRepository bookingRepository, CommentRepository commentRepository) {
+    public ItemServiceImpl(ItemRepository itemRepository, UserService userService
+            , BookingRepository bookingRepository, CommentRepository commentRepository
+            , ItemRequestService itemRequestService) {
         this.itemRepository = itemRepository;
         this.userService = userService;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
+        this.itemRequestService = itemRequestService;
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
 
     //Добавление новой вещи
+    @Override
     public Item addItem(ItemDto itemDto, long userId) {
         User user = userService.getUserById(userId);
         itemDto.setId(null);
 
-        //Функционал ItemRequest будет реализован в следующем спринте, поэтому значение null
-        Item item = ItemDtoMapper.dtoToItem(itemDto, user, null);
+        ItemRequest itemRequest = itemDto.getRequestId() == null ? null
+                : itemRequestService.getItemRequestById(itemDto.getRequestId());
+
+        Item item = ItemDtoMapper.dtoToItem(itemDto, user
+                , itemRequest);
         item = itemRepository.save(item);
 
         log.trace("Item id={} добавлен: {}", item.getId(), item);
@@ -65,6 +73,7 @@ public class ItemService {
     }
 
     //Редактирование вещи. Редактировать вещь может только её владелец.
+    @Override
     public Item updateItem(ItemDto itemDto, long userId, long itemId) {
         User user = userService.getUserById(userId);
 
@@ -79,7 +88,6 @@ public class ItemService {
 
         itemDto.setId(itemId);
 
-        //Функционал ItemRequest будет реализован в следующем спринте, поэтому значение null
         Item item = ItemDtoMapper.dtoToItem(itemDto, user, null);
 
         if (itemDto.getDescription() == null) {
@@ -96,6 +104,8 @@ public class ItemService {
 
         if (itemDto.getRequestId() == null) {
             item.setRequest(currentItem.getRequest());
+        } else {
+            item.setRequest(itemRequestService.getItemRequestById(itemDto.getRequestId()));
         }
 
         Set<ConstraintViolation<Item>> violations = validator.validate(item);
@@ -111,7 +121,8 @@ public class ItemService {
     }
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
-    //Информация по датам аренды только для пользователя, который еще не арендовал вещ.
+    //Информация по датам аренды только для пользователя, который еще не арендовал вещь.
+    @Override
     public ItemDtoWithBookings getItemDtoWithBookingsById(long itemId, long userId) {
         Booking lastBooking;
         Booking nextBooking;
@@ -131,15 +142,15 @@ public class ItemService {
             nextBooking = null;
         } else {
             bookingsSorted = bookingRepository
-                    .getLastItemBookingOrdered(PageRequest.of(0, 1),item.getId(), LocalDateTime.now());
+                    .getLastItemBookingOrdered(item.getId(), LocalDateTime.now(), PageRequest.of(0, 1));
             lastBooking = bookingsSorted.size() == 0 ? null : bookingsSorted.get(0);
 
             bookingsAfterNowSorted = bookingRepository
-                    .getNextItemBookingOrdered(PageRequest.of(0,1), item.getId(), LocalDateTime.now());
+                    .getNextItemBookingOrdered(item.getId(), LocalDateTime.now(), PageRequest.of(0, 1));
             nextBooking = bookingsAfterNowSorted.size() == 0 ? null : bookingsAfterNowSorted.get(0);
         }
 
-        List<Comment> comments = commentRepository.findAllByItem_id(itemId);
+        List<Comment> comments = commentRepository.findAllByItemId(itemId);
 
         log.trace("Item id={} отправлен: {}", itemId, item);
 
@@ -148,6 +159,7 @@ public class ItemService {
     }
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
+    @Override
     public Item getItemById(long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() ->
@@ -163,9 +175,10 @@ public class ItemService {
     }
 
     //Просмотр владельцем списка всех его вещей.
-    public List<ItemDtoWithBookings> getAllUserItems(long userId) {
+    @Override
+    public List<ItemDtoWithBookings> getAllUserItems(long userId, int from, int size) {
         User user = userService.getUserById(userId);
-        List<Item> userItems = itemRepository.findAllByOwnerOrderById(user);
+        List<Item> userItems = itemRepository.findAllByOwnerOrderById(user, PageRequest.of(from / size, size));
 
         if (userItems.isEmpty()) {
             throw new ItemNotFoundException(String.format("Вещи у пользователя id=%d не найдены"
@@ -187,30 +200,34 @@ public class ItemService {
     //Поиск вещи потенциальным арендатором. Пользователь передаёт в строке запроса текст,
     //и система ищет вещи, содержащие этот текст в названии или описании.
     //Поиск возвращает только доступные для аренды вещи.
-    public List<Item> findItems(String text) {
+    @Override
+    public List<Item> findItems(String text, int from, int size) {
         if (text == null || text.isBlank()) {
             return Collections.emptyList();
         }
 
-        List<Item> itemsFound = itemRepository.findAllByNameOrDescriptionContainsIgnoreCase(text);
+        List<Item> itemsFound = itemRepository.findAllByNameOrDescriptionIgnoreCase(text
+                , PageRequest.of(from / size, size));
 
         log.trace("Найдено {} Items содержащих <{}>.", itemsFound.size(), text);
 
         return itemsFound;
     }
 
+    //Добавить комментарий
+    @Override
     public Comment addCommentToItem(long userId, long itemId, CommentDto commentDto) {
         User author = userService.getUserById(userId);
         Item item = this.getItemById(itemId);
 
         bookingRepository.getFinishedBookingByBookerItemStatus(userId, itemId
-                        , Status.APPROVED, LocalDateTime.now()).orElseThrow(() ->
-                        new ItemNotRented(String.format("Пользователь не арендовал вещь id=%d"
-                                , userId)
-                                , Map.of("Object", "Item"
-                                , "UserId", String.valueOf(userId)
-                                , "ItemId", String.valueOf(itemId)
-                                , "Description", "Item not rented")));
+                , Status.APPROVED, LocalDateTime.now()).orElseThrow(() ->
+                new ItemNotRentedException(String.format("Пользователь не арендовал вещь id=%d"
+                        , userId)
+                        , Map.of("Object", "Item"
+                        , "UserId", String.valueOf(userId)
+                        , "ItemId", String.valueOf(itemId)
+                        , "Description", "Item not rented")));
 
         Comment comment = CommentDtoMapper.DtoToComment(commentDto, item, author);
         commentRepository.save(comment);

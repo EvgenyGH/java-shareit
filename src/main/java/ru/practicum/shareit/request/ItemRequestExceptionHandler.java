@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.request;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -8,19 +8,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.practicum.shareit.booking.exception.ItemNotRentedException;
-import ru.practicum.shareit.item.exception.ItemException;
-import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.user.exception.UserException;
-import ru.practicum.shareit.user.exception.UserNotFoundException;
+import ru.practicum.shareit.request.exeption.ItemRequestNotFoundException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import java.util.Map;
 
-@RestControllerAdvice({"ru.practicum.shareit.item"})
+@RestControllerAdvice({"ru.practicum.shareit.request"})
 @Slf4j
-public class ItemExceptionHandler {
+public class ItemRequestExceptionHandler {
     @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class
             , MethodArgumentTypeMismatchException.class, ConstraintViolationException.class
             , HttpMessageNotReadableException.class})
@@ -30,26 +26,10 @@ public class ItemExceptionHandler {
         return Map.of("Description", "Ошибка валидации входящих данных.");
     }
 
-    @ExceptionHandler({UserNotFoundException.class})
+    @ExceptionHandler({ItemRequestNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> userNotFoundExceptionHandler(UserException exception) {
-        log.warn("Пользователь id={} не найден.", exception.getProperties().get("Id"));
-        return exception.getProperties();
-    }
-
-    @ExceptionHandler({ItemNotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> itemNotFoundExceptionHandler(ItemException exception) {
-        log.warn("Вещь id={} не найдена.", exception.getProperties().get("Id"));
-        return exception.getProperties();
-    }
-
-    @ExceptionHandler({ItemNotRentedException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> itemNotRentedExceptionHandler(ItemNotRentedException exception) {
-        log.warn("Пользователь id={} не арендовал вещь id={}"
-                , exception.getProperties().get("UserId")
-                , exception.getProperties().get("ItemId"));
+    public Map<String, String> ItemRequestNotFoundExceptionHandler(ItemRequestNotFoundException exception) {
+        log.warn("Запрос вещи id={} не найден.", exception.getProperties().get("Id"));
         return exception.getProperties();
     }
 
