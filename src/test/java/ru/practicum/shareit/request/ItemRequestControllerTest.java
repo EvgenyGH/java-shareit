@@ -62,14 +62,14 @@ public class ItemRequestControllerTest {
                                 ItemRequestDtoMapper.itemRequestToDto(itemRequest)))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", user.getId()))
-                .andExpectAll(status().isOk()
-                        , content().json(mapper.writeValueAsString(ItemRequestDtoMapper.itemRequestToDto(itemRequest))));
+                .andExpectAll(status().isOk(),
+                        content().json(mapper.writeValueAsString(ItemRequestDtoMapper.itemRequestToDto(itemRequest))));
     }
 
     @Test
     void getUserRequestsTest() throws Exception {
         List<ItemRequestDtoWithResponse> requests = List.of(ItemRequestDtoMapper
-                .itemRequestToDtoWithResponse(itemRequest, List.of(ItemDtoMapper.ItemToDto(item))));
+                .itemRequestToDtoWithResponse(itemRequest, List.of(ItemDtoMapper.itemToDto(item))));
 
         when(itemRequestService.getUserRequests(user.getId()))
                 .thenReturn(requests);
@@ -81,7 +81,7 @@ public class ItemRequestControllerTest {
     @Test
     void getAllRequestsTest() throws Exception {
         List<ItemRequestDtoWithResponse> requests = List.of(ItemRequestDtoMapper
-                .itemRequestToDtoWithResponse(itemRequest, List.of(ItemDtoMapper.ItemToDto(item))));
+                .itemRequestToDtoWithResponse(itemRequest, List.of(ItemDtoMapper.itemToDto(item))));
 
         when(itemRequestService.getAllRequests(Optional.of(0), Optional.of(1), user.getId()))
                 .thenReturn(requests);
@@ -94,7 +94,7 @@ public class ItemRequestControllerTest {
     @Test
     void getRequestByIdTest() throws Exception {
         ItemRequestDtoWithResponse request = ItemRequestDtoMapper
-                .itemRequestToDtoWithResponse(itemRequest, List.of(ItemDtoMapper.ItemToDto(item)));
+                .itemRequestToDtoWithResponse(itemRequest, List.of(ItemDtoMapper.itemToDto(item)));
 
         when(itemRequestService.getRequestById(user.getId(), itemRequest.getId())).thenReturn(request);
 
@@ -104,14 +104,14 @@ public class ItemRequestControllerTest {
     }
 
     @Test
-    void ItemRequestExceptionHandlerValidationExceptionTest() throws Exception {
+    void itemRequestExceptionHandlerValidationExceptionTest() throws Exception {
         when(itemRequestService.getRequestById(anyLong(), anyLong())).thenThrow(ValidationException.class);
         mockMvc.perform(get("/requests/15").header("X-Sharer-User-Id", 10))
                 .andExpectAll(status().isBadRequest());
     }
 
     @Test
-    void ItemRequestExceptionHandlerItemRequestNotFoundExceptionTest() throws Exception {
+    void itemRequestExceptionHandlerItemRequestNotFoundExceptionTest() throws Exception {
         when(itemRequestService.getRequestById(anyLong(), anyLong()))
                 .thenThrow(new ItemRequestNotFoundException("message", Map.of("Id", "10")));
         mockMvc.perform(get("/requests/15").header("X-Sharer-User-Id", 10))
@@ -119,7 +119,7 @@ public class ItemRequestControllerTest {
     }
 
     @Test
-    void ItemRequestExceptionHandlerRuntimeExceptionTest() throws Exception {
+    void itemRequestExceptionHandlerRuntimeExceptionTest() throws Exception {
         when(itemRequestService.getRequestById(anyLong(), anyLong())).thenThrow(RuntimeException.class);
         mockMvc.perform(get("/requests/15").header("X-Sharer-User-Id", 10))
                 .andExpectAll(status().isInternalServerError());

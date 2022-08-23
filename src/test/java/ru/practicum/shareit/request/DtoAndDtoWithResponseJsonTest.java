@@ -21,7 +21,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
-public class dtoAndDtoWithResponseJsonTest {
+public class DtoAndDtoWithResponseJsonTest {
     private ItemRequestDto itemRequestDto;
     private ItemRequestDtoWithResponse itemRequestDtoWithResponse;
 
@@ -38,8 +38,8 @@ public class dtoAndDtoWithResponseJsonTest {
         Item item = new Item(15L, "item name 15", "description 15", true, user, itemRequest);
 
         itemRequestDto = ItemRequestDtoMapper.itemRequestToDto(itemRequest);
-        itemRequestDtoWithResponse = ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
-                , List.of(ItemDtoMapper.ItemToDto(item)));
+        itemRequestDtoWithResponse = ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest,
+                List.of(ItemDtoMapper.itemToDto(item)));
     }
 
     @Test

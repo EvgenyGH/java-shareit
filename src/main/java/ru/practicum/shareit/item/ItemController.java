@@ -27,15 +27,15 @@ public class ItemController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
-        return ItemDtoMapper.ItemToDto(itemService.addItem(itemDto, userId));
+        return ItemDtoMapper.itemToDto(itemService.addItem(itemDto, userId));
     }
 
     //Редактирование вещи. Редактировать вещь может только её владелец.
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId
-            , @RequestBody ItemDto itemDto) {
-        return ItemDtoMapper.ItemToDto(itemService.updateItem(itemDto, userId, itemId));
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+                              @RequestBody ItemDto itemDto) {
+        return ItemDtoMapper.itemToDto(itemService.updateItem(itemDto, userId, itemId));
     }
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
@@ -49,9 +49,11 @@ public class ItemController {
     //Просмотр владельцем списка всех его вещей.
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<ItemDtoWithBookings> getAllUserItems(@RequestHeader("X-Sharer-User-Id") long userId
-            , @RequestParam(required = false, defaultValue = "0") @Min(0) int from
-            , @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
+    public List<ItemDtoWithBookings> getAllUserItems(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                     @RequestParam(required = false,
+                                                             defaultValue = "0") @Min(0) int from,
+                                                     @RequestParam(required = false,
+                                                             defaultValue = "10") @Min(1) int size) {
         return itemService.getAllUserItems(userId, from, size);
     }
 
@@ -60,19 +62,20 @@ public class ItemController {
     //Поиск возвращает только доступные для аренды вещи.
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/search")
-    public List<ItemDto> findItems(@RequestParam String text
-            , @RequestParam(required = false, defaultValue = "0") @Min(0) int from
-            , @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
-        return itemService.findItems(text, from, size).stream().map(ItemDtoMapper::ItemToDto)
+    public List<ItemDto> findItems(@RequestParam String text,
+                                   @RequestParam(required = false, defaultValue = "0") @Min(0) int from,
+                                   @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
+        return itemService.findItems(text, from, size).stream().map(ItemDtoMapper::itemToDto)
                 .collect(Collectors.toList());
     }
 
     //Добавить комментарии
     //пользователь, который пишет комментарий, должен был брать вещь в аренду.
     @PostMapping("/{itemId}/comment")
-    public CommentDto addCommentToItem(@RequestHeader("X-Sharer-User-Id") long userId
-            , @PathVariable long itemId, @RequestBody @Valid CommentDto commentDto) {
-        return CommentDtoMapper.CommentToDto(itemService
+    public CommentDto addCommentToItem(@RequestHeader("X-Sharer-User-Id") long userId,
+                                       @PathVariable long itemId,
+                                       @RequestBody @Valid CommentDto commentDto) {
+        return CommentDtoMapper.commentToDto(itemService
                 .addCommentToItem(userId, itemId, commentDto));
     }
 }

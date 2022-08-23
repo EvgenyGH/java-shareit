@@ -17,9 +17,9 @@ import java.util.Map;
 @RestControllerAdvice({"ru.practicum.shareit.request"})
 @Slf4j
 public class ItemRequestExceptionHandler {
-    @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class
-            , MethodArgumentTypeMismatchException.class, ConstraintViolationException.class
-            , HttpMessageNotReadableException.class})
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class,
+            MethodArgumentTypeMismatchException.class, ConstraintViolationException.class,
+            HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> validationExceptionHandler(Exception exception) {
         log.warn("Выброшено исключение -> {}", exception.getMessage());
@@ -28,7 +28,7 @@ public class ItemRequestExceptionHandler {
 
     @ExceptionHandler({ItemRequestNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> ItemRequestNotFoundExceptionHandler(ItemRequestNotFoundException exception) {
+    public Map<String, String> itemRequestNotFoundExceptionHandler(ItemRequestNotFoundException exception) {
         log.warn("Запрос вещи id={} не найден.", exception.getProperties().get("Id"));
         return exception.getProperties();
     }

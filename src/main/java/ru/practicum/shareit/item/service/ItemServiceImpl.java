@@ -42,9 +42,9 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRequestService itemRequestService;
 
     @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository, UserService userService
-            , BookingRepository bookingRepository, CommentRepository commentRepository
-            , ItemRequestService itemRequestService) {
+    public ItemServiceImpl(ItemRepository itemRepository, UserService userService,
+                           BookingRepository bookingRepository, CommentRepository commentRepository,
+                           ItemRequestService itemRequestService) {
         this.itemRepository = itemRepository;
         this.userService = userService;
         this.bookingRepository = bookingRepository;
@@ -63,8 +63,7 @@ public class ItemServiceImpl implements ItemService {
         ItemRequest itemRequest = itemDto.getRequestId() == null ? null
                 : itemRequestService.getItemRequestById(itemDto.getRequestId());
 
-        Item item = ItemDtoMapper.dtoToItem(itemDto, user
-                , itemRequest);
+        Item item = ItemDtoMapper.dtoToItem(itemDto, user, itemRequest);
         item = itemRepository.save(item);
 
         log.trace("Item id={} добавлен: {}", item.getId(), item);
@@ -79,12 +78,11 @@ public class ItemServiceImpl implements ItemService {
 
         Item currentItem = itemRepository.findByIdAndOwner(itemId, user)
                 .orElseThrow(() ->
-                        new ItemNotFoundException(String.format("Вещь id=%d у пользователя id=%d не найдена"
-                                , itemId, userId)
-                                , Map.of("Object", "Item"
-                                , "ItemId", String.valueOf(itemId)
-                                , "UserId", String.valueOf(userId)
-                                , "Description", "Item not found")));
+                        new ItemNotFoundException(String.format("Вещь id=%d у пользователя id=%d не найдена",
+                                itemId, userId), Map.of("Object", "Item",
+                                "ItemId", String.valueOf(itemId),
+                                "UserId", String.valueOf(userId),
+                                "Description", "Item not found")));
 
         itemDto.setId(itemId);
 
@@ -131,11 +129,10 @@ public class ItemServiceImpl implements ItemService {
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() ->
-                        new ItemNotFoundException(String.format("Вещь id=%d не найдена"
-                                , itemId)
-                                , Map.of("Object", "Item"
-                                , "Id", String.valueOf(itemId)
-                                , "Description", "Item not found")));
+                        new ItemNotFoundException(String.format("Вещь id=%d не найдена", itemId),
+                                Map.of("Object", "Item",
+                                        "Id", String.valueOf(itemId),
+                                        "Description", "Item not found")));
 
         if (!bookingRepository.getBookingByItemBooker(itemId, userId).isEmpty()) {
             lastBooking = null;
@@ -154,8 +151,8 @@ public class ItemServiceImpl implements ItemService {
 
         log.trace("Item id={} отправлен: {}", itemId, item);
 
-        return ItemDtoMapper.itemToDtoWithBookings(item
-                , lastBooking, nextBooking, comments);
+        return ItemDtoMapper.itemToDtoWithBookings(item,
+                lastBooking, nextBooking, comments);
     }
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
@@ -163,11 +160,10 @@ public class ItemServiceImpl implements ItemService {
     public Item getItemById(long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() ->
-                        new ItemNotFoundException(String.format("Вещь id=%d не найдена"
-                                , itemId)
-                                , Map.of("Object", "Item"
-                                , "Id", String.valueOf(itemId)
-                                , "Description", "Item not found")));
+                        new ItemNotFoundException(String.format("Вещь id=%d не найдена",
+                                itemId), Map.of("Object", "Item",
+                                "Id", String.valueOf(itemId),
+                                "Description", "Item not found")));
 
         log.trace("Item id={} отправлен: {}", itemId, item);
 
@@ -181,11 +177,10 @@ public class ItemServiceImpl implements ItemService {
         List<Item> userItems = itemRepository.findAllByOwnerOrderById(user, PageRequest.of(from / size, size));
 
         if (userItems.isEmpty()) {
-            throw new ItemNotFoundException(String.format("Вещи у пользователя id=%d не найдены"
-                    , userId)
-                    , Map.of("Object", "Item"
-                    , "UserId", String.valueOf(userId)
-                    , "Description", "Items not found"));
+            throw new ItemNotFoundException(String.format("Вещи у пользователя id=%d не найдены",
+                    userId), Map.of("Object", "Item",
+                    "UserId", String.valueOf(userId),
+                    "Description", "Items not found"));
         }
 
         List<ItemDtoWithBookings> itemDtoWithBookings = userItems.stream()
@@ -206,8 +201,8 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
 
-        List<Item> itemsFound = itemRepository.findAllByNameOrDescriptionIgnoreCase(text
-                , PageRequest.of(from / size, size));
+        List<Item> itemsFound = itemRepository.findAllByNameOrDescriptionIgnoreCase(text,
+                PageRequest.of(from / size, size));
 
         log.trace("Найдено {} Items содержащих <{}>.", itemsFound.size(), text);
 
@@ -220,16 +215,15 @@ public class ItemServiceImpl implements ItemService {
         User author = userService.getUserById(userId);
         Item item = this.getItemById(itemId);
 
-        bookingRepository.getFinishedBookingByBookerItemStatus(userId, itemId
-                , Status.APPROVED, LocalDateTime.now()).orElseThrow(() ->
-                new ItemNotRentedException(String.format("Пользователь не арендовал вещь id=%d"
-                        , userId)
-                        , Map.of("Object", "Item"
-                        , "UserId", String.valueOf(userId)
-                        , "ItemId", String.valueOf(itemId)
-                        , "Description", "Item not rented")));
+        bookingRepository.getFinishedBookingByBookerItemStatus(userId, itemId,
+                Status.APPROVED, LocalDateTime.now()).orElseThrow(() ->
+                new ItemNotRentedException(String.format("Пользователь не арендовал вещь id=%d", userId),
+                        Map.of("Object", "Item", "UserId",
+                                String.valueOf(userId),
+                                "ItemId", String.valueOf(itemId),
+                                "Description", "Item not rented")));
 
-        Comment comment = CommentDtoMapper.DtoToComment(commentDto, item, author);
+        Comment comment = CommentDtoMapper.dtoToComment(commentDto, item, author);
         commentRepository.save(comment);
 
         return comment;

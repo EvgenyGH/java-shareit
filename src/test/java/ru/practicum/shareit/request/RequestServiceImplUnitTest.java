@@ -60,8 +60,8 @@ public class RequestServiceImplUnitTest {
         when(userService.getUserById(user.getId())).thenReturn(user);
         when(itemRequestRepository.save(any(ItemRequest.class))).thenReturn(itemRequest);
 
-        ItemRequestDto itemRequestDtoTest = itemRequestService.addRequest(user.getId()
-                , ItemRequestDtoMapper.itemRequestToDto(itemRequest));
+        ItemRequestDto itemRequestDtoTest = itemRequestService.addRequest(user.getId(),
+                ItemRequestDtoMapper.itemRequestToDto(itemRequest));
 
         assertThat(itemRequestDtoTest).isEqualTo(ItemRequestDtoMapper.itemRequestToDto(itemRequest));
     }
@@ -73,8 +73,8 @@ public class RequestServiceImplUnitTest {
 
         List<ItemRequestDtoWithResponse> requestList = itemRequestService.getUserRequests(user.getId());
 
-        assertThat(List.of(ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
-                , List.of(ItemDtoMapper.ItemToDto(item))))).isEqualTo(requestList);
+        assertThat(List.of(ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest,
+                List.of(ItemDtoMapper.itemToDto(item))))).isEqualTo(requestList);
     }
 
     @Test
@@ -86,8 +86,8 @@ public class RequestServiceImplUnitTest {
         List<ItemRequestDtoWithResponse> requestList = itemRequestService.getAllRequests(
                 Optional.of(0), Optional.of(10), user.getId());
 
-        assertThat(List.of(ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
-                , List.of(ItemDtoMapper.ItemToDto(item))))).isEqualTo(requestList);
+        assertThat(List.of(ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest,
+                List.of(ItemDtoMapper.itemToDto(item))))).isEqualTo(requestList);
     }
 
     @Test
@@ -126,8 +126,8 @@ public class RequestServiceImplUnitTest {
 
         ItemRequestDtoWithResponse requestDto = itemRequestService.getRequestById(user.getId(), itemRequest.getId());
 
-        assertThat(ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest
-                , List.of(ItemDtoMapper.ItemToDto(item)))).isEqualTo(requestDto);
+        assertThat(ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest,
+                List.of(ItemDtoMapper.itemToDto(item)))).isEqualTo(requestDto);
     }
 
     @Test
@@ -141,7 +141,7 @@ public class RequestServiceImplUnitTest {
 
     @Test
     void getItemRequestByIdThrowsItemRequestNotFoundException() {
-        when(itemRequestRepository.findById(itemRequest.getId())).thenThrow(ItemRequestNotFoundException.class);
+        when(itemRequestRepository.findById(itemRequest.getId())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> itemRequestService.getItemRequestById(itemRequest.getId()))
                 .isInstanceOf(ItemRequestNotFoundException.class);

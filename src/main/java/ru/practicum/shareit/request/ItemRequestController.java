@@ -42,17 +42,17 @@ public class ItemRequestController {
     //from — индекс первого элемента, size — количество элементов для отображения.
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemRequestDtoWithResponse> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long ownerId
-            , @RequestParam Optional<Integer> from
-            , @RequestParam Optional<Integer> size) {
+    public List<ItemRequestDtoWithResponse> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long ownerId,
+                                                           @RequestParam Optional<Integer> from,
+                                                           @RequestParam Optional<Integer> size) {
         return itemRequestService.getAllRequests(from, size, ownerId);
     }
 
     //Получить данные об одном конкретном запросе вместе с данными об ответах.
     @GetMapping("/{requestId}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemRequestDtoWithResponse getRequestById(@RequestHeader("X-Sharer-User-Id") Long userId
-            , @PathVariable Long requestId) {
+    public ItemRequestDtoWithResponse getRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                     @PathVariable Long requestId) {
         return itemRequestService.getRequestById(userId, requestId);
     }
 }

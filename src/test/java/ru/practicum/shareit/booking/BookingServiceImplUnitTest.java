@@ -55,19 +55,19 @@ public class BookingServiceImplUnitTest {
     void initialization() {
         userFirst = new User(25L, "name 25", "email@25.com");
         userSecond = new User(35L, "name 35", "email@35.com");
-        item = new Item(105L, "name 105", "description 105"
-                , true, userFirst, null);
-        bookingFirst = new Booking(115L, LocalDateTime.now().minusDays(15)
-                , LocalDateTime.now().minusDays(12), item, userSecond, Status.APPROVED);
-        bookingSecond = new Booking(125L, LocalDateTime.now().plusDays(15)
-                , LocalDateTime.now().plusDays(20), item, userSecond, Status.APPROVED);
+        item = new Item(105L, "name 105", "description 105",
+                true, userFirst, null);
+        bookingFirst = new Booking(115L, LocalDateTime.now().minusDays(15),
+                LocalDateTime.now().minusDays(12), item, userSecond, Status.APPROVED);
+        bookingSecond = new Booking(125L, LocalDateTime.now().plusDays(15),
+                LocalDateTime.now().plusDays(20), item, userSecond, Status.APPROVED);
     }
 
     @Test
     void bookItemTest() {
         BookingDtoResponse dtoResponse = BookingDtoMapper.bookingToDto(bookingFirst);
-        BookingDtoRequest dtoRequest = new BookingDtoRequest(bookingFirst.getStartDate()
-                , bookingFirst.getEndDate(), bookingFirst.getItem().getId());
+        BookingDtoRequest dtoRequest = new BookingDtoRequest(bookingFirst.getStartDate(),
+                bookingFirst.getEndDate(), bookingFirst.getItem().getId());
 
         when(itemService.getItemById(item.getId())).thenReturn(item);
         when(userService.getUserById(userSecond.getId())).thenReturn(userSecond);
@@ -82,8 +82,8 @@ public class BookingServiceImplUnitTest {
     @Test
     void bookItemStartAfterEndExeptionTest() {
         bookingFirst.setEndDate(bookingFirst.getStartDate().minusDays(1));
-        BookingDtoRequest dtoRequest = new BookingDtoRequest(bookingFirst.getStartDate()
-                , bookingFirst.getEndDate(), bookingFirst.getItem().getId());
+        BookingDtoRequest dtoRequest = new BookingDtoRequest(bookingFirst.getStartDate(),
+                bookingFirst.getEndDate(), bookingFirst.getItem().getId());
 
         assertThatThrownBy(() -> bookingService.bookItem(dtoRequest, bookingFirst.getBooker().getId()))
                 .isInstanceOf(StartAfterEndException.class);
@@ -92,8 +92,8 @@ public class BookingServiceImplUnitTest {
     @Test
     void bookItemItemNotAvailableExceptionTest() {
         item.setAvailable(false);
-        BookingDtoRequest dtoRequest = new BookingDtoRequest(bookingFirst.getStartDate()
-                , bookingFirst.getEndDate(), bookingFirst.getItem().getId());
+        BookingDtoRequest dtoRequest = new BookingDtoRequest(bookingFirst.getStartDate(),
+                bookingFirst.getEndDate(), bookingFirst.getItem().getId());
 
         when(itemService.getItemById(item.getId())).thenReturn(item);
 
@@ -104,8 +104,8 @@ public class BookingServiceImplUnitTest {
     @Test
     void bookItemBookingExceptionTest() {
         item.setOwner(userSecond);
-        BookingDtoRequest dtoRequest = new BookingDtoRequest(bookingFirst.getStartDate()
-                , bookingFirst.getEndDate(), bookingFirst.getItem().getId());
+        BookingDtoRequest dtoRequest = new BookingDtoRequest(bookingFirst.getStartDate(),
+                bookingFirst.getEndDate(), bookingFirst.getItem().getId());
 
         when(itemService.getItemById(item.getId())).thenReturn(item);
 
@@ -123,8 +123,8 @@ public class BookingServiceImplUnitTest {
                     return bookingFirst;
                 });
 
-        BookingDtoResponse dtoResponseTest = bookingService.approveBooking(userFirst.getId()
-                , bookingFirst.getId(), true);
+        BookingDtoResponse dtoResponseTest = bookingService.approveBooking(userFirst.getId(),
+                bookingFirst.getId(), true);
 
         assertThat(dtoResponseTest.getId()).isEqualTo(bookingFirst.getId().intValue());
         assertThat(dtoResponseTest.getStatus()).isEqualTo(Status.APPROVED);
@@ -140,8 +140,8 @@ public class BookingServiceImplUnitTest {
                     return bookingFirst;
                 });
 
-        BookingDtoResponse dtoResponseTest = bookingService.approveBooking(userFirst.getId()
-                , bookingFirst.getId(), true);
+        BookingDtoResponse dtoResponseTest = bookingService.approveBooking(userFirst.getId(),
+                bookingFirst.getId(), true);
 
         assertThat(dtoResponseTest.getId()).isEqualTo(bookingFirst.getId().intValue());
         assertThat(dtoResponseTest.getStatus()).isEqualTo(Status.REJECTED);
@@ -151,16 +151,16 @@ public class BookingServiceImplUnitTest {
     void approveBookingBookingNotExistsExceptionTest() {
         when(bookingRepository.findById(bookingFirst.getId())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> bookingService.approveBooking(userFirst.getId()
-                , bookingFirst.getId(), true)).isInstanceOf(BookingNotExistsException.class);
+        assertThatThrownBy(() -> bookingService.approveBooking(userFirst.getId(),
+                bookingFirst.getId(), true)).isInstanceOf(BookingNotExistsException.class);
     }
 
     @Test
     void approveBookingUserNotOwnerExceptionTest() {
         when(bookingRepository.findById(bookingFirst.getId())).thenReturn(Optional.of(bookingFirst));
 
-        assertThatThrownBy(() -> bookingService.approveBooking(userSecond.getId()
-                , bookingFirst.getId(), true)).isInstanceOf(UserNotOwnerException.class);
+        assertThatThrownBy(() -> bookingService.approveBooking(userSecond.getId(),
+                bookingFirst.getId(), true)).isInstanceOf(UserNotOwnerException.class);
     }
 
     @Test
@@ -168,8 +168,8 @@ public class BookingServiceImplUnitTest {
         bookingFirst.setStatus(Status.APPROVED);
         when(bookingRepository.findById(bookingFirst.getId())).thenReturn(Optional.of(bookingFirst));
 
-        assertThatThrownBy(() -> bookingService.approveBooking(userFirst.getId()
-                , bookingFirst.getId(), true)).isInstanceOf(ItemNotAvailableException.class);
+        assertThatThrownBy(() -> bookingService.approveBooking(userFirst.getId(),
+                bookingFirst.getId(), true)).isInstanceOf(ItemNotAvailableException.class);
     }
 
     @Test
@@ -179,8 +179,8 @@ public class BookingServiceImplUnitTest {
         when(bookingRepository.getOwnerOrBookerBooking(bookingFirst.getId(), userSecond.getId()))
                 .thenReturn(Optional.of(bookingFirst));
 
-        BookingDtoResponse dtoResponseTest = bookingService.getBooking(userSecond.getId()
-                , bookingFirst.getId());
+        BookingDtoResponse dtoResponseTest = bookingService.getBooking(userSecond.getId(),
+                bookingFirst.getId());
 
         assertThat(dtoResponseTest).isEqualTo(dtoResponse);
     }
@@ -190,15 +190,15 @@ public class BookingServiceImplUnitTest {
         when(bookingRepository.getOwnerOrBookerBooking(bookingFirst.getId(), userSecond.getId()))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> bookingService.getBooking(userSecond.getId()
-                , bookingFirst.getId())).isInstanceOf(BookingException.class);
+        assertThatThrownBy(() -> bookingService.getBooking(userSecond.getId(),
+                bookingFirst.getId())).isInstanceOf(BookingException.class);
     }
 
     @Test
     void getUserBookingByStatusALLTest() {
         when(userService.getUserById(userSecond.getId())).thenReturn(userSecond);
-        when(bookingRepository.getBookingByBookerStatusAllOrdered(userSecond.getId()
-                , PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst, bookingSecond));
+        when(bookingRepository.getBookingByBookerStatusAllOrdered(userSecond.getId(),
+                PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst, bookingSecond));
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getUserBookingByStatus(userSecond.getId(), RequestStatus.ALL, 0, 20);
@@ -211,8 +211,8 @@ public class BookingServiceImplUnitTest {
     void getUserBookingByStatusWaitingTest() {
         bookingFirst.setStatus(Status.WAITING);
         when(userService.getUserById(userSecond.getId())).thenReturn(userSecond);
-        when(bookingRepository.getBookingByBookerStatusOrdered(userSecond.getId(), Status.WAITING
-                , PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst));
+        when(bookingRepository.getBookingByBookerStatusOrdered(userSecond.getId(), Status.WAITING,
+                PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst));
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getUserBookingByStatus(userSecond.getId(), RequestStatus.WAITING, 0, 20);
@@ -225,8 +225,8 @@ public class BookingServiceImplUnitTest {
     void getUserBookingByStatusRejectedTest() {
         bookingFirst.setStatus(Status.REJECTED);
         when(userService.getUserById(userSecond.getId())).thenReturn(userSecond);
-        when(bookingRepository.getBookingByBookerStatusOrdered(userSecond.getId(), Status.REJECTED
-                , PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst));
+        when(bookingRepository.getBookingByBookerStatusOrdered(userSecond.getId(), Status.REJECTED,
+                PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst));
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getUserBookingByStatus(userSecond.getId(), RequestStatus.REJECTED, 0, 20);
@@ -238,8 +238,8 @@ public class BookingServiceImplUnitTest {
     @Test
     void getUserBookingByStatusPastTest() {
         when(userService.getUserById(userSecond.getId())).thenReturn(userSecond);
-        when(bookingRepository.getBookingByBookerStatusPastOrdered(anyLong(), any(LocalDateTime.class)
-                , any(PageRequest.class))).thenReturn(List.of(bookingFirst));
+        when(bookingRepository.getBookingByBookerStatusPastOrdered(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class))).thenReturn(List.of(bookingFirst));
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getUserBookingByStatus(userSecond.getId(), RequestStatus.PAST, 0, 20);
@@ -251,8 +251,8 @@ public class BookingServiceImplUnitTest {
     @Test
     void getUserBookingByStatusFutureTest() {
         when(userService.getUserById(userSecond.getId())).thenReturn(userSecond);
-        when(bookingRepository.getBookingByBookerStatusFutureOrdered(anyLong(), any(LocalDateTime.class)
-                , any(PageRequest.class))).thenReturn(List.of(bookingSecond));
+        when(bookingRepository.getBookingByBookerStatusFutureOrdered(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class))).thenReturn(List.of(bookingSecond));
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getUserBookingByStatus(userSecond.getId(), RequestStatus.FUTURE, 0, 20);
@@ -264,8 +264,8 @@ public class BookingServiceImplUnitTest {
     @Test
     void getUserBookingByStatusCurrentTest() {
         when(userService.getUserById(userSecond.getId())).thenReturn(userSecond);
-        when(bookingRepository.getBookingByBookerStatusCurrentOrdered(anyLong(), any(LocalDateTime.class)
-                , any(PageRequest.class))).thenReturn(Collections.emptyList());
+        when(bookingRepository.getBookingByBookerStatusCurrentOrdered(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class))).thenReturn(Collections.emptyList());
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getUserBookingByStatus(userSecond.getId(), RequestStatus.CURRENT, 0, 20);
@@ -276,8 +276,8 @@ public class BookingServiceImplUnitTest {
     @Test
     void getAllUserBookingsStatusALLTest() {
         when(userService.getUserById(userFirst.getId())).thenReturn(userFirst);
-        when(bookingRepository.getBookingByOwnerStatusAllOrdered(userFirst.getId()
-                , PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst, bookingSecond));
+        when(bookingRepository.getBookingByOwnerStatusAllOrdered(userFirst.getId(),
+                PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst, bookingSecond));
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getAllUserBookings(userFirst.getId(), RequestStatus.ALL, 0, 20);
@@ -290,8 +290,8 @@ public class BookingServiceImplUnitTest {
     void getAllUserBookingsStatusWaitingTest() {
         bookingFirst.setStatus(Status.WAITING);
         when(userService.getUserById(userFirst.getId())).thenReturn(userFirst);
-        when(bookingRepository.getBookingByOwnerStatusOrdered(userFirst.getId(), Status.WAITING
-                , PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst));
+        when(bookingRepository.getBookingByOwnerStatusOrdered(userFirst.getId(), Status.WAITING,
+                PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst));
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getAllUserBookings(userFirst.getId(), RequestStatus.WAITING, 0, 20);
@@ -304,8 +304,8 @@ public class BookingServiceImplUnitTest {
     void getAllUserBookingsStatusRejectedTest() {
         bookingFirst.setStatus(Status.REJECTED);
         when(userService.getUserById(userFirst.getId())).thenReturn(userFirst);
-        when(bookingRepository.getBookingByOwnerStatusOrdered(userFirst.getId(), Status.REJECTED
-                , PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst));
+        when(bookingRepository.getBookingByOwnerStatusOrdered(userFirst.getId(), Status.REJECTED,
+                PageRequest.of(0, 20))).thenReturn(List.of(bookingFirst));
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getAllUserBookings(userFirst.getId(), RequestStatus.REJECTED, 0, 20);
@@ -317,8 +317,8 @@ public class BookingServiceImplUnitTest {
     @Test
     void getAllUserBookingsStatusPastTest() {
         when(userService.getUserById(userFirst.getId())).thenReturn(userFirst);
-        when(bookingRepository.getBookingByOwnerStatusPastOrdered(anyLong(), any(LocalDateTime.class)
-                , any(PageRequest.class))).thenReturn(List.of(bookingFirst));
+        when(bookingRepository.getBookingByOwnerStatusPastOrdered(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class))).thenReturn(List.of(bookingFirst));
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getAllUserBookings(userFirst.getId(), RequestStatus.PAST, 0, 20);
@@ -330,8 +330,8 @@ public class BookingServiceImplUnitTest {
     @Test
     void getAllUserBookingsStatusFutureTest() {
         when(userService.getUserById(userFirst.getId())).thenReturn(userFirst);
-        when(bookingRepository.getBookingByOwnerStatusFutureOrdered(anyLong(), any(LocalDateTime.class)
-                , any(PageRequest.class))).thenReturn(List.of(bookingSecond));
+        when(bookingRepository.getBookingByOwnerStatusFutureOrdered(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class))).thenReturn(List.of(bookingSecond));
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getAllUserBookings(userFirst.getId(), RequestStatus.FUTURE, 0, 20);
@@ -343,8 +343,8 @@ public class BookingServiceImplUnitTest {
     @Test
     void getAllUserBookingsStatusCurrentTest() {
         when(userService.getUserById(userFirst.getId())).thenReturn(userFirst);
-        when(bookingRepository.getBookingByOwnerStatusCurrentOrdered(anyLong(), any(LocalDateTime.class)
-                , any(PageRequest.class))).thenReturn(Collections.emptyList());
+        when(bookingRepository.getBookingByOwnerStatusCurrentOrdered(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class))).thenReturn(Collections.emptyList());
 
         List<BookingDtoResponse> bookingsTest = bookingService
                 .getAllUserBookings(userFirst.getId(), RequestStatus.CURRENT, 0, 20);

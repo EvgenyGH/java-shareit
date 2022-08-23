@@ -21,9 +21,9 @@ import java.util.Map;
 @RestControllerAdvice({"ru.practicum.shareit.booking"})
 @Slf4j
 public class BookingExceptionHandler {
-    @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class
-            , MethodArgumentTypeMismatchException.class, ConstraintViolationException.class
-            , HttpMessageNotReadableException.class})
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class,
+            MethodArgumentTypeMismatchException.class, ConstraintViolationException.class,
+            HttpMessageNotReadableException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public Map<String, String> validationExceptionHandler(Exception exception) {
         log.warn("Выброшено исключение -> {}", exception.getMessage());
@@ -33,9 +33,9 @@ public class BookingExceptionHandler {
     @ExceptionHandler({StartAfterEndException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> startAfterEndExceptionHandler(StartAfterEndException exception) {
-        log.warn("Начало аренды после ее окончания (с {} по {})."
-                , exception.getProperties().get("Start")
-                , exception.getProperties().get("End"));
+        log.warn("Начало аренды после ее окончания (с {} по {}).",
+                exception.getProperties().get("Start"),
+                exception.getProperties().get("End"));
         return exception.getProperties();
     }
 

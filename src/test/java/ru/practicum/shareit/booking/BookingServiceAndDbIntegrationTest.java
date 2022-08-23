@@ -44,21 +44,21 @@ public class BookingServiceAndDbIntegrationTest {
         userFirst = userService.addUser(userFirst);
         userSecond = userService.addUser(userSecond);
 
-        Item item = new Item(105L, "name 105", "description 105"
-                , true, userFirst, null);
-        item = itemService.addItem(ItemDtoMapper.ItemToDto(item), item.getOwner().getId());
+        Item item = new Item(105L, "name 105", "description 105",
+                true, userFirst, null);
+        item = itemService.addItem(ItemDtoMapper.itemToDto(item), item.getOwner().getId());
 
-        bookingFirst = new Booking(115L, LocalDateTime.now().minusDays(15)
-                , LocalDateTime.now().minusDays(12), item, userSecond, Status.APPROVED);
-        Booking bookingSecond = new Booking(125L, LocalDateTime.now().plusDays(15)
-                , LocalDateTime.now().plusDays(20), item, userSecond, Status.APPROVED);
+        bookingFirst = new Booking(115L, LocalDateTime.now().minusDays(15),
+                LocalDateTime.now().minusDays(12), item, userSecond, Status.APPROVED);
+        Booking bookingSecond = new Booking(125L, LocalDateTime.now().plusDays(15),
+                LocalDateTime.now().plusDays(20), item, userSecond, Status.APPROVED);
         BookingDtoResponse bookingDtoResponse = bookingService.bookItem(new BookingDtoRequest(
-                bookingFirst.getStartDate(), bookingFirst.getEndDate()
-                , bookingFirst.getItem().getId()), bookingFirst.getBooker().getId());
+                bookingFirst.getStartDate(), bookingFirst.getEndDate(),
+                bookingFirst.getItem().getId()), bookingFirst.getBooker().getId());
         bookingFirst.setId(bookingDtoResponse.getId());
         bookingDtoResponse = bookingService.bookItem(new BookingDtoRequest(
-                bookingSecond.getStartDate(), bookingSecond.getEndDate()
-                , bookingSecond.getItem().getId()), bookingSecond.getBooker().getId());
+                bookingSecond.getStartDate(), bookingSecond.getEndDate(),
+                bookingSecond.getItem().getId()), bookingSecond.getBooker().getId());
         bookingSecond.setId(bookingDtoResponse.getId());
     }
 
@@ -66,8 +66,8 @@ public class BookingServiceAndDbIntegrationTest {
     @Transactional
     void bookItemTest() {
         BookingDtoResponse dtoResponseTest = bookingService.bookItem(new BookingDtoRequest(
-                        bookingFirst.getStartDate(), bookingFirst.getEndDate(), bookingFirst.getItem().getId())
-                , bookingFirst.getBooker().getId());
+                bookingFirst.getStartDate(), bookingFirst.getEndDate(), bookingFirst.getItem().getId()),
+                bookingFirst.getBooker().getId());
 
         Booking bookingDb = manager.createQuery("SELECT b FROM Booking b " +
                 "WHERE b.id = ?1", Booking.class).setParameter(1, dtoResponseTest
@@ -92,8 +92,8 @@ public class BookingServiceAndDbIntegrationTest {
     @Test
     @Transactional
     void getBookingTest() {
-        BookingDtoResponse dtoResponseTest = bookingService.getBooking(userSecond.getId()
-                , bookingFirst.getId());
+        BookingDtoResponse dtoResponseTest = bookingService.getBooking(userSecond.getId(),
+                bookingFirst.getId());
 
         Booking bookingDb = manager.createQuery("SELECT b FROM Booking b " +
                         "WHERE b.id = ?1", Booking.class).setParameter(1, bookingFirst.getId())

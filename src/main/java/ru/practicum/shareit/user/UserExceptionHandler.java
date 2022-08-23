@@ -19,9 +19,9 @@ import java.util.Map;
 @RestControllerAdvice({"ru.practicum.shareit.user"})
 @Slf4j
 public class UserExceptionHandler {
-    @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class
-            , MethodArgumentTypeMismatchException.class, ConstraintViolationException.class
-            , HttpMessageNotReadableException.class})
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class,
+            MethodArgumentTypeMismatchException.class, ConstraintViolationException.class,
+            HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> validationExceptionHandler(Exception exception) {
         log.warn("Выброшено исключение -> {}", exception.getMessage());

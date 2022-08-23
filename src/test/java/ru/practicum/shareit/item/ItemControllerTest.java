@@ -48,55 +48,55 @@ public class ItemControllerTest {
     @BeforeEach
     void initialize() {
         user = new User(10L, "user name 10", "email@10.com");
-        item = new Item(15L, "item name 15", "description 15"
-                , true, user, null);
+        item = new Item(15L, "item name 15", "description 15",
+                true, user, null);
     }
 
     @Test
     void addItemEndpointTest() throws Exception {
-        when(itemService.addItem(ItemDtoMapper.ItemToDto(item), user.getId()))
+        when(itemService.addItem(ItemDtoMapper.itemToDto(item), user.getId()))
                 .thenReturn(item);
         mockMvc.perform(post("/items").contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(ItemDtoMapper.ItemToDto(item)))
+                        .content(mapper.writeValueAsString(ItemDtoMapper.itemToDto(item)))
                         .header("X-Sharer-User-Id", user.getId()))
-                .andExpectAll(status().isCreated()
-                        , content().json(mapper.writeValueAsString(ItemDtoMapper.ItemToDto(item))));
+                .andExpectAll(status().isCreated(),
+                        content().json(mapper.writeValueAsString(ItemDtoMapper.itemToDto(item))));
     }
 
     @Test
     void updateItemTest() throws Exception {
         item.setName("new name");
-        when(itemService.updateItem(ItemDtoMapper.ItemToDto(item), user.getId(), item.getId()))
+        when(itemService.updateItem(ItemDtoMapper.itemToDto(item), user.getId(), item.getId()))
                 .thenReturn(item);
         mockMvc.perform(patch("/items/{itemId}", item.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(ItemDtoMapper.ItemToDto(item)))
+                        .content(mapper.writeValueAsString(ItemDtoMapper.itemToDto(item)))
                         .header("X-Sharer-User-Id", user.getId()))
-                .andExpectAll(status().isOk()
-                        , content().json(mapper.writeValueAsString(ItemDtoMapper.ItemToDto(item))));
+                .andExpectAll(status().isOk(),
+                        content().json(mapper.writeValueAsString(ItemDtoMapper.itemToDto(item))));
     }
 
     @Test
     void getItemByIdEndpointTest() throws Exception {
         when(itemService.getItemDtoWithBookingsById(item.getId(), user.getId()))
-                .thenReturn(ItemDtoMapper.itemToDtoWithBookings(item
-                        , null, null, Collections.emptyList()));
+                .thenReturn(ItemDtoMapper.itemToDtoWithBookings(item,
+                        null, null, Collections.emptyList()));
         mockMvc.perform(get("/items/{itemId}", item.getId())
                         .header("X-Sharer-User-Id", user.getId()))
-                .andExpectAll(status().isOk()
-                        , content().json(mapper.writeValueAsString(ItemDtoMapper.itemToDtoWithBookings(item
-                                , null, null, Collections.emptyList()))));
+                .andExpectAll(status().isOk(),
+                        content().json(mapper.writeValueAsString(ItemDtoMapper.itemToDtoWithBookings(item,
+                                null, null, Collections.emptyList()))));
     }
 
     @Test
     void getAllUserItemsEndpointTest() throws Exception {
         when(itemService.getAllUserItems(user.getId(), 0, 10))
-                .thenReturn(List.of(ItemDtoMapper.itemToDtoWithBookings(item
-                        , null, null, Collections.emptyList())));
+                .thenReturn(List.of(ItemDtoMapper.itemToDtoWithBookings(item,
+                        null, null, Collections.emptyList())));
         mockMvc.perform(get("/items").header("X-Sharer-User-Id", user.getId()))
                 .andExpectAll(status().isOk(), content().json(mapper.writeValueAsString(
-                        List.of(ItemDtoMapper.itemToDtoWithBookings(item
-                                , null, null, Collections.emptyList())))));
+                        List.of(ItemDtoMapper.itemToDtoWithBookings(item,
+                                null, null, Collections.emptyList())))));
     }
 
     @Test
@@ -106,14 +106,14 @@ public class ItemControllerTest {
         mockMvc.perform(get("/items/search").param("text", "text")
                 .param("from", "0")
                 .param("size", "10")
-        ).andExpectAll(status().isOk()
-                , content().json(mapper.writeValueAsString(List.of(ItemDtoMapper.ItemToDto(item)))));
+        ).andExpectAll(status().isOk(),
+                content().json(mapper.writeValueAsString(List.of(ItemDtoMapper.itemToDto(item)))));
     }
 
     @Test
     void addCommentToItemEndpointTest() throws Exception {
-        Comment comment = new Comment(1L, "text", item, user
-                , LocalDateTime.of(1999, 12, 12, 0, 0));
+        Comment comment = new Comment(1L, "text", item, user,
+                LocalDateTime.of(1999, 12, 12, 0, 0));
 
         when(itemService.addCommentToItem(anyLong(), anyLong(), any(CommentDto.class)))
                 .thenReturn(comment);
@@ -123,7 +123,7 @@ public class ItemControllerTest {
                 .content(mapper.writeValueAsString(comment))
                 .contentType(MediaType.APPLICATION_JSON)).andExpectAll(
                 status().isOk(), content().json(
-                        mapper.writeValueAsString(CommentDtoMapper.CommentToDto(comment))));
+                        mapper.writeValueAsString(CommentDtoMapper.commentToDto(comment))));
     }
 
     @Test
@@ -153,8 +153,8 @@ public class ItemControllerTest {
     @Test
     void itemExceptionHandlerItemNotRentedExceptionTest() throws Exception {
         when(itemService.findItems("text", 0, 10))
-                .thenThrow(new ItemNotRentedException("message"
-                        , Map.of("ItemId", "1", "UserId", "1")));
+                .thenThrow(new ItemNotRentedException("message",
+                        Map.of("ItemId", "1", "UserId", "1")));
         mockMvc.perform(get("/items/search").param("text", "text"))
                 .andExpectAll(status().isBadRequest());
     }

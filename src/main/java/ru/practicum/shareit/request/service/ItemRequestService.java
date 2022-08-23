@@ -19,8 +19,8 @@ public interface ItemRequestService {
     //Запросы сортируются от более новых к более старым.
     //Результаты возвращаются постранично.
     //from — индекс первого элемента, size — количество элементов для отображения.
-    List<ItemRequestDtoWithResponse> getAllRequests(Optional<Integer> fromOpt, Optional<Integer> sizeOpt
-            , Long ownerId);
+    List<ItemRequestDtoWithResponse> getAllRequests(Optional<Integer> fromOpt, Optional<Integer> sizeOpt,
+                                                    Long ownerId);
 
     //Получить данные об одном конкретном запросе вместе с данными об ответах по id.
     ItemRequestDtoWithResponse getRequestById(Long userId, Long requestId);

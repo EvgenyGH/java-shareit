@@ -21,9 +21,9 @@ import java.util.Map;
 @RestControllerAdvice({"ru.practicum.shareit.item"})
 @Slf4j
 public class ItemExceptionHandler {
-    @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class
-            , MethodArgumentTypeMismatchException.class, ConstraintViolationException.class
-            , HttpMessageNotReadableException.class})
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class, ValidationException.class,
+            MethodArgumentTypeMismatchException.class, ConstraintViolationException.class,
+            HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> validationExceptionHandler(Exception exception) {
         log.warn("Выброшено исключение -> {}", exception.getMessage());
@@ -47,9 +47,9 @@ public class ItemExceptionHandler {
     @ExceptionHandler({ItemNotRentedException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> itemNotRentedExceptionHandler(ItemNotRentedException exception) {
-        log.warn("Пользователь id={} не арендовал вещь id={}"
-                , exception.getProperties().get("UserId")
-                , exception.getProperties().get("ItemId"));
+        log.warn("Пользователь id={} не арендовал вещь id={}",
+                exception.getProperties().get("UserId"),
+                exception.getProperties().get("ItemId"));
         return exception.getProperties();
     }
 

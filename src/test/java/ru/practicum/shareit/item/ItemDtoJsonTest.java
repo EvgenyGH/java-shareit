@@ -38,22 +38,22 @@ public class ItemDtoJsonTest {
     void initialize() {
         User user = new User(10L, "name 10", "email@10.ru");
 
-        ItemRequest itemRequest = new ItemRequest(5L, "description 5"
-                , user, LocalDateTime.now().minusHours(1));
+        ItemRequest itemRequest = new ItemRequest(5L, "description 5",
+                user, LocalDateTime.now().minusHours(1));
 
-        Item item = new Item(15L, "name 15", "description 15", true
-                , user, itemRequest);
-        itemDto = ItemDtoMapper.ItemToDto(item);
+        Item item = new Item(15L, "name 15", "description 15", true,
+                user, itemRequest);
+        itemDto = ItemDtoMapper.itemToDto(item);
 
-        Booking bookingFirst = new Booking(2L, LocalDateTime.now().minusDays(2)
-                , LocalDateTime.now().minusDays(1), item, user, Status.APPROVED);
-        Booking bookingSecond = new Booking(3L, LocalDateTime.now().plusDays(1)
-                , LocalDateTime.now().plusDays(2), item, user, Status.APPROVED);
+        Booking bookingFirst = new Booking(2L, LocalDateTime.now().minusDays(2),
+                LocalDateTime.now().minusDays(1), item, user, Status.APPROVED);
+        Booking bookingSecond = new Booking(3L, LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2), item, user, Status.APPROVED);
 
         Comment comment = new Comment(3L, "text 3", item, user, LocalDateTime.now());
 
-        itemDtoWithBookings = ItemDtoMapper.itemToDtoWithBookings(item, bookingFirst
-                , bookingSecond, List.of(comment));
+        itemDtoWithBookings = ItemDtoMapper.itemToDtoWithBookings(item, bookingFirst,
+                bookingSecond, List.of(comment));
     }
 
     @Test

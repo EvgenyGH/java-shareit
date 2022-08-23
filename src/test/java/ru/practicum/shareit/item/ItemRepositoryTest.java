@@ -31,11 +31,11 @@ public class ItemRepositoryTest {
     void initialize() {
         user = new User(10L, "user name 10", "email@10.com");
         user = userRepository.save(user);
-        ItemRequest itemRequest = new ItemRequest(22L, "description 22"
-                , user, LocalDateTime.now());
+        ItemRequest itemRequest = new ItemRequest(22L, "description 22",
+                user, LocalDateTime.now());
         itemRequest = itemRequestRepository.save(itemRequest);
-        item = new Item(15L, "item name 15", "description 15"
-                , true, user, itemRequest);
+        item = new Item(15L, "item name 15", "description 15",
+                true, user, itemRequest);
         item = itemRepository.save(item);
     }
 
