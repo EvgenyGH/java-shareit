@@ -56,10 +56,11 @@ public class ItemServiceImplUnitTest {
     private ItemRequestService itemRequestService;
 
     private Item item;
+    private User user;
 
     @BeforeEach
     void initialize() {
-        User user = new User(10L, "user name 10", "email@10.com");
+        user = new User(10L, "user name 10", "email@10.com");
         item = new Item(15L, "item name 15", "description 15", true, user, null);
     }
 
@@ -93,6 +94,20 @@ public class ItemServiceImplUnitTest {
 
     @Test
     void updateItemTest() {
+        ItemDto itemDto = ItemDtoMapper.ItemToDto(item);
+
+        when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
+        when(itemRepository.findByIdAndOwner(item.getId(), item.getOwner())).thenReturn(Optional.ofNullable(item));
+        when(itemRepository.save(item)).thenReturn(item);
+
+        Item itemTest = itemService.updateItem(itemDto, item.getOwner().getId(), item.getId());
+
+        assertThat(itemTest).isEqualTo(item);
+    }
+
+    @Test
+    void updateItemRequestIdNotNullTest() {
+        item.setRequest(new ItemRequest(300L, "description 300", user, LocalDateTime.now()));
         ItemDto itemDto = ItemDtoMapper.ItemToDto(item);
 
         when(userService.getUserById(item.getOwner().getId())).thenReturn(item.getOwner());
@@ -246,6 +261,11 @@ public class ItemServiceImplUnitTest {
     @Test
     void findItemsWithNullTextTest() {
         assertThat(itemService.findItems(null, 0, 10)).isEqualTo(Collections.emptyList());
+    }
+
+    @Test
+    void findItemsWithBlankTextTest() {
+        assertThat(itemService.findItems("", 0, 10)).isEqualTo(Collections.emptyList());
     }
 
     @Test

@@ -74,6 +74,28 @@ public class UserServiceImplUnitTests {
     }
 
     @Test
+    void updateUserNameNullTest() {
+        User userTest = new User(user.getId(), null, user.getEmail());
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(userRepository.findFirstByEmailIgnoreCaseAndIdNot(user.getEmail(), user.getId()))
+                .thenReturn(Optional.empty());
+        when(userRepository.save(user)).thenReturn(user);
+
+        assertThat(userService.updateUser(userTest)).isEqualTo(user);
+    }
+
+    @Test
+    void updateUserEmailNullTest() {
+        User userTest = new User(user.getId(), user.getName(), null);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(userRepository.findFirstByEmailIgnoreCaseAndIdNot(user.getEmail(), user.getId()))
+                .thenReturn(Optional.empty());
+        when(userRepository.save(user)).thenReturn(user);
+
+        assertThat(userService.updateUser(userTest)).isEqualTo(user);
+    }
+
+    @Test
     void getUserByIdTest() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.ofNullable(user));
         assertThat(userService.getUserById(user.getId())).isEqualTo(user);

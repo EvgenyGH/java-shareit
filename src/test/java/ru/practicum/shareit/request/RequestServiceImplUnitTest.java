@@ -141,7 +141,7 @@ public class RequestServiceImplUnitTest {
 
     @Test
     void getItemRequestByIdThrowsItemRequestNotFoundException() {
-        when(itemRequestRepository.findById(itemRequest.getId())).thenThrow(ItemRequestNotFoundException.class);
+        when(itemRequestRepository.findById(itemRequest.getId())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> itemRequestService.getItemRequestById(itemRequest.getId()))
                 .isInstanceOf(ItemRequestNotFoundException.class);
