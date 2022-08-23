@@ -121,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
-    //Информация по датам аренды только для пользователя, который еще не арендовал вещ.
+    //Информация по датам аренды только для пользователя, который еще не арендовал вещь.
     @Override
     public ItemDtoWithBookings getItemDtoWithBookingsById(long itemId, long userId) {
         Booking lastBooking;

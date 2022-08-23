@@ -16,7 +16,7 @@ public interface ItemService {
     Item updateItem(ItemDto itemDto, long userId, long itemId);
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
-    //Информация по датам аренды только для пользователя, который еще не арендовал вещ.
+    //Информация по датам аренды только для пользователя, который еще не арендовал вещь.
     ItemDtoWithBookings getItemDtoWithBookingsById(long itemId, long userId);
 
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.

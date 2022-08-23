@@ -118,7 +118,8 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.getBookingByBookerStatusAllOrdered(userId, PageRequest.of(from / size, size));
+                bookings = bookingRepository.getBookingByBookerStatusAllOrdered(userId
+                        , PageRequest.of(from / size, size));
                 break;
             case WAITING:
                 bookings = bookingRepository.getBookingByBookerStatusOrdered(userId, Status.WAITING
@@ -130,11 +131,13 @@ public class BookingServiceImpl implements BookingService {
                 break;
             case PAST:
                 bookings = bookingRepository
-                        .getBookingByBookerStatusPastOrdered(userId, LocalDateTime.now(), PageRequest.of(from / size, size));
+                        .getBookingByBookerStatusPastOrdered(userId, LocalDateTime.now()
+                                , PageRequest.of(from / size, size));
                 break;
             case FUTURE:
                 bookings = bookingRepository
-                        .getBookingByBookerStatusFutureOrdered(userId, LocalDateTime.now(), PageRequest.of(from / size, size));
+                        .getBookingByBookerStatusFutureOrdered(userId, LocalDateTime.now()
+                                , PageRequest.of(from / size, size));
                 break;
             case CURRENT:
                 bookings = bookingRepository.getBookingByBookerStatusCurrentOrdered(userId
@@ -155,7 +158,8 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.getBookingByOwnerStatusAllOrdered(userId, PageRequest.of(from / size, size));
+                bookings = bookingRepository.getBookingByOwnerStatusAllOrdered(userId
+                        , PageRequest.of(from / size, size));
                 break;
             case WAITING:
                 bookings = bookingRepository.getBookingByOwnerStatusOrdered(userId, Status.WAITING
