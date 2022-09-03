@@ -54,7 +54,7 @@ public class ItemClientImpl extends BasicClient implements ItemClient {
                 "size", size,
                 "text", text
         );
-        return get(null, "/search?from={from}&size={size}&text{text}", params);
+        return get(null, "/search?text={text}&from={from}&size={size}", params);
     }
 
     @Override
