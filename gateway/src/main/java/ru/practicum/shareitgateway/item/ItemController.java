@@ -31,7 +31,7 @@ public class ItemController {
     //Редактирование вещи. Редактировать вещь может только её владелец.
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
-                              @RequestBody ItemDto itemDto) {
+                                             @RequestBody ItemDto itemDto) {
         log.trace("Gateway: updateItem: userId={}, itemId={}, itemDto={}", userId, itemId, itemDto);
         return client.updateItem(userId, itemId, itemDto);
     }
@@ -39,7 +39,7 @@ public class ItemController {
     //Просмотр информации о вещи. Информацию о вещи может просмотреть любой пользователь.
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getItemById(@RequestHeader("X-Sharer-User-Id") long userId,
-                                           @PathVariable long itemId) {
+                                              @PathVariable long itemId) {
         log.trace("Gateway: getItemById: userId={}, itemId={}", userId, itemId);
         return client.getItemById(userId, itemId);
     }
@@ -47,10 +47,10 @@ public class ItemController {
     //Просмотр владельцем списка всех его вещей.
     @GetMapping
     public ResponseEntity<Object> getAllUserItems(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                                               @RequestParam(required = false,
-                                                             defaultValue = "0") @Min(0) int from,
-                                                                               @RequestParam(required = false,
-                                                             defaultValue = "10") @Min(1) int size) {
+                                                  @RequestParam(required = false,
+                                                          defaultValue = "0") @Min(0) int from,
+                                                  @RequestParam(required = false,
+                                                          defaultValue = "10") @Min(1) int size) {
         log.trace("Gateway: getAllUserItems: userId={}, from={}, size={}", userId, from, size);
         return client.getAllUserItems(userId, from, size);
     }
@@ -60,8 +60,8 @@ public class ItemController {
     //Поиск возвращает только доступные для аренды вещи.
     @GetMapping("/search")
     public ResponseEntity<Object> findItems(@RequestParam String text,
-                                   @RequestParam(required = false, defaultValue = "0") @Min(0) int from,
-                                   @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
+                                            @RequestParam(required = false, defaultValue = "0") @Min(0) int from,
+                                            @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
         log.trace("Gateway: findItems: text={}, from={}, size={}", text, from, size);
         return client.findItems(text, from, size);
     }
@@ -70,8 +70,8 @@ public class ItemController {
     //пользователь, который пишет комментарий, должен был брать вещь в аренду.
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addCommentToItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                                       @PathVariable long itemId,
-                                       @RequestBody @Valid CommentDto commentDto) {
+                                                   @PathVariable long itemId,
+                                                   @RequestBody @Valid CommentDto commentDto) {
         log.trace("Gateway: addCommentToItem: userId={}, itemId={}, commentDto={}", userId, itemId, commentDto);
         return client.addCommentToItem(userId, itemId, commentDto);
     }

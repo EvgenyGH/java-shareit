@@ -44,7 +44,7 @@ public class ItemClientImpl extends BasicClient implements ItemClient {
                 "from", from,
                 "size", size
         );
-        return get(userId, "/?from={from}&size={size}", params);
+        return get(userId, "?from={from}&size={size}", params);
     }
 
     @Override
