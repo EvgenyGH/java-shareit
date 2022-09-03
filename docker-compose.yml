@@ -3,7 +3,7 @@ version: "3.8"
 services:
   db:
     container_name: shareit-db
-    image: postgres:13.7-alpine
+    image: postgres:11-alpine
     ports:
       - "6541:5432"
     volumes:
@@ -22,12 +22,12 @@ services:
     depends_on:
       - db
     environment:
-        - DB_PASSWORD=psw
-        - DB_USER=SI
-        - DB_NAME=shareit
-        - DB_HOST=db
-        - DB_PORT=5432
-        - SERVER_PORT=9090
+      - DB_PASSWORD=psw
+      - DB_USER=SI
+      - DB_NAME=shareit
+      - DB_HOST=db
+      - DB_PORT=5432
+      - SERVER_PORT=9090
 
   gateway:
     container_name: shareit-gateway
