@@ -7,7 +7,7 @@ services:
     ports:
       - "6541:5432"
     volumes:
-      - /var/lib/postgresql/data
+      - postgres-volume:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=psw
       - POSTGRES_USER=SI
@@ -38,3 +38,6 @@ services:
       - server
     environment:
       - SERVER_URL=http://server:9090
+
+volumes:
+  postgres-volume:

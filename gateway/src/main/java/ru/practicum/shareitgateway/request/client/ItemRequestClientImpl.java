@@ -17,10 +17,10 @@ import java.util.Optional;
 public class ItemRequestClientImpl extends BasicClient implements ItemRequestClient {
     @Autowired
     public ItemRequestClientImpl(@Value("${SERVER_URL}") String url, RestTemplateBuilder builder) {
-        super(builder.
-                requestFactory(HttpComponentsClientHttpRequestFactory.class).
-                uriTemplateHandler(new DefaultUriBuilderFactory(url + "/requests")).
-                build());
+        super(builder
+                .requestFactory(HttpComponentsClientHttpRequestFactory.class)
+                .uriTemplateHandler(new DefaultUriBuilderFactory(url + "/requests"))
+                .build());
     }
 
     @Override
@@ -36,14 +36,14 @@ public class ItemRequestClientImpl extends BasicClient implements ItemRequestCli
     @Override
     public ResponseEntity<Object> getAllRequests(Long ownerId, Optional<Integer> from, Optional<Integer> size) {
         Map<String, Object> params = Map.of(
-                "from", from.isPresent() ? from.get(): "",
-                "size", size.isPresent() ? size.get(): ""
+                "from", from.isPresent() ? from.get() : "",
+                "size", size.isPresent() ? size.get() : ""
         );
         return get(ownerId, "/all?from={from}&size={size}", params);
     }
 
     @Override
     public ResponseEntity<Object> getRequestById(Long userId, Long requestId) {
-        return get(userId, "/" + requestId, null);
+        return get(userId, "/" + requestId);
     }
 }

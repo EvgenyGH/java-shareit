@@ -10,7 +10,6 @@ import java.util.Map;
 public class BasicClient {
     private final RestTemplate restTemplate;
     private final HttpHeaders defaultHeaders;
-    // TODO: 03.09.2022 simplify
 
     public BasicClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -20,72 +19,49 @@ public class BasicClient {
     }
 
     //GET part
+    public ResponseEntity<Object> get() {
+        return makeRequest(null, "", null, HttpMethod.GET, null);
+    }
+
     public ResponseEntity<Object> get(Long userId) {
         return makeRequest(userId, "", null, HttpMethod.GET, null);
     }
 
-    public ResponseEntity<Object> get(Long userId, Map<String, Object> params) {
-
-        return makeRequest(userId, "", null, HttpMethod.GET, params);
+    public ResponseEntity<Object> get(Long userId, String url) {
+        return makeRequest(userId, url, null, HttpMethod.GET, null);
     }
 
     public ResponseEntity<Object> get(Long userId, String url, Map<String, Object> params) {
         return makeRequest(userId, url, null, HttpMethod.GET, params);
     }
 
-    //POST part
-    public <T> ResponseEntity<Object> post(Long userId, T body) {
-        return makeRequest(userId, "", body, HttpMethod.POST, null);
-    }
 
+    //POST part
     public <T> ResponseEntity<Object> post(T body) {
         return makeRequest(null, "", body, HttpMethod.POST, null);
     }
 
-    public <T> ResponseEntity<Object> post(Long userId, T body, Map<String, Object> params) {
-        return makeRequest(userId, "", body, HttpMethod.POST, params);
+    public <T> ResponseEntity<Object> post(Long userId, T body) {
+        return makeRequest(userId, "", body, HttpMethod.POST, null);
     }
 
-    public <T> ResponseEntity<Object> post(T body, Map<String, Object> params) {
-        return makeRequest(null, "", body, HttpMethod.POST, params);
+    public <T> ResponseEntity<Object> post(Long userId, String url, T body) {
+        return makeRequest(userId, url, body, HttpMethod.POST, null);
     }
 
-    public <T> ResponseEntity<Object> post(Long userId, String url, T body, Map<String, Object> params) {
-        return makeRequest(userId, url, body, HttpMethod.POST, params);
-    }
 
-    public <T> ResponseEntity<Object> post(String url, T body, Map<String, Object> params) {
-        return makeRequest(null, url, body, HttpMethod.POST, params);
-    }
-    
     //PATCH part
-    public <T> ResponseEntity<Object> patch(Long userId, T body) {
-        return makeRequest(userId, "", body, HttpMethod.PATCH, null);
-    }
-
-    public <T> ResponseEntity<Object> patch(T body) {
-        return makeRequest(null, "", body, HttpMethod.PATCH, null);
-    }
-
-    public <T> ResponseEntity<Object> patch(Long userId, T body, Map<String, Object> params) {
-        return makeRequest(userId, "", body, HttpMethod.PATCH, params);
-    }
-
-    public <T> ResponseEntity<Object> patch(T body, Map<String, Object> params) {
-        return makeRequest(null, "", body, HttpMethod.PATCH, params);
+    public <T> ResponseEntity<Object> patch(Long userId, String url, T body) {
+        return makeRequest(userId, url, body, HttpMethod.PATCH, null);
     }
 
     public <T> ResponseEntity<Object> patch(Long userId, String url, T body, Map<String, Object> params) {
         return makeRequest(userId, url, body, HttpMethod.PATCH, params);
     }
 
-    public <T> ResponseEntity<Object> patch(String url, T body, Map<String, Object> params) {
-        return makeRequest(null, url, body, HttpMethod.PATCH, params);
-    }
-
     //DELETE part
-    public ResponseEntity<Object> delete(Long userId, String url, Map<String, Object> params) {
-        return makeRequest(userId, url, null, HttpMethod.DELETE, params);
+    public ResponseEntity<Object> delete(Long userId, String url) {
+        return makeRequest(userId, url, null, HttpMethod.DELETE, null);
     }
 
     //Отправка REST запроса и получение ответа

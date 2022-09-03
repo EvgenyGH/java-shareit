@@ -17,10 +17,10 @@ import java.util.Map;
 public class ItemClientImpl extends BasicClient implements ItemClient {
     @Autowired
     public ItemClientImpl(@Value("${SERVER_URL}") String url, RestTemplateBuilder builder) {
-        super(builder.
-                requestFactory(HttpComponentsClientHttpRequestFactory.class).
-                uriTemplateHandler(new DefaultUriBuilderFactory(url + "/items")).
-                build());
+        super(builder
+                .requestFactory(HttpComponentsClientHttpRequestFactory.class)
+                .uriTemplateHandler(new DefaultUriBuilderFactory(url + "/items"))
+                .build());
     }
 
     @Override
@@ -30,7 +30,7 @@ public class ItemClientImpl extends BasicClient implements ItemClient {
 
     @Override
     public ResponseEntity<Object> updateItem(long userId, long itemId, ItemDto itemDto) {
-        return patch(userId, "/" + itemId, itemDto, null);
+        return patch(userId, "/" + itemId, itemDto);
     }
 
     @Override
@@ -59,6 +59,6 @@ public class ItemClientImpl extends BasicClient implements ItemClient {
 
     @Override
     public ResponseEntity<Object> addCommentToItem(long userId, long itemId, CommentDto commentDto) {
-        return post(userId, "/" + itemId + "/comment", commentDto, null);
+        return post(userId, "/" + itemId + "/comment", commentDto);
     }
 }

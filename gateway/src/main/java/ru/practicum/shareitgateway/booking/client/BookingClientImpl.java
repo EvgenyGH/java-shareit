@@ -16,10 +16,10 @@ import java.util.Map;
 public class BookingClientImpl extends BasicClient implements BookingClient {
     @Autowired
     public BookingClientImpl(@Value("${SERVER_URL}") String url, RestTemplateBuilder builder) {
-        super(builder.
-                requestFactory(HttpComponentsClientHttpRequestFactory.class).
-                uriTemplateHandler(new DefaultUriBuilderFactory(url + "/bookings")).
-                build());
+        super(builder
+                .requestFactory(HttpComponentsClientHttpRequestFactory.class)
+                .uriTemplateHandler(new DefaultUriBuilderFactory(url + "/bookings"))
+                .build());
     }
 
     @Override
@@ -29,19 +29,19 @@ public class BookingClientImpl extends BasicClient implements BookingClient {
 
     @Override
     public ResponseEntity<Object> approveBooking(long userId, boolean approved, long bookingId) {
-        Map<String, Object> params =Map.of("approved", approved);
-        return patch(userId,"/" + bookingId + "?approved={approved}", null,
+        Map<String, Object> params = Map.of("approved", approved);
+        return patch(userId, "/" + bookingId + "?approved={approved}", null,
                 params);
     }
 
     @Override
     public ResponseEntity<Object> getBooking(long userId, long bookingId) {
-        return get(userId, "/" + bookingId, null);
+        return get(userId, "/" + bookingId);
     }
 
     @Override
     public ResponseEntity<Object> getUserBookingByStatus(long userId, String state, int from, int size) {
-        Map<String,Object> params = Map.of(
+        Map<String, Object> params = Map.of(
                 "state", state,
                 "from", from,
                 "size", size
@@ -51,11 +51,11 @@ public class BookingClientImpl extends BasicClient implements BookingClient {
 
     @Override
     public ResponseEntity<Object> getAllUserBookings(long userId, String state, int from, int size) {
-        Map<String,Object> params = Map.of(
+        Map<String, Object> params = Map.of(
                 "state", state,
                 "from", from,
                 "size", size
         );
-        return get(userId,"/owner?state={state}&from={from}&size={size}", params);
+        return get(userId, "/owner?state={state}&from={from}&size={size}", params);
     }
 }

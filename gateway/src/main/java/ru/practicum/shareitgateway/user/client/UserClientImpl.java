@@ -14,10 +14,10 @@ import ru.practicum.shareitserver.user.User;
 public class UserClientImpl extends BasicClient implements UserClient {
     @Autowired
     public UserClientImpl(@Value("${SERVER_URL}") String url, RestTemplateBuilder builder) {
-        super(builder.
-                requestFactory(HttpComponentsClientHttpRequestFactory.class).
-                uriTemplateHandler(new DefaultUriBuilderFactory(url + "/users")).
-                build());
+        super(builder
+                .requestFactory(HttpComponentsClientHttpRequestFactory.class)
+                .uriTemplateHandler(new DefaultUriBuilderFactory(url + "/users"))
+                .build());
     }
 
     @Override
@@ -27,21 +27,21 @@ public class UserClientImpl extends BasicClient implements UserClient {
 
     @Override
     public ResponseEntity<Object> updateUser(long userId, User user) {
-        return patch(userId, "/" + userId, user, null);
+        return patch(userId, "/" + userId, user);
     }
 
     @Override
     public ResponseEntity<Object> getUserById(long userId) {
-        return get(userId, "/" + userId, null);
+        return get(userId, "/" + userId);
     }
 
     @Override
     public ResponseEntity<Object> deleteUserById(long userId) {
-        return delete(userId, "/" + userId, null);
+        return delete(userId, "/" + userId);
     }
 
     @Override
     public ResponseEntity<Object> getAllUsers() {
-        return get(null);
+        return get();
     }
 }
