@@ -1,36 +1,40 @@
 package ru.practicum.shareitgateway.request;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareitgateway.request.client.ItemRequestClient;
 import ru.practicum.shareitserver.request.dto.ItemRequestDto;
-import ru.practicum.shareitserver.request.dto.ItemRequestDtoWithResponse;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 
 @RestController
 @RequestMapping(path = "/requests")
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Validated
+@Slf4j
 public class ItemRequestController {
+    private final ItemRequestClient client;
+
     //добавить новый запрос вещи.
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
-    public ItemRequestDto addRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @RequestBody @Valid ItemRequestDto itemRequestDto) {
-        return null; //itemRequestService.addRequest(userId, itemRequestDto);
+    public ResponseEntity<Object> addRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                             @RequestBody @Valid ItemRequestDto itemRequestDto) {
+        log.trace("Gateway: addRequest: userIt={}, itemRequestDto={}", userId, itemRequestDto);
+        return client.addRequest(userId, itemRequestDto);
     }
 
     //Получить список своих запросов вместе с данными об ответах на них.
     //Запросы отсортированы от более новых к более старым.
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<ItemRequestDtoWithResponse> getUserRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return null; //itemRequestService.getUserRequests(userId);
+    public ResponseEntity<Object> getUserRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        log.trace("Gateway: getUserRequests: userIt={}", userId);
+        return client.getUserRequests(userId);
     }
 
     //Получить список запросов, созданных другими пользователями.
@@ -38,18 +42,18 @@ public class ItemRequestController {
     //Результаты возвращаются постранично.
     //from — индекс первого элемента, size — количество элементов для отображения.
     @GetMapping("/all")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ItemRequestDtoWithResponse> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long ownerId,
-                                                           @RequestParam Optional<Integer> from,
-                                                           @RequestParam Optional<Integer> size) {
-        return null; //itemRequestService.getAllRequests(from, size, ownerId);
+    public ResponseEntity<Object> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long ownerId,
+                                                 @RequestParam Optional<Integer> from,
+                                                 @RequestParam Optional<Integer> size) {
+        log.trace("Gateway: getAllRequests: ownerId={}, from={}, size={}", ownerId, from, size);
+        return client.getAllRequests(ownerId, from, size);
     }
 
     //Получить данные об одном конкретном запросе вместе с данными об ответах.
     @GetMapping("/{requestId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ItemRequestDtoWithResponse getRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                     @PathVariable Long requestId) {
-        return null; //itemRequestService.getRequestById(userId, requestId);
+    public ResponseEntity<Object> getRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                 @PathVariable Long requestId) {
+        log.trace("Gateway: getRequestById: userIt={}, requestId={}", userId, requestId);
+        return client.getRequestById(userId, requestId);
     }
 }

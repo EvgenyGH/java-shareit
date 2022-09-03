@@ -10,6 +10,7 @@ import java.util.Map;
 public class BasicClient {
     private final RestTemplate restTemplate;
     private final HttpHeaders defaultHeaders;
+    // TODO: 03.09.2022 simplify
 
     public BasicClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
