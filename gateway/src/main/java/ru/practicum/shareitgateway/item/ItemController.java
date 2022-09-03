@@ -2,6 +2,7 @@ package ru.practicum.shareitgateway.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareitserver.item.comment.dto.CommentDto;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class ItemController {
+
 
     //Добавление новой вещи
     @ResponseStatus(HttpStatus.CREATED)
@@ -42,14 +44,15 @@ public class ItemController {
     }
 
     //Просмотр владельцем списка всех его вещей.
-    @ResponseStatus(HttpStatus.OK)
+    //@ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<ItemDtoWithBookings> getAllUserItems(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                     @RequestParam(required = false,
+    public /*List<ItemDtoWithBookings>*/ResponseEntity<Object> getAllUserItems(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                                               @RequestParam(required = false,
                                                              defaultValue = "0") @Min(0) int from,
-                                                     @RequestParam(required = false,
+                                                                               @RequestParam(required = false,
                                                              defaultValue = "10") @Min(1) int size) {
-        return null; //itemService.getAllUserItems(userId, from, size);
+        return null;//client.get(userId, "http://localhost:9090/items", null,
+                //Map.of()); //itemService.getAllUserItems(userId, from, size);
     }
 
     //Поиск вещи потенциальным арендатором. Пользователь передаёт в строке запроса текст,

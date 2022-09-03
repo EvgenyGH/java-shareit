@@ -35,7 +35,8 @@ public class DtoAndDtoWithResponseJsonTest {
     void initialize() {
         User user = new User(10L, "user name 10", "email@10.com");
         ItemRequest itemRequest = new ItemRequest(20L, "description 20", user, LocalDateTime.now());
-        Item item = new Item(15L, "item name 15", "description 15", true, user, itemRequest);
+        Item item = new Item(15L, "item name 15", "description 15"
+                , true, user, itemRequest);
 
         itemRequestDto = ItemRequestDtoMapper.itemRequestToDto(itemRequest);
         itemRequestDtoWithResponse = ItemRequestDtoMapper.itemRequestToDtoWithResponse(itemRequest,
@@ -51,7 +52,7 @@ public class DtoAndDtoWithResponseJsonTest {
         assertThat(jsonContent).extractingJsonPathStringValue("$.description")
                 .isEqualTo(itemRequestDto.getDescription());
         assertThat(jsonContent).extractingJsonPathStringValue("$.created")
-                .isEqualTo(itemRequestDto.getCreated().toString());
+                .isEqualTo(itemRequestDto.getCreated().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
     @Test
