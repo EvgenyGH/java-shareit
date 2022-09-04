@@ -15,7 +15,7 @@ import java.util.Map;
 @Component
 public class BookingClientImpl extends BasicClient implements BookingClient {
     @Autowired
-    public BookingClientImpl(@Value("${SERVER_URL}") String url, RestTemplateBuilder builder) {
+    public BookingClientImpl(@Value("${shareit.server.url}") String url, RestTemplateBuilder builder) {
         super(builder
                 .requestFactory(HttpComponentsClientHttpRequestFactory.class)
                 .uriTemplateHandler(new DefaultUriBuilderFactory(url + "/bookings"))

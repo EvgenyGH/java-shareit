@@ -16,7 +16,7 @@ import java.util.Optional;
 @Component
 public class ItemRequestClientImpl extends BasicClient implements ItemRequestClient {
     @Autowired
-    public ItemRequestClientImpl(@Value("${SERVER_URL}") String url, RestTemplateBuilder builder) {
+    public ItemRequestClientImpl(@Value("${shareit.server.url}") String url, RestTemplateBuilder builder) {
         super(builder
                 .requestFactory(HttpComponentsClientHttpRequestFactory.class)
                 .uriTemplateHandler(new DefaultUriBuilderFactory(url + "/requests"))

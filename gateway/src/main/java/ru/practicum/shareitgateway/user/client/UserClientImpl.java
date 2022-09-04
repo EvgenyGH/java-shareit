@@ -13,7 +13,7 @@ import ru.practicum.shareitserver.user.User;
 @Component
 public class UserClientImpl extends BasicClient implements UserClient {
     @Autowired
-    public UserClientImpl(@Value("${SERVER_URL}") String url, RestTemplateBuilder builder) {
+    public UserClientImpl(@Value("${shareit.server.url}") String url, RestTemplateBuilder builder) {
         super(builder
                 .requestFactory(HttpComponentsClientHttpRequestFactory.class)
                 .uriTemplateHandler(new DefaultUriBuilderFactory(url + "/users"))

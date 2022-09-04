@@ -16,7 +16,7 @@ import java.util.Map;
 @Component
 public class ItemClientImpl extends BasicClient implements ItemClient {
     @Autowired
-    public ItemClientImpl(@Value("${SERVER_URL}") String url, RestTemplateBuilder builder) {
+    public ItemClientImpl(@Value("${shareit.server.url}") String url, RestTemplateBuilder builder) {
         super(builder
                 .requestFactory(HttpComponentsClientHttpRequestFactory.class)
                 .uriTemplateHandler(new DefaultUriBuilderFactory(url + "/items"))
