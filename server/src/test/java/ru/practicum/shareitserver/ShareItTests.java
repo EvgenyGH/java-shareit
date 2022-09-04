@@ -20,7 +20,7 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Sql(scripts = {"/testSchema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)

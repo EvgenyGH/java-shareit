@@ -18,7 +18,7 @@ import ru.practicum.shareitserver.user.User;
 import static org.mockserver.model.HttpRequest.request;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
-        properties = {"shareit.server.url=http://localhost:8080"})
+        properties = {"shareit.server.url=http://localhost:7070"})
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class BasicClientRequestTest {
     private final UserClientImpl client;
@@ -32,8 +32,8 @@ public class BasicClientRequestTest {
 
     @BeforeAll
     static void initialize() {
-        server = ClientAndServer.startClientAndServer(8080);
-        mock = new MockServerClient("localhost", 8080);
+        server = ClientAndServer.startClientAndServer(7070);
+        mock = new MockServerClient("localhost", 7070);
         user = new User(1L, "name", "mail@mail.ru");
         headerContent = new Header("Content-Type", "application/json");
         headerAccept = new Header("Accept", "application/json");
