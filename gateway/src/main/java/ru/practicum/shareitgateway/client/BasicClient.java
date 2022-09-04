@@ -65,7 +65,7 @@ public class BasicClient {
     }
 
     //Отправка REST запроса и получение ответа
-    private <T> ResponseEntity<Object> makeRequest(Long userId, String url, T body, HttpMethod method,
+    protected  <T> ResponseEntity<Object> makeRequest(Long userId, String url, T body, HttpMethod method,
                                                    Map<String, Object> params) {
         HttpEntity<Object> request = new HttpEntity<>(body, getDefaultHeaders(userId));
         ResponseEntity<Object> response;
@@ -85,7 +85,7 @@ public class BasicClient {
     }
 
     //Создание заголовков
-    private HttpHeaders getDefaultHeaders(Long userId) {
+    protected HttpHeaders getDefaultHeaders(Long userId) {
         if (userId == null) {
             defaultHeaders.remove("X-Sharer-User-Id");
         } else {

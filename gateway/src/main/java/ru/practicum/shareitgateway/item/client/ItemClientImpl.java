@@ -35,7 +35,7 @@ public class ItemClientImpl extends BasicClient implements ItemClient {
 
     @Override
     public ResponseEntity<Object> getItemById(long userId, long itemId) {
-        return get(userId, "/" + itemId, null);
+        return get(userId, "/" + itemId);
     }
 
     @Override
