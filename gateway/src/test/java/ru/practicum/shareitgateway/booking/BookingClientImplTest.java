@@ -22,7 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
-        properties = {"shareit.server.url=http://lcalhost:8080"})
+        properties = {"shareit.server.url=http://localhost:8080"})
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class BookingClientImplTest {
     @SpyBean
