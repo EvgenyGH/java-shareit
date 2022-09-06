@@ -2,21 +2,17 @@ package ru.practicum.shareitserver.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareitserver.booking.dto.BookingDtoRequest;
 import ru.practicum.shareitserver.booking.dto.BookingDtoResponse;
 import ru.practicum.shareitserver.booking.service.BookingService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
-@Validated
 public class BookingController {
     private final BookingService bookingService;
 
@@ -25,7 +21,7 @@ public class BookingController {
     //После создания запрос находится в статусе WAITING — «ожидает подтверждения».
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public BookingDtoResponse bookItem(@RequestBody @Valid BookingDtoRequest bookingDtoRequest,
+    public BookingDtoResponse bookItem(@RequestBody BookingDtoRequest bookingDtoRequest,
                                        @RequestHeader("X-Sharer-User-Id") long userId) {
         return bookingService.bookItem(bookingDtoRequest, userId);
     }
@@ -59,9 +55,9 @@ public class BookingController {
                                                            @RequestParam(required = false,
                                                                    defaultValue = "ALL") String state,
                                                            @RequestParam(required = false,
-                                                                   defaultValue = "0") @Min(0) int from,
+                                                                   defaultValue = "0") int from,
                                                            @RequestParam(required = false,
-                                                                   defaultValue = "10") @Min(1) int size) {
+                                                                   defaultValue = "10") int size) {
         return bookingService.getUserBookingByStatus(userId, RequestStatus.valueOf(state), from, size);
     }
 
@@ -74,9 +70,9 @@ public class BookingController {
                                                        @RequestParam(required = false,
                                                                defaultValue = "ALL") String state,
                                                        @RequestParam(required = false,
-                                                               defaultValue = "0") @Min(0) int from,
+                                                               defaultValue = "0") int from,
                                                        @RequestParam(required = false,
-                                                               defaultValue = "10") @Min(1) int size) {
+                                                               defaultValue = "10") int size) {
         return bookingService.getAllUserBookings(userId, RequestStatus.valueOf(state), from, size);
     }
 }

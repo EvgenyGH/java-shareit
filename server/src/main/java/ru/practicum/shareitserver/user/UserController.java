@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareitserver.user.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,7 +16,7 @@ public class UserController {
     //Добавить пользователя
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public User addUser(@Valid @RequestBody User user) {
+    public User addUser(@RequestBody User user) {
         return userService.addUser(user);
     }
 

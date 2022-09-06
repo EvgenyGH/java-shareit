@@ -2,13 +2,11 @@ package ru.practicum.shareitserver.request;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareitserver.request.dto.ItemRequestDto;
 import ru.practicum.shareitserver.request.dto.ItemRequestDtoWithResponse;
 import ru.practicum.shareitserver.request.service.ItemRequestService;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +14,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
-@Validated
 public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
@@ -24,7 +21,7 @@ public class ItemRequestController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ItemRequestDto addRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @RequestBody @Valid ItemRequestDto itemRequestDto) {
+                                     @RequestBody ItemRequestDto itemRequestDto) {
         return itemRequestService.addRequest(userId, itemRequestDto);
     }
 

@@ -2,7 +2,6 @@ package ru.practicum.shareitserver.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareitserver.item.comment.dto.CommentDto;
 import ru.practicum.shareitserver.item.comment.dto.CommentDtoMapper;
@@ -11,22 +10,18 @@ import ru.practicum.shareitserver.item.dto.ItemDtoMapper;
 import ru.practicum.shareitserver.item.dto.ItemDtoWithBookings;
 import ru.practicum.shareitserver.item.service.ItemService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
-@Validated
 public class ItemController {
     private final ItemService itemService;
-
     //Добавление новой вещи
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto) {
         return ItemDtoMapper.itemToDto(itemService.addItem(itemDto, userId));
     }
 
@@ -51,9 +46,9 @@ public class ItemController {
     @GetMapping
     public List<ItemDtoWithBookings> getAllUserItems(@RequestHeader("X-Sharer-User-Id") long userId,
                                                      @RequestParam(required = false,
-                                                             defaultValue = "0") @Min(0) int from,
+                                                             defaultValue = "0") int from,
                                                      @RequestParam(required = false,
-                                                             defaultValue = "10") @Min(1) int size) {
+                                                             defaultValue = "10") int size) {
         return itemService.getAllUserItems(userId, from, size);
     }
 
@@ -63,8 +58,8 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/search")
     public List<ItemDto> findItems(@RequestParam String text,
-                                   @RequestParam(required = false, defaultValue = "0") @Min(0) int from,
-                                   @RequestParam(required = false, defaultValue = "10") @Min(1) int size) {
+                                   @RequestParam(required = false, defaultValue = "0") int from,
+                                   @RequestParam(required = false, defaultValue = "10") int size) {
         return itemService.findItems(text, from, size).stream().map(ItemDtoMapper::itemToDto)
                 .collect(Collectors.toList());
     }
@@ -74,7 +69,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto addCommentToItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                        @PathVariable long itemId,
-                                       @RequestBody @Valid CommentDto commentDto) {
+                                       @RequestBody CommentDto commentDto) {
         return CommentDtoMapper.commentToDto(itemService
                 .addCommentToItem(userId, itemId, commentDto));
     }

@@ -69,13 +69,6 @@ class ShareItTests {
                 .andExpect(status().isBadRequest());
         item2.setDescription("Item2 description");
 
-        ItemDto tempItemDto = ItemDtoMapper.itemToDto(item2);
-        tempItemDto.setAvailable(null);
-        mockMvc.perform(post("/items")
-                        .content(objectMapper.writeValueAsString(tempItemDto))
-                        .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isBadRequest());
-
         //Редактирование вещи. Редактировать вещь может только её владелец.
         mockMvc.perform(patch("/items/{itemId}", 1)
                         .content(objectMapper.writeValueAsString(ItemDtoMapper.itemToDto(item2)))
@@ -83,7 +76,7 @@ class ShareItTests {
                         .header("X-Sharer-User-Id", 2))
                 .andExpect(status().isNotFound());
 
-        tempItemDto = ItemDtoMapper.itemToDto(item1);
+        ItemDto tempItemDto = ItemDtoMapper.itemToDto(item1);
         tempItemDto.setName("updated name");
         tempItemDto.setDescription("updated description");
         tempItemDto.setAvailable(false);

@@ -21,7 +21,6 @@ import javax.validation.constraints.Min;
 @Slf4j
 public class BookingController {
     private final BookingClient client;
-
     //Добавление нового запроса на бронирование.
     //Запрос может быть создан любым пользователем, а затем подтверждён владельцем вещи.
     //После создания запрос находится в статусе WAITING — «ожидает подтверждения».
