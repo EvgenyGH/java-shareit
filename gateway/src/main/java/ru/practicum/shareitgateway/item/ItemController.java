@@ -23,7 +23,8 @@ public class ItemController {
 
     //Добавление новой вещи
     @PostMapping
-    public ResponseEntity<Object> addItem(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ResponseEntity<Object> addItem(@RequestHeader("X-Sharer-User-Id") long userId,
+                                          @Valid @RequestBody ItemDto itemDto) {
         log.trace("Gateway: addItem: userId={}, itemDto={}", userId, itemDto);
         return client.addItem(userId, itemDto);
     }
