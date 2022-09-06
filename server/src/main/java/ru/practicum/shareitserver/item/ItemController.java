@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
+
     //Добавление новой вещи
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
