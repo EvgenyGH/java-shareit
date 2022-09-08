@@ -6,6 +6,7 @@
 
 ## *`Sprint 4`*
 #### *- Implement microservice architecture (gateway/server/database)*
+#### *- Move incoming data validation to module Gateway*
 #### *- Gateway: add BookingController, ItemController, ItemRequestController and UserController*
 #### *- Gateway: add ExceptionHandler*
 #### *- Gateway: add BasicClient class*
