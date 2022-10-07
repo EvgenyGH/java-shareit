@@ -1,6 +1,6 @@
 # _Java-shareit_
 
-### _Descripton_
+### _Description_
 
 The service for sharing items. Backend.  
 
@@ -24,7 +24,7 @@ Runs on port 8080.
 2. _Shareit-server_ - the service with main logic. Shareit-server works with postgres database.  
 Runs on port 9090.
 
-[Sareit API (Swagger)](https://petstore.swagger.io?url=https://raw.githubusercontent.com/EvgenyGH/java-shareit/main/api.yaml)
+[Shareit API (Swagger)](https://petstore.swagger.io?url=https://raw.githubusercontent.com/EvgenyGH/java-shareit/main/api.yaml)
 
 ### _Entity relationship_  
 ![Entity relationship](./ER/ER.png)
