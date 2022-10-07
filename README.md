@@ -1,8 +1,56 @@
-# **Java-shareit**
+# _Java-shareit_
 
-###### The service for sharing items. Backend.
-###### The service allows users to give a description of items they have for sharing, allows to find desirable item and rent it. It allows to book items for particular time. Users may send request for items they required and receive sharing offers in return.
-###### Spring-Boot, jpa, postgresql, h2, java-core, lombok, docker, docker-compose
+### _Descripton_
+
+The service for sharing items. Backend.  
+
+The service allows users to give a description of items they have for sharing, allows to find 
+desirable item and rent it. It allows to book items for particular time. Users may send request 
+for items they required and receive sharing offers in return.  
+
+### _Technologies_
+
+Spring-Boot (2.7.1), jpa, postgresql (43.3.6), h2 (2.1.214), java (sdk 11), lombok (1.18.24),
+docker(20.10.17), docker-compose(2.10.2).
+
+### _Structure_   
+
+Project consists of two modules (microservices):
+1. _Shareit-gateway_ - the gateway filters incorrect requests and then address shareit-main server.  
+The module depends on shareit-main server.
+Runs on port 8080.
+
+
+2. _Shareit-server_ - the service with main logic. Shareit-server works with postgres database.  
+Runs on port 9090.
+
+### _Entity relationship_  
+![Entity relationship](./ER/ER.png)
+
+### _Starting the service_
+CLI start command: `docker-compose -p shareit up`
+
+Manual run:
+1. Set environmental variables.
+2. Run database.
+3. Run shareit-server.
+4. Run shareit-gateway.
+
+Environmental variables set by default in docker-compose:
+
+1. Shareit-server:
+   - DB_PASSWORD=psw
+   - DB_USER=SI
+   - DB_NAME=shareit
+   - DB_HOST=db
+   - DB_PORT=5432
+   - SERVER_PORT=9090
+
+2. Shareit-gateway:
+   - SERVER_URL=`http://server:9090`
+___
+
+### _Update history_
 
 ## *`Sprint 4`*
 #### *- Implement microservice architecture (gateway/server/database)*
@@ -31,14 +79,10 @@ ___
 ##### *- Add UserRepository, ItemRepository, BookingRepository, ItemRequestRepository and CommentRepository*
 ##### *- Refactor UserService, ItemService and add BookingService*
 ##### *- Add Exceptions for Booking and Item packages*
-###v# *- Add Dto to Item, Booking, Comment models*
+##### *- Add Dto to Item, Booking, Comment models*
 ##### *- Add DtoMapper to Item, Bookings and Comment DTOs*
 ##### *- Add endpoints POST /bookings, PATCH /bookings/{bookingId}?approved={approved}, GET /bookings/{bookingId}, GET /bookings?state={state}, GET /bookings/owner?state={state}, POST /items/{itemId}/comment*
 ___
-*Entity relationship*:  
-![Entity relationship](/ER/ER.png)
-___
-
 ### *`Sprint 1`*
 ##### *- Add UserController and ItemController*
 ##### *- Add UserService and ItemService*
